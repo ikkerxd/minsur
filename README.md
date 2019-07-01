@@ -1,0 +1,3 @@
+# minsur
+
+proyecto minsur
