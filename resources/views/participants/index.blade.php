@@ -48,10 +48,7 @@
                <td>{{ $participant->position }}</td>
                <td>{{ $participant->superintendence }}</td>
                <td  class="text-center"><a href="{{ route('detail-participant', $participant->id) }}" class="btn btn-sm btn-success"><i class="fa fa-list-alt" aria-hidden="true"></i> Consolidado</a></td>
-            @if ($participant->id_user == $idUser)
-              <td width="10px"><a href="{{ route('edit_participant',Crypt::encryptString($participant->id)) }}" class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
-            @endif
-
+                <td width="10px"><a href="{{ route('edit_participant',Crypt::encryptString($participant->id)) }}" class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
             
           </tr>
           @endforeach  

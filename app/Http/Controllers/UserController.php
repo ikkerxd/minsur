@@ -557,15 +557,29 @@ class UserController extends Controller
         return view('users.company_partcipant', compact('query', 'mensaje'));
     }
 
-    public function changeCompany(Request $request) {
+    public function changeCompany(Request $request, $id) {
 
-            $contrata = Auth::user();
-            $user = DB::table('users')
-                ->where('id', $request->id);
+            $message = '';
+            if ($request->ajax())
+            {
+                $contrata = Auth::user();
+                $user = DB::table('users')
+                    ->where('id', $request->id);
 
-            $update = $user->update(['state' => 0, 'id_company' => $contrata->id_company]);
-            $id_company = $user->first()->id_company;
-            $company = Company::find($id_company);
+                $user->update(['state' => 0, 'id_company' => $contrata->id_company]);
+                $id_company = $user->first()->id_company;
+                $company = Company::find($id_company);
+                $message = 'El participante fue cambiado correctamente de empresa';
+
+                return response()->json([
+                    'name' => $company->businessName,
+                    'message' => $message
+                ]);
+            }
+
+            return $message;
+
+
 
     }
 }

@@ -38,6 +38,7 @@
                         <br>
                         <br>
                         <div class="col-sm-12">
+
                             <table class="table table-bordered text-center" id="datatable">
                                 <thead>
                                 <tr>
@@ -51,7 +52,7 @@
                                 </thead>
                                 <tbody>
                                 @forelse ($query as $user)
-                                    <tr>
+                                    <tr data-id="{{ $user->id }}">
                                         <td>{{ $user->dni }}</td>
                                         <td>{{ $user->firstlastname }} {{ $user->secondlastname }} {{ $user->name }}</td>
                                         <td>{{ $user->empresa }}</td>
@@ -64,12 +65,7 @@
                                         </td>
                                         <td><a href="{{ route('detail-participant', $user->id) }}" class="btn btn-sm btn-info">Consolidado</a></td>
                                         <td>
-                                            <form action="{{ route('change_company', ['id' =>  $user->id ])}}" method="post">
-                                                {{ csrf_field() }}
-                                                <input type="hidden" name="id" value="{{ $user->id }}">
-                                                <a class="btn btn-sm btn-primary charapa">Cambiar de empresa</a>
-                                            </form>
-
+                                            <a class="btn btn-sm btn-primary btn-change">Cambiar de empresa</a>
                                         </td>
                                     </tr>
                                 @empty
@@ -86,17 +82,20 @@
             </div>
         </div>
     </section>
+    {!! Form::open(['route' => ['change_company', 'id' => ':USER_ID'], 'method' => 'POST',  'id' => 'form-change']) !!}
+    {!! Form::close() !!}
+
 @endsection
+
 @section('script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-
-            $('.charapa').click(function (e) {
+            $('.btn-change').click(function (e) {
                 e.preventDefault();
                 Swal.fire({
-                    title: '¿Seguro que deseas reprogramar?',
-                    text: "si esta deacuerdo clic al boton azul",
+                    title: '¿Esta seguro que deseas cambiar de empresa al participante?',
+                    text: "si esta de acuerdo click al botón azul",
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -104,24 +103,30 @@
                     confirmButtonText: 'Si, Reprogramar!'
                 }).then((result) => {
                     if (result.value) {
-                        const form = $(this).parents('form');
-                        const url = form.attr('action');
-                        console.log(url);
+                        const row = $(this).parents('tr');
+                        const id = row.data('id');
+                        const form = $('#form-change');
+                        const url = form.attr('action').replace(':USER_ID', id);
+                        const data = form.serialize();
+
                         $.ajax({
                             url: url,
                             type: 'POST',
                             dataType: 'json',
-                            data: $(this).serialize(),
+                            data: data,
                         })
+
                         .done(function(data) {
-                            console.log('amigo');
                             console.log(data);
+                            row.children('td:nth-child(3)').text(data.name);
+                            row.find('small').addClass('bg-green-active').text("Activo");
+                            row.find('.btn-change').addClass('disabled');
+
                             Swal.fire(
                                 'Felicitaciones!',
-                                'Sus participantes han sido programados.',
+                                data.message,
                                 'success'
                             );
-                            window.location.href = "company/search-participant";
                         });
                     }
                 })
