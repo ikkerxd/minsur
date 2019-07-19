@@ -91,30 +91,32 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('.btn-change').click(function (e) {
-                e.preventDefault();
-                Swal.fire({
-                    title: '¿Esta seguro que deseas cambiar de empresa al participante?',
-                    text: "si esta de acuerdo click al botón azul",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Si, Reprogramar!'
-                }).then((result) => {
-                    if (result.value) {
-                        const row = $(this).parents('tr');
-                        const id = row.data('id');
-                        const form = $('#form-change');
-                        const url = form.attr('action').replace(':USER_ID', id);
-                        const data = form.serialize();
+        });
 
-                        $.ajax({
-                            url: url,
-                            type: 'POST',
-                            dataType: 'json',
-                            data: data,
-                        })
+        $('.btn-change').click(function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: '¿Esta seguro que deseas cambiar de empresa al participante?',
+                text: "si esta de acuerdo click al botón azul",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, Cambiar!'
+            }).then((result) => {
+                if (result.value) {
+                    const row = $(this).parents('tr');
+                    const id = row.data('id');
+                    const form = $('#form-change');
+                    const url = form.attr('action').replace(':USER_ID', id);
+                    const data = form.serialize();
+
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: data,
+                    })
 
                         .done(function(data) {
                             console.log(data);
@@ -128,10 +130,8 @@
                                 'success'
                             );
                         });
-                    }
-                })
-            });
-
+                }
+            })
         });
     </script>
 @endsection

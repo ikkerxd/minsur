@@ -40,11 +40,10 @@ class UserInscriptionController extends Controller
             'chk_participant.required' => 'Debes seleccionar al menos 1 participante',
         ]);
 
-        // -- la cantida de
+        // -- disminuimos la cantidad de particpantes
         $slot = DB::table('inscriptions')->where('id',$request->id_inscription)->value('slot');
         $cant_part_selecionados = count($request->chk_participant);
         $resultado = $slot - $cant_part_selecionados;
-
 
         $user = Auth::user();
         if ($request->idLocation == 1) {
@@ -54,12 +53,16 @@ class UserInscriptionController extends Controller
             $forma_pago = 'al contado';
         }
 
-//        $anulate = DB::table('user_inscriptions')
-//            ->where('id_inscription',$request->id_inscription)
-//            ->whereIn('id_user', $request->chk_participant);
-//
-//        dd($anulate);
         if ($resultado >= 0) {
+
+            $id_company = $user->id_company;
+            $id_rol = DB::table('role_user')
+                ->where('user_id', $user->id)
+                ->first()->role_id;
+
+            if ($id_rol == 1) {
+                $id_company = 2;
+            }
 
             foreach ($request->chk_participant  as $participant) {
 
@@ -70,7 +73,6 @@ class UserInscriptionController extends Controller
                 if ($anulate_user->exists()) {
                     $anulate_user->update(['state' => 0]);
                 } else {
-
                     $userInscription = new UserInscription;
                     $userInscription->id_inscription = $request->id_inscription;
                     $userInscription->id_user = $participant; //usurio participante
@@ -88,6 +90,7 @@ class UserInscriptionController extends Controller
                     $userInscription->state = 0;
                     $userInscription->id_user_inscription = $user->id;
                     $userInscription->code_transaction = null;
+                    $userInscription->id_company_inscription = $id_company;
                     $userInscription->save();
                 }
             }
@@ -115,18 +118,15 @@ class UserInscriptionController extends Controller
 //            $price = intval($dg[0]->price) * intval($cant_part_selecionados);
 //
 
-
             //$this->sendMail_UserInscriptions($businessName,$dg[0]->nameCouse,$dg[0]->nameLocation,$cant_part_selecionados,$request->optradio,$condicion2,$price,$dg[0]->fechaInicio);
 
             return redirect()->route('detail-inscriptionc', $request->id_inscription);
-
 
         }else{
             return redirect()->route("userInscription", $request->id_inscription)->with('error','No puede registrar mas vacantes de los disponibles.');
         }
     }
 
-    
     public function show(UserInscription $userInscription)
     {
         //
@@ -138,7 +138,6 @@ class UserInscriptionController extends Controller
         //
     }
 
-    
     public function update(Request $request, UserInscription $userInscription)
     {
         $id = request()->segment(2);
@@ -159,7 +158,6 @@ class UserInscriptionController extends Controller
         return redirect()->route('detail-Inscription', ['id' => $id]);
     }
 
-    
     public function destroy(UserInscription $userInscription)
     {
         //

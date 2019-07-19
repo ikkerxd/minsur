@@ -23,7 +23,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/buscar_dni/{dni}', 'InscriptionController@buscar_dni');
+Route::get('/buscar_dni/{dni}', 'InscriptionController@buscar_dniuserInscription');
 
 Route::post('search_ruc','CompanyController@search_ruc')->name('search_ruc');
 
@@ -96,7 +96,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('company/search-participant','UserController@company_participant')->name('search_participant_contrata');
 
     Route::post('company/change/{id}','UserController@changeCompany')->name('change_company');
-
+    Route::post('company/deactivate/{id}','UserController@desactivateUser')->name('desactivate_participant');
 
     Route::get('participant/detail/{id}','UserController@detail_participant')->name('detail-participant');
 
@@ -157,6 +157,9 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/invoice/valorizacion/{id}', 'InvoiceController@report_valorization')->name('invoice-valorizacion');
 
     Route::post('/user-inscriptions/{id}', 'UserInscriptionController@anulateUserInscription')->name('anulate_user_inscription');
+
+    Route::get('reporte/curso/obligatorio/', 'CourseController@reportRequiedCourses')->name('required_courses');
+    Route::get('export/curso/obligatorio/participante', 'CourseController@exportRequiedCourses')->name('export_required_courses_participants');
 
     Route::get('all-um','ChartController@index')->name('chart_all');
     Route::get('raura','ChartController@raura')->name('chart_raura');

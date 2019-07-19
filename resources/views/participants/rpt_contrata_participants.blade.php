@@ -48,7 +48,7 @@
                 $faltantes = 0;
               @endphp
               @foreach ($participants as $participant)
-              <?php 
+
               if($participant->point > 13){
                 $aprobados = $aprobados +1;
               }elseif($participant->condition >= 0 && $participant->condition == 'A'){
@@ -155,19 +155,16 @@
     var pieChart       = new Chart(pieChartCanvas)
     var PieData        = [      
     {
-      value    : <?php echo $aprobados; ?>,
       color    : '#00a65a',
       highlight: '#00a65a',
       label    : 'Aprobados'
     },
     {
-      value    : <?php echo $desaprobados; ?>,
       color    : '#f39c12',
       highlight: '#f39c12',
       label    : 'Desaprobados'
     },
     {
-      value    : <?php echo $faltantes; ?>,
       color    : '#00c0ef',
       highlight: '#00c0ef',
       label    : 'Faltantes'
@@ -195,7 +192,6 @@
       // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
       maintainAspectRatio  : true,
       //String - A legend template
-      legendTemplate       : '<ul class="<%=name.toLowerCase()%>-legend"><% for (var i=0; i<segments.length; i++){%><li><span style="background-color:<%=segments[i].fillColor%>"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>'
     }
     //Create pie or douhnut chart
     // You can switch between pie and douhnut using the method below.

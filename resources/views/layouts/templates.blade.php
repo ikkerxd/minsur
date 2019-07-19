@@ -193,7 +193,20 @@
       <li><a href="{{url('/inscription')}}"><i class="fa fa-pencil-square-o"></i> <span>Inscripcíon</span></a></li>
       <li><a href="{{url('/details')}}"><i class="fa fa-list-ul"></i> <span>Detalle Inscripción</span></a></li>
 
-
+      <li class="treeview">
+        <a href="#">
+          <i class="fa fa-line-chart"></i> <span>Reportes</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu">
+          <li><a href="{{ route('required_courses') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Reporte cursos obligatorio</span></a></li>
+        <!-- <li>
+            <a href="{{ route('cons_part') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Consolidado Participantes</span></a>
+          </li> -->
+        </ul>
+      </li>
 
 
 
@@ -225,20 +238,6 @@
         <li><a href="#"><i class="fa fa-cloud-download" aria-hidden="true"></i> <span>Formato Excel</span></a></li>
       </ul>
       @endrole
-
-      @role('isem' )
-      <ul class="sidebar-menu" data-widget="tree">
-        <li class="header">PANEL</li>
-        <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
-        @can('participants.index')
-        <li><a href="{{route('validate-participant')}}"><i class="fa fa-check-circle-o"></i> <span>Validar Participante</span></a></li>
-        @endcan
-        <li><a href="{{route('download_file','formato_igh_isem.xlsx')}}"><i class="fa fa-cloud-download" aria-hidden="true"></i> <span>Formato Excel</span></a></li>
-      </ul>
-      @endrole
-
-
-
   </section>
 </aside>
 

@@ -51,7 +51,8 @@
                         <td>{!! Form::checkbox('chk_delete[]', $participant->id) !!}</td>
                       </tr>          
                       @endforeach
-                    </tbody>                        
+                    </tbody>
+                  </form>
                   </table> 
                 </div>
               </div>                 

@@ -257,15 +257,16 @@ class InscriptionController extends Controller
         // Lista de partcipntes q no estan inscritos
         $participants = DB::table('users')
                         ->select('users.id as id','dni', 'firstlastname','secondlastname','name',
-                            'position','superintendence', 'state')
+                            'position','superintendence', 'users.state')
                         ->join('role_user','role_user.user_id','=','users.id')
                         ->where('id_unity', $user->id_unity)
                         ->where('id_company',$id_company)
                         ->where('role_id',5)
+                        ->where('users.state','='. 0)
                         ->whereNotIn('users.id', $ids_part)
                         ->orderBy('firstlastname', 'ASC')
                         ->get();
-        
+
         return view('inscriptions.register',
             compact('inscriptions','idUser','id','businessName','participants', 'count_part'));
     } 
@@ -283,7 +284,7 @@ class InscriptionController extends Controller
                         ->join('inscriptions', 'inscriptions.id', '=', 'user_inscriptions.id_inscription')
                         ->join('locations', 'locations.id', '=', 'inscriptions.id_location')
                         ->where('id_user_inscription', $idUser)
-                        ->where('inscriptions.startDate', $dt)
+                        ->where('inscriptions.startDate', '>=', $dt)
                         ->get();
 
         return view('inscriptions.details',compact('inscriptions'));
@@ -821,9 +822,11 @@ class InscriptionController extends Controller
 
     // funcion para subir notas
     public function import_inscription(Request $request) {
+        // id de usuario facilitdor que ah logeado
         $user = Auth::user();
-        // id de usuario que ah logeado
         $id_user = $user->id;
+
+        // id de la isncripcion si es en unidad o extraordinario
         $id_inscription = $request->id;
         $inscription = Inscription::find($id_inscription);
         $id_localidad = $inscription->id_location;
@@ -831,11 +834,17 @@ class InscriptionController extends Controller
         if ($id_localidad == 2) {
          $pago = 'al contado';
         }
+
+        // id de la unidad minera del facilitador
         $id_unity = $user->id_unity;
+
+        //funcion para leer el excel ingreasado
         Excel::load($request->file_up, function ($reader) use($id_inscription, $pago, $id_unity, $id_user, $user) {
+
             $results = $reader->get();
             $results->each(function ($row) use($id_inscription, $id_unity, $id_user, $pago, $user){
-                // buscamos al partcipante con el con el dni con rol 5
+
+                // buscamos al partcipante por su dni y con rol 5 que pertenecas a la unidad
                 $participant = DB::table('users')
                     ->select('users.id as id', 'users.dni', 'users.firstlastname', 'users.secondlastname', 'users.name',
                         'users.id_unity', 'users.id_company', 'role_id')
@@ -843,8 +852,14 @@ class InscriptionController extends Controller
                     ->where('dni', trim($row->dni))
                     ->where('id_unity', $id_unity)
                     ->where('role_id', 5);
+
+                // verificamos si el usuario existe
                 $exist_participante = $participant->exists();
-                //  Usuario Responsable de la contrata
+
+                /*  buscmos el Usuario Responsable de la contrata para obtenr su "id" de compania */
+
+                // si el cliente es MINSUR el responsable es el usurio facilitdor y lo validaso por su ruc
+
                 if ($row->ruc == '20100136741') {
                     $user_contrata = $user;
                 } else {
@@ -857,23 +872,31 @@ class InscriptionController extends Controller
                         ->where('ruc', $row->ruc)
                         ->where('role_id', 4);
                 }
+
+                //-- VALIDIAMOS SI EXISTE CONTRATA
                 $exist_contrata = $user_contrata->exists();
-                // si el participante no ah sido registrado
+
+                //-- VERFICAMOS SI EXISTE LA CONTRATA y no el partcipante
+
                 if (!$exist_participante and $exist_contrata)
                 {
-                    // usuaio responsable de la compania
+                    //-- Usuario responsable de la compania
                     $uc = $user_contrata->get()[0];
+
+                    // si el ruc es dos se le designa a minsur
                     if ($row->ruc == '20100136741') {
                         $id_company = 2;
                     } else {
                         $id_company = $uc->id_company;
                     }
-                    $id_user_company = $uc->id;
-                    // creamos el nuevo participante
+
+                    $id_user_contrata = $uc->id;
+                    // CREACION DEL NUEVO PARTCIPANTE
+
                     $participant = new User();
                     $participant->id_company = $id_company;
                     $participant->type_document = 0;
-                    $participant->dni = $row->dni;
+                    $participant->dni = trim($row->dni);
                     $participant->firstlastname = $row->ap_paterno;
                     $participant->secondlastname = $row->ap_materno;
                     $participant->name = $row->nombres;
@@ -898,19 +921,22 @@ class InscriptionController extends Controller
                     $participant->save();
                     $participant->roles()->sync(5);
 
-                    $id_particpante = $participant->id;
+                    /* CREACION DEL REGISTRO DEL EN LA INSCRIPCION DEL CURSO ASIGNADO */
+
                     $c = $user_contrata->first();
+                    $id_particpante = $participant->id;
+
                     $user_inscription = new UserInscription();
                     $user_inscription->id_inscription = $id_inscription;
                     $user_inscription->id_user = $id_particpante;
                     $user_inscription->payment_form = $pago;
                     $user_inscription->point = $row->nota;
                     $user_inscription->id_user_inscription = $c->id;
+                    $user_inscription->id_company_inscription = $id_company;
                     $user_inscription->save();
 
                 } else {
                     if ($exist_contrata) {
-
                         // COMPLETAMOS LA CONSULTA del partipante
                         $p = $participant->first();
                         $c = $user_contrata->first();
@@ -926,7 +952,8 @@ class InscriptionController extends Controller
                             [
                                 'payment_form' => $pago,
                                 'point' => $row->nota,
-                                'id_user_inscription' => $c->id
+                                'id_user_inscription' => $c->id,
+                                'id_company_inscription' => $c->id_company
                             ]
                         );
                     }
@@ -934,10 +961,6 @@ class InscriptionController extends Controller
                         dd('no existe ruc de la empresa '.$row->ruc);
                     }
                 }
-                /*$user_incr = DB::table('user_inscriptions')
-                    ->where('id_inscription',$id_inscription)
-                    ->where('id_user',$row->id)
-                    ->update(['point' => $row->nota]);*/
             });
         });
 

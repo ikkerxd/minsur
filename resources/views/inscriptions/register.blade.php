@@ -33,8 +33,9 @@
 
           <div class="box-body">
             @include('layouts.info')  
+
             <div class="col-md-12">
-              <label class=""><i class="fa fa-list" aria-hidden="true"></i> DATOS GENERALES :</label>
+              <label class=""><i class="fa fa-list" aria-hidden="true"></i> DATOS GENERALES:</label>
               <br>
               <table class="table table-striped table-bordered">
                 <tr>
@@ -49,7 +50,6 @@
               </table>
 
             </div>
-
             <div class="col-md-12">
               <h4>Tiene <span class="label bg-aqua">{{ $count_part }}</span> participantes registrado en este curso.</h4>
               <br>
@@ -57,7 +57,7 @@
             <div class="col-md-12">
                <div class="form-group{{ $errors->has('chk_participant') ? ' has-error' : '' }}">                           
                 <table class="table text-center" id="example1">
-                <thead>
+                  <thead>
                  <tr>
                    <th>Seleccionar</th>
                    <th>DNI</th>
@@ -65,27 +65,26 @@
                    <th>Area</th>
                  </tr>
                </thead>
-               <tbody>
+                  <tbody>
                 @foreach ($participants as $participant)
                 <tr>
-                 <td>{!! Form::checkbox('chk_participant[]', $participant->id) !!}</td> 
+                  <td>{!! Form::checkbox('chk_participant[]', $participant->id) !!}</td>
                   <td>{{ $participant->dni }}</td>
                   <td>{{ $participant->firstlastname." ".$participant->secondlastname." ".$participant->name }}</td>
                   <td>{{ $participant->superintendence }}</td>
                 </tr>
                 @endforeach
               </tbody>
-            </table>
-
+                </table>
                 @if ($errors->has('chk_participant'))
                 <span class="help-block">
                   <strong>{{ $errors->first('chk_participant') }}</strong>                    
                 </span>
                 @endif               
               </div>
+            </div>
           </div>
-        </div>
-        <div class="box-footer">
+          <div class="box-footer">
           <input type="hidden" name="id_inscription" value="{{ $id }}">
           <input type="hidden" name="id_user" value="{{ $idUser }}">
           <input type="hidden" name="businessName" value="{{ $businessName }}">
@@ -94,10 +93,12 @@
           <button type="submit" class="btn btn-primary btn-sm btn_submit_register pull-right"><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Registrar</button>
           <a href="{{url('/inscription')}}">Cancelar</a>
         </div>
-        {{ Form::close() }}               
-      </div>               
+        {{ Form::close() }}
+        </div>
+      </div>
     </div>
-  </section> 
+  </div>
+  </section>
   @endsection
 
   @section('script')
@@ -106,7 +107,10 @@
     $('#form_register_inscriptions').submit(function(){
       $('.btn_submit_register').prop('disabled',true);
       $('.btn_submit_register').html('<p><i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only"></span> Registrando...</p>');
+      var table = $('#datatable').DataTable({
+        "stateSave": true,
+        "processing": true,
+      });
     });
   </script>
   @endsection
-

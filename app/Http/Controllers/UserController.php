@@ -220,14 +220,14 @@ class UserController extends Controller
         $id_unity = Auth::user()->id_unity;
         $idUser = Auth::id();
         $participants = DB::table('users')
-        ->join('role_user','role_user.user_id','=','users.id') 
-        ->select('users.id as id','dni','firstlastname','secondlastname','name',
-            'position', 'superintendence', 'state','id_user')
-        ->where('id_company',$id_company)
-        ->where('id_unity',$id_unity)
-        ->where('role_id',5)
-        ->get();
-
+            ->join('role_user','role_user.user_id','=','users.id')
+            ->select('users.id as id','dni','firstlastname','secondlastname','name',
+                'position', 'superintendence', 'state','id_user')
+            ->where('id_company',$id_company)
+            ->where('id_unity',$id_unity)
+            ->where('role_id',5)
+            ->where('users.state', '0')
+            ->get();
 
         return view('participants.index',compact('participants','idUser'));
     }
@@ -308,7 +308,6 @@ class UserController extends Controller
     {
         return view('participants.validate_participant');
     }
-
 
     public function detail_history($dni)
     {   
@@ -417,7 +416,7 @@ class UserController extends Controller
         $user = Auth::user();
         $dni = $request->dni;
         $users = DB::table('users')
-            ->select('users.id', 'users.id_unity', 'users.id_company', 'users.state',
+            ->select('users.id as id', 'users.id_unity', 'users.id_company', 'users.state',
                 'users.dni', 'users.firstlastname', 'users.secondlastname', 'users.name',
                 'companies.businessName as empresa')
             ->join('role_user','role_user.user_id', '=', 'users.id')
@@ -576,10 +575,25 @@ class UserController extends Controller
                     'message' => $message
                 ]);
             }
-
             return $message;
-
-
-
     }
+
+    public function desactivateUser(Request $request, $id) {
+
+        $message = '';
+        if ($request->ajax())
+        {
+            $user = DB::table('users')
+                ->where('id', $request->id);
+
+            $user->update(['state' => 1]);
+            $message = 'El participante fue desactivado correctamente';
+
+            return response()->json([
+                'message' => $message
+            ]);
+        }
+        return $message;
+    }
+
 }
