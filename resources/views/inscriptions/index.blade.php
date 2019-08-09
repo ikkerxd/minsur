@@ -51,7 +51,7 @@
                  <td>{{ $inscription->nameLocation }}</td>
                  <td>{{ $inscription->nameCurso }}</td>
                  <td>{{ $inscription->time }}</td>
-                 <td>{{ $inscription->startDate }}</td>           
+                 <td>{{ \Carbon\Carbon::parse($inscription->startDate)->format('d/m/Y') }}</td>
                  <td>{{ $inscription->address}}</td>
                  <td>
                   <div class="btn-group">

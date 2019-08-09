@@ -140,9 +140,8 @@
         </a>
         <ul class="treeview-menu">
           <li><a href="{{ route('report_company') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Reporte por empresa</span></a></li>
-          <!-- <li>
-            <a href="{{ route('cons_part') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Consolidado Participantes</span></a>
-          </li> -->
+          <li><a href="{{ route('daily_report_required') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Status Contrata</span></a></li>
+          <li><a href="{{ route('status_company') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Status Compañia</span></a></li>
         </ul>
       </li>
 
@@ -202,19 +201,17 @@
         </a>
         <ul class="treeview-menu">
           <li><a href="{{ route('required_courses') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Reporte cursos obligatorio</span></a></li>
-        <!-- <li>
-            <a href="{{ route('cons_part') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Consolidado Participantes</span></a>
-          </li> -->
         </ul>
       </li>
 
 
-
-      <li><a href="{{url('/all-um')}}"><i class="fa fa-list-ul"></i> <span>Inicio</span></a></li>
-      <li><a href="{{url('/raura')}}"><i class="fa fa-list-ul"></i> <span>Raura</span></a></li>
-      <li><a href="{{url('/san-rafael')}}"><i class="fa fa-list-ul"></i> <span>San Rafael</span></a></li>
-      <li><a href="{{url('/pucamarca')}}"><i class="fa fa-list-ul"></i> <span>Pucamarca</span></a></li>
-      <!--<li class="active treeview menu-open">
+      @if(false)
+        <li><a href="{{url('/all-um')}}"><i class="fa fa-list-ul"></i> <span>Inicio</span></a></li>
+        <li><a href="{{url('/raura')}}"><i class="fa fa-list-ul"></i> <span>Raura</span></a></li>
+        <li><a href="{{url('/san-rafael')}}"><i class="fa fa-list-ul"></i> <span>San Rafael</span></a></li>
+        <li><a href="{{url('/pucamarca')}}"><i class="fa fa-list-ul"></i> <span>Pucamarca</span></a></li>
+    @endif
+    <!--<li class="active treeview menu-open">
         <a href="#">
           <i class="fa fa-folder-open-o"></i> <span>Documentos</span>
           <span class="pull-right-container">

@@ -158,8 +158,16 @@ Route::middleware(['auth'])->group(function(){
 
     Route::post('/user-inscriptions/{id}', 'UserInscriptionController@anulateUserInscription')->name('anulate_user_inscription');
 
-    Route::get('reporte/curso/obligatorio/', 'CourseController@reportRequiedCourses')->name('required_courses');
-    Route::get('export/curso/obligatorio/participante', 'CourseController@exportRequiedCourses')->name('export_required_courses_participants');
+    Route::get('reporte/curso/obligatorio/', 'CourseController@reportRequiredCourses')->name('required_courses');
+    Route::get('export/curso/obligatorio/participante', 'CourseController@exportRequiredCourses')->name('export_required_courses_participants');
+
+    Route::get('reporte/curso/obligatorio/contrata', 'CourseController@reportDailyRequied')->name('daily_report_required');
+    Route::get('export/curso/obligatorio/contrata', 'CourseController@exportDailyRequiedCourses')->name('export_daily_report_required');
+    Route::get('export/curso/obligatorio/list/contrata', 'CourseController@exportStatusContrataList')->name('export_status_list_contrata');
+
+    Route::get('reporte/curso/obligatorio/company', 'CourseController@statusCompany')->name('status_company');
+    Route::get('export/curso/obligatorio/company', 'CourseController@exportStatusCompany')->name('export_status_company');
+    Route::get('export/curso/obligatorio/list/company', 'CourseController@exportStatusCompanyList')->name('export_status_list_company');
 
     Route::get('all-um','ChartController@index')->name('chart_all');
     Route::get('raura','ChartController@raura')->name('chart_raura');

@@ -151,6 +151,7 @@ class CompanyController extends Controller
                 ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
                 ->whereIn('user_inscriptions.state', [0,1])
                 ->where('users.id_unity', $id_unity)
+                //->where('users.id_company', 107)
                 ->where('courses.required','=', 0)
                 ->where('user_inscriptions.payment_form', 'a cuenta')
                 ->whereBetween('inscriptions.startDate', [$start, $end])
@@ -177,9 +178,9 @@ class CompanyController extends Controller
             //dd($query1);
 
         }
-        //return view('companies.report_company', compact('companies'));
-        return view('companies.report_company_course',
-            compact('query', 'count_company', 'total_horas', 'total_cobros', 'monto_total'));
+        //return $sub_query->get();
+            return view('companies.report_company_course',
+                compact('query', 'count_company', 'total_horas', 'total_cobros', 'monto_total'));
     }
 
     public function report_company_participant(Request $request) {
@@ -253,8 +254,8 @@ class CompanyController extends Controller
             ->where('users.id_unity', $id_unity)
             ->where('courses.required','=', 0)
             ->where('user_inscriptions.payment_form', 'a cuenta')
-            ->where('user_inscriptions.id_user_inscription',$id_user_inscription)
             ->whereBetween('inscriptions.startDate', [$start, $end])
+            ->where('user_inscriptions.id_user_inscription',$id_user_inscription)
             ->groupBy('user_inscriptions.id_user_inscription', 'user_inscriptions.id_user');
 
         $resultado = DB::table( DB::raw("({$sub_query->toSql()}) as t") )
@@ -334,11 +335,11 @@ class CompanyController extends Controller
 
                 $query = DB::table('user_inscriptions')
                     ->select(
-                        'UP.dni',
-                        'UP.firstlastname as AP_Materno',
-                        'UP.secondlastname as AP_Paterno',
+                        'UP.dni as DNI',
+                        'UP.firstlastname as Apellido Materno',
+                        'UP.secondlastname as Apellido Paterno',
                         'UP.name as Nombre',
-                        'UP.position as cargo',
+                        'UP.position as Cargo',
                         'UP.superintendence as Area',
                         'companies.businessName as Empresa',
                         'inscriptions.nameCurso as Curso',
@@ -353,6 +354,7 @@ class CompanyController extends Controller
                     ->whereIn('user_inscriptions.state', [0,1])
                     ->where('users.id_unity', $id_unity)
                     ->where('courses.required','=', 0)
+                    ->where('user_inscriptions.payment_form', 'a cuenta')
                     ->whereBetween('inscriptions.startDate', [$start, $end])
                     ->where('user_inscriptions.id_user_inscription',$id_company)
                     ->orderBy('dni')
