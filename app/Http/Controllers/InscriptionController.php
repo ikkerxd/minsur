@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Inscription;
 use App\Location;
 use App\Course;
+use App\Recuperation;
 use App\TypeCourse;
 use App\Participant;
 use App\UserInscription;
@@ -38,15 +39,15 @@ class InscriptionController extends Controller
     {
         $user = Auth::user();
         $inscriptions =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')
-                        ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
-                        ->select('inscriptions.id as id','nameCurso','locations.name as nameLocation',
-                            'startDate','address','time')
-                        ->where('type',0)
-                        ->where('startDate','>',date('2019-03-01'))
-                        ->where('courses.id_unity', $user->id_unity)
-                        ->orderBy('startDate','asc')
-                        ->get();
+            ->select('inscriptions.id as id','inscriptions.nameCurso','locations.name as nameLocation',
+                'startDate','address','time', 'inscriptions.id_course')
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
+            ->where('startDate','>',date('2019-03-01'))
+            ->where('courses.id_unity', $user->id_unity)
+            ->orderBy('startDate','asc')
+            ->where('type',0)
+            ->get();
 
         return view('inscriptions.index',compact('inscriptions'));
     }
@@ -59,7 +60,7 @@ class InscriptionController extends Controller
         $users = DB::table('users')
             ->join('role_user','users.id','=','role_user.user_id')
             ->select(DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name, users.id AS id'))
-            ->where('role_id', 1)
+            ->whereIn('role_id', [1, 3])
             ->pluck('full_name', 'id');
         return view('inscriptions.create',compact('locations','courses','users'));
     }
@@ -98,23 +99,51 @@ class InscriptionController extends Controller
     public function show($id)
     {        
         $inscription =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')
-                        ->join('users', 'users.id', '=', 'inscriptions.id_user')
-                        ->select('inscriptions.id as id','nameCurso','locations.name as nameLocation',
-                            'startDate','inscriptions.address','time','slot','inscriptions.state as state','hours',
-                            'users.firstlastname as firstName', 'users.name as nameUser')
-                        ->where('inscriptions.id',$id)
-                        ->first();
-        $participants = DB::table('user_inscriptions')
-                        ->join('users','users.id','=','user_inscriptions.id_user')    
-                        ->join('companies','companies.id','=','users.id_company')
-                        ->select('user_inscriptions.id as id',
-                            'dni','firstlastname','secondlastname',
-                            'name','businessName','users.state as state','point')
-                        ->where('user_inscriptions.state','<>',2)
-                        ->where('user_inscriptions.id_inscription',$id)
-                        ->get();
-                        
+            ->select('inscriptions.id as id',
+                'id_course', 'nameCurso','locations.name as nameLocation',
+                'startDate','inscriptions.address','time','slot','inscriptions.state as state','hours',
+                'users.firstlastname as firstName', 'users.name as nameUser')
+            ->where('inscriptions.id',$id)
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('users', 'users.id', '=', 'inscriptions.id_user')
+            ->first();
+
+        if ($inscription->id_course  == 8) {
+            $participants = DB::table('user_inscriptions')
+                ->select(
+                    'user_inscriptions.id as id',
+                    'U.dni','U.firstlastname','U.secondlastname', 'U.name','C.businessName',
+                    'user_inscriptions.state as state',
+                    'user_inscriptions.point',
+                    DB::raw('IF(recuperations.point, recuperations.point ,user_inscriptions.point) as point'),
+                    DB::raw('IF(recuperations.point, user_inscriptions.point, NULL) as sustitutorio'),
+                    'CP.businessName as previous_company'
+                )
+                ->join('users AS U','U.id','=','user_inscriptions.id_user')
+                ->join('companies as C','C.id','=','U.id_company')
+                ->join('users as UC','UC.id','=','user_inscriptions.id_user_inscription')
+                ->join('companies as CP','CP.id','=','UC.id_company')
+                ->leftJoin('recuperations', 'recuperations.id_user_inscription', '=', 'user_inscriptions.id')
+                ->where('user_inscriptions.state','<>',2)
+                ->where('user_inscriptions.id_inscription',$id)
+                ->orderby('user_inscriptions.id')
+                ->get();
+        } else {
+            $participants = DB::table('user_inscriptions')
+                ->select('user_inscriptions.id as id',
+                    'U.dni','U.firstlastname','U.secondlastname', 'U.name','C.businessName',
+                    'user_inscriptions.state as state','user_inscriptions.point',
+                    'CP.businessName as previous_company')
+                ->join('users AS U','U.id','=','user_inscriptions.id_user')
+                ->join('companies as C','C.id','=','U.id_company')
+                ->join('users as UC','UC.id','=','user_inscriptions.id_user_inscription')
+                ->join('companies as CP','CP.id','=','UC.id_company')
+                ->where('user_inscriptions.state','<>',2)
+                ->where('user_inscriptions.id_inscription',$id)
+                ->get();
+        }
+
+
         return view('inscriptions.show',compact('inscription','participants'));
     }
 
@@ -127,7 +156,7 @@ class InscriptionController extends Controller
         $users = DB::table('users')
                         ->join('role_user','users.id','=','role_user.user_id')
                         ->select(DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name, users.id AS id'))
-                        ->where('role_id', 1)
+                        ->whereIn('role_id', [1, 3])
                         ->pluck('full_name', 'id');
         return view('inscriptions.edit',compact('inscription','locations','courses','users'));
     }
@@ -774,55 +803,124 @@ class InscriptionController extends Controller
 
     // funcion q exporta los partipntes de uan inscripcion
     public function export_inscription(Request $request) {
+
         $id = $request->id;
-        Excel::Create('inscripcion '.$id, function ($excel) use($id) {
-            // Set the title
-            $excel->setTitle('lista de particpantes minsur');
-            // Chain the setters
-            $excel->setCreator('IGH Group')
-                ->setCompany('IGH');
-            // Call them separately
-            $excel->setDescription('lista de participantes del curso de la unidad minera');
 
-            $excel->sheet('lista participante', function ($sheet) use($id) {
+        $id_course = Inscription::findOrFail($id)->id_course;
+        //dd($id_course);
 
-                $participants = DB::table('user_inscriptions')
-                    ->select(
-                        'dni as DNI',
-                        'firstlastname as AP_PATERNO','secondlastname as AP_MATERNO', 'name as NOMBRES',
-                        'users.position as CARGO', 'users.superintendence as  AREA',
-                        'companies.ruc as RUC', 'businessName as EMPRESA','point as NOTA')
-                    ->join('users','users.id','=','user_inscriptions.id_user')
-                    ->join('companies','companies.id','=','users.id_company')
-                    ->where('user_inscriptions.state','<>',2)
-                    ->where('user_inscriptions.id_inscription',$id)
-                    ->get();
-                $data = json_decode( json_encode($participants), true);
+        if ($id_course == 8 ) {
+            $participants = DB::table('user_inscriptions')
+                ->select(
+                    'U.dni as DNI',
+                    'U.firstlastname as AP_PATERNO','U.secondlastname as AP_MATERNO', 'U.name as NOMBRES',
+                    'U.position as CARGO', 'U.superintendence as  AREA',
+                    DB::raw('IF(companies.ruc="20508931621", "20100136741",companies.ruc) as RUC'),
+                    DB::raw('IF(businessName="IGH GROUP","Minsur S. A.",businessName) as EMPRESA'),
+                    DB::raw('IF(recuperations.point, recuperations.point ,user_inscriptions.point) as NOTA'),
+                    DB::raw('IF(recuperations.point, user_inscriptions.point, NULL) as SUSTITUTORIO')
+                )
+                ->join('users as U','U.id','=','user_inscriptions.id_user')
+                ->join('users as UC','UC.id','=','user_inscriptions.id_user_inscription')
+                ->join('companies','companies.id','=','UC.id_company')
+                ->leftJoin('recuperations', 'recuperations.id_user_inscription', '=', 'user_inscriptions.id')
+                ->where('user_inscriptions.state','<>',2)
+                ->where('user_inscriptions.id_inscription',$id)
+                ->orderBy('user_inscriptions.id')
+                ->get();
 
-                $sheet->setColumnFormat(array(
-                    'A' => '@',
-                    'G' => '@',
-                    'I' => '0'
-                ));
-                $sheet->fromArray($data, null, 'A1', false, true);
 
-                $sheet->row(1, function($row) {
+        } else {
+            $participants = DB::table('user_inscriptions')
+                ->select(
+                    'U.dni as DNI',
+                    'U.firstlastname as AP_PATERNO','U.secondlastname as AP_MATERNO', 'U.name as NOMBRES',
+                    'U.position as CARGO', 'U.superintendence as  AREA',
+                    DB::raw('IF(companies.ruc="20508931621", "20100136741",companies.ruc) as RUC'),
+                    DB::raw('IF(businessName="IGH GROUP","Minsur S. A.",businessName) as EMPRESA'),
+                    'point as NOTA')
+                ->join('users as U','U.id','=','user_inscriptions.id_user')
+                ->join('users as UC','UC.id','=','user_inscriptions.id_user_inscription')
+                ->join('companies','companies.id','=','UC.id_company')
+                ->where('user_inscriptions.state','<>',2)
+                ->where('user_inscriptions.id_inscription',$id)
+                ->get();
+        }
 
-                    // call cell manipulation methods
-                    $row->setBackground('#2980b9');
-                    $row->setFontColor('#ffffff');
-                    $row->setFont(array(
-                        'bold'       => true
+        if ($participants->count() == 0) {
+            Excel::Create('Inscripcion '.$id, function ($excel) use($id_course) {
+                $excel->sheet('Lista De Participantes', function($sheet) use($id_course) {
+                    $header = array('DNI', 'AP_PATERNO', 'AP_MATERNO', 'NOMBRES', 'CARGO', 'AREA', 'RUC', 'EMPRESA', 'NOTA');
+                    if ($id_course == 8) {
+                        $header = array('DNI', 'AP_PATERNO', 'AP_MATERNO', 'NOMBRES', 'CARGO', 'AREA', 'RUC', 'EMPRESA', 'NOTA', 'SUSTITUTORIO');
+                    }
+
+                    $sheet->setColumnFormat(array(
+                        'A' => '@',
+                        'G' => '@',
+                        'I' => '0',
+                        'J' => '0'
                     ));
 
+                    $sheet->setWidth('A', 12);
+                    $sheet->setWidth('B', 18);
+                    $sheet->setWidth('C', 18);
+                    $sheet->setWidth('D', 22);
+                    $sheet->setWidth('E', 25);
+                    $sheet->setWidth('F', 25);
+                    $sheet->setWidth('G', 17);
+                    $sheet->setWidth('H', 28);
+                    $sheet->setWidth('I', 8);
+                    $sheet->setWidth('J', 13);
+                    $sheet->row(1, $header);
+                    $sheet->row(1, function($row) {
+                        // call cell manipulation methods
+                        $row->setBackground('#2980b9');
+                        $row->setFontColor('#ffffff');
+                        $row->setFont(array(
+                            'bold' => true
+                        ));
+                    });
                 });
-            });
-        })->export('xlsx');
+            })->export('xlsx');
+        } else {
+            Excel::Create('Inscripcion '.$id, function ($excel) use($participants) {
+                // Set the title
+                $excel->setTitle('lista de particpantes minsur');
+                // Chain the setters
+                $excel->setCreator('IGH Group')
+                    ->setCompany('IGH');
+                // Call them separately
+                $excel->setDescription('lista de participantes del curso de la unidad minera');
+                $excel->sheet('lista participante', function ($sheet) use($participants) {
+                    $data = json_decode( json_encode($participants), true);
+                    $sheet->setColumnFormat(array(
+                        'A' => '@',
+                        'G' => '@',
+                        'I' => '0'
+                    ));
+                    $sheet->fromArray($data, null, 'A1', false, true);
+
+                    $sheet->row(1, function($row) {
+
+                        // call cell manipulation methods
+                        $row->setBackground('#2980b9');
+                        $row->setFontColor('#ffffff');
+                        $row->setFont(array(
+                            'bold' => true
+                        ));
+                    });
+                });
+            })->export('xlsx');
+
+        }
+
     }
 
     // funcion para subir notas
     public function import_inscription(Request $request) {
         // id de usuario facilitdor que ah logeado
+
         $user = Auth::user();
         $id_user = $user->id;
 
@@ -830,6 +928,9 @@ class InscriptionController extends Controller
         $id_inscription = $request->id;
         $inscription = Inscription::find($id_inscription);
         $id_localidad = $inscription->id_location;
+
+        $id_course = $inscription->id_course;
+
         $pago = 'a cuenta';
         if ($id_localidad == 2) {
          $pago = 'al contado';
@@ -839,11 +940,10 @@ class InscriptionController extends Controller
         $id_unity = $user->id_unity;
 
         //funcion para leer el excel ingreasado
-        Excel::load($request->file_up, function ($reader) use($id_inscription, $pago, $id_unity, $id_user, $user) {
+        Excel::load($request->file_up, function ($reader) use($id_inscription, $pago, $id_unity, $id_user, $user, $id_course) {
 
             $results = $reader->get();
-            $results->each(function ($row) use($id_inscription, $id_unity, $id_user, $pago, $user){
-
+            $results->each(function ($row) use($id_inscription, $id_unity, $id_user, $pago, $user, $id_course ){
                 // buscamos al partcipante por su dni y con rol 5 que pertenecas a la unidad
                 $participant = DB::table('users')
                     ->select('users.id as id', 'users.dni', 'users.firstlastname', 'users.secondlastname', 'users.name',
@@ -852,14 +952,10 @@ class InscriptionController extends Controller
                     ->where('dni', trim($row->dni))
                     ->where('id_unity', $id_unity)
                     ->where('role_id', 5);
-
                 // verificamos si el usuario existe
                 $exist_participante = $participant->exists();
-
                 /*  buscmos el Usuario Responsable de la contrata para obtenr su "id" de compania */
-
                 // si el cliente es MINSUR el responsable es el usurio facilitdor y lo validaso por su ruc
-
                 if ($row->ruc == '20100136741') {
                     $user_contrata = $user;
                 } else {
@@ -872,27 +968,21 @@ class InscriptionController extends Controller
                         ->where('ruc', $row->ruc)
                         ->where('role_id', 4);
                 }
-
                 //-- VALIDIAMOS SI EXISTE CONTRATA
                 $exist_contrata = $user_contrata->exists();
-
                 //-- VERFICAMOS SI EXISTE LA CONTRATA y no el partcipante
-
                 if (!$exist_participante and $exist_contrata)
                 {
                     //-- Usuario responsable de la compania
                     $uc = $user_contrata->get()[0];
-
                     // si el ruc es dos se le designa a minsur
                     if ($row->ruc == '20100136741') {
                         $id_company = 2;
                     } else {
                         $id_company = $uc->id_company;
                     }
-
                     $id_user_contrata = $uc->id;
                     // CREACION DEL NUEVO PARTCIPANTE
-
                     $participant = new User();
                     $participant->id_company = $id_company;
                     $participant->type_document = 0;
@@ -920,42 +1010,125 @@ class InscriptionController extends Controller
                     $participant->id_unity = $id_unity;
                     $participant->save();
                     $participant->roles()->sync(5);
-
                     /* CREACION DEL REGISTRO DEL EN LA INSCRIPCION DEL CURSO ASIGNADO */
-
                     $c = $user_contrata->first();
                     $id_particpante = $participant->id;
+                    if ($row->ruc == '20100136741') {
+                        $id_company = 2;
+                        $c = $user;
+                    }
 
-                    $user_inscription = new UserInscription();
-                    $user_inscription->id_inscription = $id_inscription;
-                    $user_inscription->id_user = $id_particpante;
-                    $user_inscription->payment_form = $pago;
-                    $user_inscription->point = $row->nota;
-                    $user_inscription->id_user_inscription = $c->id;
-                    $user_inscription->id_company_inscription = $id_company;
-                    $user_inscription->save();
+                    //dd($c, $c->id, $c->id_company, $id_company);
+                    if ($id_course == 8) {
+                        //dd($row->nota, $row->sustitutorio);
+                        if ($row->sustitutorio) {
+                            $user_inscription = new UserInscription();
+                            $user_inscription->id_inscription = $id_inscription;
+                            $user_inscription->id_user = $id_particpante;
+                            $user_inscription->payment_form = $pago;
+                            $user_inscription->point = $row->sustitutorio;
+                            $user_inscription->id_user_inscription = $c->id;
+                            $user_inscription->id_company_inscription = $id_company;
+                            $user_inscription->save();
 
+                            $recuperation = new Recuperation();
+                            $recuperation->id_user_inscription = $user_inscription->id;
+                            $recuperation->id_inscription = $id_inscription;
+                            $recuperation->point = $row->nota;
+                            $recuperation->state = 0; //-- activo
+                            $recuperation->created_user = $user->id;
+                            $recuperation->	updated_user = $user->id;
+                            $recuperation->save();
+
+                        } else {
+                            $user_inscription = new UserInscription();
+                            $user_inscription->id_inscription = $id_inscription;
+                            $user_inscription->id_user = $id_particpante;
+                            $user_inscription->payment_form = $pago;
+                            $user_inscription->point = $row->nota;
+                            $user_inscription->id_user_inscription = $c->id;
+                            $user_inscription->id_company_inscription = $id_company;
+                            $user_inscription->save();
+                        }
+                    }else {
+                        $user_inscription = new UserInscription();
+                        $user_inscription->id_inscription = $id_inscription;
+                        $user_inscription->id_user = $id_particpante;
+                        $user_inscription->payment_form = $pago;
+                        $user_inscription->point = $row->nota;
+                        $user_inscription->id_user_inscription = $c->id;
+                        $user_inscription->id_company_inscription = $id_company;
+                        $user_inscription->save();
+                    }
                 } else {
                     if ($exist_contrata) {
                         // COMPLETAMOS LA CONSULTA del partipante
                         $p = $participant->first();
                         $c = $user_contrata->first();
+                        $id_company =  $c->id_company;
+                        //dd($c, $c->id, $c->id_company);
 
                         if ($row->ruc == '20100136741') {
                             $id_company = 2;
+                            $c = $user;
                         }
-                        $ui = UserInscription::updateOrCreate(
-                            [
-                                'id_inscription' => $id_inscription,
-                                'id_user' => $p->id,
-                            ],
-                            [
-                                'payment_form' => $pago,
-                                'point' => $row->nota,
-                                'id_user_inscription' => $c->id,
-                                'id_company_inscription' => $c->id_company
-                            ]
-                        );
+
+                        if ($id_company == null)
+                        {
+                            dd($c);
+                        }
+
+                        if ($row->sustitutorio) {
+                            $ui = UserInscription::updateOrCreate(
+                                [
+                                    'id_inscription' => $id_inscription,
+                                    'id_user' => $p->id,
+                                ],
+                                [
+                                    'payment_form' => $pago,
+                                    'point' => $row->sustitutorio,
+                                    'id_user_inscription' => $c->id,
+                                    'id_company_inscription' => $id_company
+                                ]
+                            );
+                            $recuperation = Recuperation::where([
+                                ['id_user_inscription', $ui->id],
+                                ['state', 0]
+                            ]);
+
+                            if ($recuperation->exists()) {
+                                $re = $recuperation->first();
+                                if ($re->point != $row->nota) {
+                                    $recuperation->update([
+                                        'point' => $row->nota,
+                                        'user_update' => $user->id,
+                                    ]);
+                                }
+                            } else {
+                                $re = new Recuperation();
+                                $re->id_user_inscription = $ui->id;
+                                $re->id_inscription = $id_inscription;
+                                $re->point = $row->nota;
+                                $re->state = 0; //-- activo
+                                $re->created_user = $user->id;
+                                $re->updated_user = $user->id;
+                                $re->save();
+                            };
+                        } else {
+                            $ui = UserInscription::updateOrCreate(
+                                [
+                                    'id_inscription' => $id_inscription,
+                                    'id_user' => $p->id,
+                                ],
+                                [
+                                    'payment_form' => $pago,
+                                    'point' => $row->nota,
+                                    'id_user_inscription' => $c->id,
+                                    'id_company_inscription' => $id_company
+                                ]
+                            );
+                        }
+
                     }
                     else {
                         dd('no existe ruc de la empresa '.$row->ruc);

@@ -27,7 +27,7 @@
         <br>
         <div class="box-body table-responsive no-padding">
          @include('layouts.info')             
-         <table class="table table-bordered table-striped">
+         <table class="table table-bordered table-striped" id="datatable">
           <thead>
             <tr>                            
                 <th>#</th>
@@ -39,17 +39,20 @@
                 <th>OPC.</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody style="font-size: 1rem">
            @foreach ($participants as $participant)
-           <tr>   
+           <tr data-id="{{ $participant->id }}" >
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $participant->dni }}</td>
                 <td>{{ $participant->name }} {{ $participant->firstlastname }} {{ $participant->secondlastname }}</td>
                <td>{{ $participant->position }}</td>
                <td>{{ $participant->superintendence }}</td>
                <td  class="text-center"><a href="{{ route('detail-participant', $participant->id) }}" class="btn btn-sm btn-success"><i class="fa fa-list-alt" aria-hidden="true"></i> Consolidado</a></td>
-                <td width="10px"><a href="{{ route('edit_participant',Crypt::encryptString($participant->id)) }}" class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
-            
+                <td>
+                    <a href="{{ route('edit_participant',Crypt::encryptString($participant->id)) }}" class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                    <a class="btn btn-danger btn-sm btn-desactivate"><i class="fa fa-trash"></i></a>
+                </td>
+
           </tr>
           @endforeach  
         </tbody>              
@@ -58,5 +61,55 @@
   </div>       
 </div>
 </div>
-</section> 
+</section>
+{!! Form::open(['route' => ['desactivate_participant', 'id' => ':USER_ID'], 'method' => 'POST',  'id' => 'form-change']) !!}
+{!! Form::close() !!}
+@endsection
+
+@section('script')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var table = $('#datatable').DataTable({
+                "stateSave": true,
+                "processing": true,
+            });
+            $('#datatable tbody').on('click', 'tr .btn-desactivate', function (e) {
+                e.preventDefault();
+                //Recueramos el to el row
+                const row = $(this).parents('tr');
+                const nombres = row.children('td:nth-child(3)').text();
+                Swal.fire({
+                    title: '¿Esta seguro que deseas desactivar el particpante ' + nombres + '?',
+                    text: "si esta de acuerdo click al botón rojo",
+                    type: 'error',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e74c3c',
+                    cancelButtonColor: '#aaa',
+                    confirmButtonText: 'Si, Desativar!'
+                }).then((result) => {
+                    if (result.value) {
+                        const id = row.data('id');
+                        const form = $('#form-change');
+                        const url = form.attr('action').replace(':USER_ID', id);
+                        const data = form.serialize();
+
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            dataType: 'json',
+                            data: data,
+                        })
+                            .done(function(data) {
+                                row.fadeOut();
+                                Swal.fire(
+                                    'Felicitaciones!',
+                                    data.message,
+                                    'success'
+                                );
+                            });
+                    }
+                })
+            });
+        });
+    </script>
 @endsection

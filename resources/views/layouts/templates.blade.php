@@ -49,9 +49,12 @@
         @elseif(Auth::user()->id_unity == 3)
           <span class="logo-mini"><b>PUC</b></span>
           <span class="logo-lg"><b>PUC</b>AMARCA</span>
-        @else
+        @elseif(Auth::user()->id_unity == 4)
           <span class="logo-mini"><b>PIS</b></span>
           <span class="logo-lg"><b>PIS</b>CO</span>
+        @else
+          <span class="logo-mini"><b>IGH</b></span>
+          <span class="logo-lg"><b>IGH</b>PERU</span>
         @endif
 
       </a>
@@ -182,7 +185,6 @@
 
     </ul>
     @endrole
-
     @role('admin-cont')
     <ul class="sidebar-menu" data-widget="tree">
       <li class="header">CONTRATISTA</li>
@@ -211,18 +213,17 @@
         <li><a href="{{url('/san-rafael')}}"><i class="fa fa-list-ul"></i> <span>San Rafael</span></a></li>
         <li><a href="{{url('/pucamarca')}}"><i class="fa fa-list-ul"></i> <span>Pucamarca</span></a></li>
     @endif
-    <!--<li class="active treeview menu-open">
-        <a href="#">
-          <i class="fa fa-folder-open-o"></i> <span>Documentos</span>
-          <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-        </a>
-        <ul class="treeview-menu">
-           <li><a target="_black" href="#"><i class="fa fa-book" aria-hidden="true"></i> <span>Manual de Usuario</span></a></li>
-          <li><a target="_black" href="{{ asset('img/tutorial_pagos.pdf') }}"><i class="fa fa-book" aria-hidden="true"></i> <span>Tutorial Pago Bancos</span></a></li>
-        </ul>
-      </li> -->
+    </ul>
+    @endrole
+
+
+    @role('contabilidad')
+    <ul class="sidebar-menu" data-widget="tree">
+      <li class="header">CONTABILIDAD</li>
+      <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
+      <li><a href="{{ route('companies_um', 1) }}"><i class="fa fa-dashboard"></i> <span>Raura</span></a></li>
+      <li><a href="{{ route('companies_um', ['id' => 2]) }}"><i class="fa fa-dashboard"></i> <span>San Rafael</span></a></li>
+      <li><a href="{{ route('companies_um', ['id' => 3]) }}"><i class="fa fa-dashboard"></i> <span>Pucamarca</span></a></li>
     </ul>
     @endrole
 

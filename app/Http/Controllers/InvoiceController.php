@@ -14,38 +14,85 @@ use PhpParser\Node\Stmt\DeclareDeclare;
 class InvoiceController extends Controller
 {
     public function invoice(Request $request) {
-        $numInvoice = $request->nroFactura;
         $id_user_inscription = $request->idUserInscription;
         $start = $request->start;
         $end = $request->end;
         $month = Carbon::parse($request->end)->month;
         $user = DB::table('users')->find($id_user_inscription);
-        $id_company = $user->id_company;
-        $id_unity = $user->id_unity;
+        $id_company = $request->company;
+        $id_unity = $request->unity;
         $cobros = $request->cobros;
         $precio = 13;
         $horas = $request->horas;
         $igv = 18;
-        $state = 1; // estado 0 anulada, estado 1 facturado, estado 2 cobrado
+
+        $state = 1; // estado 0 anulada, estado 1 activo
 
         $invoice = new Invoice;
         $invoice->id_user_inscription = $id_user_inscription;
         $invoice->id_company = $id_company;
         $invoice->id_unity = $id_unity;
-        $invoice->nro_invoice = $numInvoice;
         $invoice->start_date = $start;
         $invoice->end_date = $end;
         $invoice->cobros = $cobros;
         $invoice->precio = $precio;
         $invoice->horas = $horas;
         $invoice->igv = $igv;
-        $invoice->state = 1;
+        $invoice->state = $state;
         $invoice->save();
 
-        $msg = 'La factura: '.$numInvoice.' fue registrada correctamente';
-        return redirect()->route('report_company_participant',
-            [$id_user_inscription.'/'.$start.'/'.$end])
-            ->with('success',$msg);
+        $msg = 'La factura fue registrada correctamente';
+        dd($msg);
+//        return redirect()->route('report_company_participant',
+//            [$id_user_inscription.'/'.$start.'/'.$end])
+//            ->with('success',$msg);
+
+
+
+        $sub_query = DB::table('user_inscriptions')
+            ->select(
+                'companies.id as codigo_company', 'companies.businessName as businessName', 'companies.ruc as ruc',
+                'users.email_valorization', 'users.phone',
+                'user_inscriptions.id_user_inscription',
+                DB::raw('SUM(inscriptions.hours) as total_horas'),
+                DB::raw('ROUND(COUNT(*)/2) as cobros')
+            )
+            ->join('users', 'users.id', '=', 'user_inscriptions.id_user_inscription')
+            ->join('companies', 'companies.id', '=', 'users.id_company')
+            ->join('inscriptions', 'inscriptions.id', '=', 'user_inscriptions.id_inscription')
+            ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
+            ->whereIn('user_inscriptions.state', [0,1])
+            ->where('users.id_unity', $id_unity)
+            //->where('users.id_company', 107)
+            ->where('courses.required','=', 0)
+            ->where('user_inscriptions.payment_form', 'a cuenta')
+            ->whereBetween('inscriptions.startDate', [$start, $end])
+            ->groupBy('user_inscriptions.id_user_inscription', 'user_inscriptions.id_user');
+
+        $query = DB::table( DB::raw("({$sub_query->toSql()}) as t") )
+            ->mergeBindings($sub_query)
+            ->select(
+                'codigo_company', 'ruc', 'businessName',
+                'email_valorization', 'phone',
+                'id_user_inscription',
+                DB::raw('SUM(total_horas) as horas'),
+                DB::raw('SUM(cobros) as total_cobros'),
+                DB::raw('SUM(cobros*13) as monto_cobros')
+            )
+            ->where('ruc', '<>', '20508931621')
+            ->groupBy('ruc')
+            ->get();
+
+        $count_company = $query->count();
+        $total_horas = $query->sum('horas');
+        $total_cobros = $query->sum('total_cobros');
+        $monto_total = $query->sum('monto_cobros');
+
+
+
+        return view('companies.report_list_company',
+            compact('query', 'count_company',
+                'total_horas', 'total_cobros', 'monto_total', 'id_unity', 'start', 'end'));
     }
 
     public function report_valorization ($id) {

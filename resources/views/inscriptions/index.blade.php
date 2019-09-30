@@ -12,7 +12,7 @@
   <ol class="breadcrumb">
     <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
     @role('admin')
-    <li><a href="#">Configuracion</a></li>
+    <li><a href="#">Configuración</a></li>
     @endrole
     <li class="active">Inscripción</li>
   </ol>
@@ -41,7 +41,7 @@
                   <th>HORA</th>
                   <th>FECHA</th>
                   <th>DIRECCION</th>
-                  <th></th>
+                  <th>ACCIONES</th>
                 </tr>
               </thead>
               <tbody>
@@ -54,15 +54,22 @@
                  <td>{{ \Carbon\Carbon::parse($inscription->startDate)->format('d/m/Y') }}</td>
                  <td>{{ $inscription->address}}</td>
                  <td>
-                  <div class="btn-group">
-                    <a href="{{ route('inscriptions.show', $inscription->id) }}" class="btn btn-info"><i class="fa fa-list-ul" aria-hidden="true"></i> Consolidado</a>
+                  <div class="btn-group btn-group-sm">`
+
+                      <a href="{{ route('inscriptions.show', $inscription->id) }}" class="btn btn-info">
+                        <i class="fa fa-list-ul" aria-hidden="true"></i> Consolidado
+                      </a>
+
                     <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
                       <span class="caret"></span>
                       <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                      <li><a href="{{ route('inscriptions.edit', $inscription->id) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a></li>
-
+                      <li>
+                        <a href="{{ route('inscriptions.edit', $inscription->id) }}">
+                          <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar
+                        </a>
+                      </li>
                     </ul>
                   </div>
                 </td>       

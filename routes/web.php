@@ -18,6 +18,8 @@ Route::get('/',function(){
 Route::get('/certificado/search', 'CertificateController@search')->name('certificate_search');
 Route::post('/certificado/search/', 'CertificateController@search')->name('certificate_search');
 Route::get('/certificado/{id}/', 'CertificateController@certification')->name('certificado');
+Route::get('/sustitutorio2', 'CertificateController@ingresar')->name('carga_import');
+Route::post('/sustitutorio2', 'CertificateController@cargardni')->name('cargardni');
 
 Auth::routes();
 
@@ -112,7 +114,7 @@ Route::middleware(['auth'])->group(function(){
 	Route::post('sendmail','HomeController@sendMail_UserInscriptions')->name('sendmail');
 	Route::get('json_list_user','UserController@json_list_user')->name('json_list_user');
 
-	Route::get('list_participants','UserController@list_participants')->name('list_participants');
+	Route::get('report/company/u','UserController@list_participants')->name('list_participants');
 
 	Route::get('edit_participant/{id}','UserController@edit_participants')->name('edit_participant');
     Route::get('new_participant','UserController@new_participant')->name('new_participant');
@@ -130,6 +132,10 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('/json_list_prom_curso','InscriptionController@json_list_prom_curso')->name('json_list_prom_curso');
     Route::get('report/company','CompanyController@report_company')->name('report_company');
     Route::post('report/company','CompanyController@report_company')->name('report_company');
+
+    Route::get('report/company/um/{id}','CompanyController@report_list_company')->name('companies_um');
+    Route::post('report/company/um/{id}','CompanyController@report_list_company')->name('companies_um');
+
     Route::get('report/company/{id}/{startDate}/{endDate}','CompanyController@report_company_participant')->name('report_company_participant');
     Route::get('report/company/{id}','CompanyController@report_company_participant')->name('report_company_participant');
 

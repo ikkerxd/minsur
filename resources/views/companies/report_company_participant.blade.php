@@ -116,6 +116,7 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+
     </section>
 @endsection
 @section('script')

@@ -124,10 +124,12 @@ class CompanyController extends Controller
 
     public function report_company(Request $request) {
         // Recuperamos el usuario usuario de la compañia
+        $id_um = $request->id;
         $user = Auth::user();
+        $id_unity = $user->id_unity;
+
 
         // recuperamos el el id de la unidad minera
-        $id_unity = $user->id_unity;
         $count_company = 0;
         $total_cobros = 0;
         $total_horas = 0;
@@ -135,7 +137,7 @@ class CompanyController extends Controller
         $query = [];
 
         if ($request->method() == 'POST') {
-            $start = $request->startDate;
+                $start = $request->startDate;
             $end = $request->endDate;
             $sub_query = DB::table('user_inscriptions')
                 ->select(
@@ -181,6 +183,79 @@ class CompanyController extends Controller
         //return $sub_query->get();
             return view('companies.report_company_course',
                 compact('query', 'count_company', 'total_horas', 'total_cobros', 'monto_total'));
+    }
+
+
+    public function report_list_company(Request $request) {
+        $id_um = $request->id;
+        $id_unity = $id_um;
+
+        $start = null;
+        $end = null;
+
+        // recuperamos el el id de la unidad minera
+        $count_company = 0;
+        $total_cobros = 0;
+        $total_horas = 0;
+        $monto_total = 0;
+        $query = [];
+
+        if ($request->method() == 'POST') {
+
+            $start = $request->startDate;
+            $end = $request->endDate;
+            $sub_query = DB::table('user_inscriptions')
+                ->select(
+                    'companies.id as codigo_company', 'companies.businessName as businessName', 'companies.ruc as ruc',
+                    'users.email_valorization', 'users.phone',
+                    'user_inscriptions.id_user_inscription',
+                    DB::raw('SUM(inscriptions.hours) as total_horas'),
+                    DB::raw('ROUND(COUNT(*)/2) as cobros')
+                )
+                ->join('users', 'users.id', '=', 'user_inscriptions.id_user_inscription')
+                ->join('companies', 'companies.id', '=', 'users.id_company')
+                ->join('inscriptions', 'inscriptions.id', '=', 'user_inscriptions.id_inscription')
+                ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
+                ->whereIn('user_inscriptions.state', [0,1])
+                ->where('users.id_unity', $id_unity)
+                //->where('users.id_company', 107)
+                ->where('courses.required','=', 0)
+                ->where('user_inscriptions.payment_form', 'a cuenta')
+                ->whereBetween('inscriptions.startDate', [$start, $end])
+                ->groupBy('user_inscriptions.id_user_inscription', 'user_inscriptions.id_user');
+
+            $query = DB::table( DB::raw("({$sub_query->toSql()}) as t") )
+                ->mergeBindings($sub_query)
+                ->select(
+                    'invoices.id as codigo_invoices', 't.codigo_company', 't.ruc', 't.businessName',
+                    't.email_valorization', 't.phone',
+                    't.id_user_inscription as A',
+                    DB::raw('SUM(t.total_horas) as horas'),
+                    DB::raw('SUM(t.cobros) as total_cobros'),
+                    DB::raw('SUM(t.cobros*13) as monto_cobros')
+                )
+                ->leftJoin('invoices', function ($join) use ($id_unity, $start, $end) {
+                    $join->on('invoices.id_company', '=', 't.codigo_company')
+                        ->where('invoices.id_unity', '=', $id_unity)
+                        ->whereRaw('invoices.start_date=2019-07-25')
+                        ->whereRaw('invoices.end_date=2019-08-24')
+                    ;
+                })
+                ->where('t.ruc', '<>', '20508931621')
+                ->groupBy('t.ruc')
+                ->get();
+            return $query;
+            $count_company = $query->count();
+            $total_horas = $query->sum('horas');
+            $total_cobros = $query->sum('total_cobros');
+            $monto_total = $query->sum('monto_cobros');
+            //dd($query1);
+
+        }
+        //return $sub_query->get();
+        return view('companies.report_list_company',
+            compact('query', 'count_company',
+                'total_horas', 'total_cobros', 'monto_total', 'id_unity', 'start', 'end'));
     }
 
     public function report_company_participant(Request $request) {

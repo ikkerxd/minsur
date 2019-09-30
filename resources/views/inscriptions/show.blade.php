@@ -13,7 +13,7 @@
         <li class="active">Inscripción</li>
       </ol>
     </section>
-    
+
     <section class="content">
       <div class="row">
         <div class="col-md-12">
@@ -22,17 +22,21 @@
                 <h3 class="box-title" style="text-transform: uppercase;">{{ $inscription->nameCurso }}
                     <small>CONSOLIDADO DE PARTICIPANTES INSCRITOS</small>
                 </h3>
+
                 <div class="btn-group pull-right" role="group" >
                     <a href="{{ route('export_inscription', ['id' => Request::segment(2)]) }}"
-                       class="btn btn-success btn-sm"><i class="fa fa-cloud-download" aria-hidden="true"></i> Exportar a Excel</a>
+                       class="btn btn-success btn-sm"><i class="fa fa-cloud-download" aria-hidden="true"></i> Exportar a Excel
+                    </a>
+
                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
                         Subir Notas
                     </button>
                 </div>
+
             </div>
 
             <div class="box-body table-responsive no-padding">
-                <table class="table text-center table table-bordered">
+                <table class="table text-center table table-bordered" style="text-transform: uppercase">
                     <tr>
                       <th>SEDE:</th><td style=background:#fffa65>{{$inscription->nameLocation}}</td>
                       <th>FECHA:</th><td style=background:#fffa65>{{$inscription->startDate}}</td>
@@ -41,24 +45,28 @@
                     </tr>
                     <tr>
                       <th>DIRECCION : </th><td colspan="5"  style=background:#fffa65>{{ $inscription->address }}</td>
-                      <th>FACILITADOR: </th><td  style=background:#fffa65>{{ $inscription->firstName." ".$inscription->nameUser }}</td>
+                      <th>FACILITADOR: </th><td  style=background:#fffa65;>{{ $inscription->firstName." ".$inscription->nameUser }}</td>
                     </tr>
                 </table>
                 <br>
                 <div id="alert" class="alert alert-info"></div>
                 <table class="table table-bordered text-center">
                 <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>DNI</th>
-                    <th>Nombres</th>
-                    <th>Empresa</th>
-                    <th>Condicion</th>
-                    <th>Nota</th>
-                      <th>Eliminar</th>
-                  </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>DNI</th>
+                        <th>Nombres</th>
+                        <th>Empresa Actual</th>
+                        <th>Empresa Que Paso el Curso</th>
+                        <th>Condicion</th>
+                        <th>Nota</th>
+                        @if($inscription->id_course == 8)
+                            <th>Sustitutorio</th>
+                        @endif
+                        <th>Eliminar</th>
+                    </tr>
                 </thead>
-                <tbody>
+                <tbody style="text-transform: uppercase">
                   @foreach ($participants as $participant)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
@@ -66,17 +74,26 @@
                         <td>{{ $participant->firstlastname }} {{ $participant->secondlastname }} {{ $participant->name }}</td>
                         <td>{{ $participant->businessName }}</td>
                         <td>
+                            @if( $participant->previous_company == 'IGH GROUP')
+                                Minsur S. A.
+                            @else
+                                {{ $participant->previous_company }}
+                            @endif
+                        </td>
+                        <td>
                           @if ($participant->state == 0)
-                            Normal
                           @else
-                            Reprogramado
+                            <small class="label label-info">Reprogramado</small>
                           @endif
                         </td>
                         <td>{{ $participant->point }}</td>
+                        @if($inscription->id_course == 8)
+                            <td>{{ $participant->sustitutorio }}</td>
+                        @endif
                         <td>
                             <form action="{{ route('anulate_user_inscription', ['id' =>  $participant->id ])}}" method="post">
                                 {{ csrf_field() }}
-                                <a class="btn btn-xs btn-danger btn-anulate">Anular</a>
+                                <a class="btn btn-xs btn-danger btn-anulate" style="text-transform: capitalize">Anular</a>
                             </form>
                         </td>
                      </tr>
@@ -113,7 +130,7 @@
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
-    </section> 
+    </section>
 @endsection
 
 @section('script')

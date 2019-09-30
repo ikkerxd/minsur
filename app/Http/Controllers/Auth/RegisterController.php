@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Unity;
 use App\User;
 use App\Company;
 use App\Http\Controllers\Controller;
@@ -28,7 +29,14 @@ class RegisterController extends Controller
     
     protected $redirectTo = '/home';
 
-    
+    public function showRegistrationForm()
+    {
+        //$companies = Company::pluck('businessName','id');
+        $companies = Company::all();
+        $unities = Unity::where('id', '<>', 5)->get();
+        return view('auth.register',compact('companies', 'unities'));
+    }
+
     public function __construct()
     {
         $this->middleware('guest');
