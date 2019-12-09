@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Course;
 use App\Inscription;
 use App\Recuperation;
 use App\User;
@@ -67,6 +68,7 @@ class CertificateController extends Controller
             $view = 'certificado.pisco';
         }
 
+        // dd($curso);
         $pdf = PDF::loadView($view, compact('dni', 'nombres', 'curso', 'fecha', 'codigo', 'xl'))
             ->setPaper('a4', 'landscape');
         return $pdf->download('CERTIFICADO DE  '.$dni.'-'.$nombres.'- CURSO '.strtoupper($curso.'.pdf'));
@@ -190,5 +192,125 @@ class CertificateController extends Controller
 
     public function ingresar(Request $request) {
         return view('certificado.sustitutorio');
+    }
+
+    public function all_certification (Request $request) {
+        ini_set('max_execution_time', 720000);
+        ini_set('memory_limit', -1);
+        setlocale(LC_TIME, 'Spanish');
+
+        $user = User::findOrFail($request->id);
+        $query = DB::table('user_inscriptions')
+            ->select(
+                'users.dni',
+                DB::Raw('CONCAT(users.firstlastname, " ", users.secondlastname, " ", users.name) AS participante'),
+                'user_inscriptions.id as id',
+                'nameCurso as curso', 'startDate as fecha'
+
+            )
+            ->join('inscriptions','inscriptions.id', '=', 'user_inscriptions.id_inscription')
+            ->join('users', 'users.id', '=', 'user_inscriptions.id_user')
+            ->where('users.id',$request->id)
+            ->whereRaw('user_inscriptions.point>=inscriptions.point_min')
+            ->whereIn('user_inscriptions.state', [0,1])
+            ->get();
+
+        $html = '';
+
+        $view = 'certificado.minsur';
+
+        if ($user->id_unity == 1) {
+            $view = 'certificado.raura_all';
+        }
+
+        if ($user->id_unity == 4) {
+            $view = 'certificado.pisco_all';
+        }
+        $pdf = PDF::loadView($view, compact('query'));
+        $sheet = $pdf->setPaper('a4', 'landscape');
+
+        return $sheet->download('CERTIFICADOS DE  '.strtoupper($user->name).' '.strtoupper($user->firstlastname).'.pdf');
+    }
+
+    public function course(Request $request) {
+        $query = DB::table('courses')->whereIn('id', [97,98,99,100,101,102,103,127,128,129])->get();
+
+        return view('certificado.course', compact('query'));
+        // return $query;
+    }
+
+    public function course_certificado_pisco(Request $request) {
+        ini_set('max_execution_time', 720000);
+        ini_set('memory_limit', -1);
+        setlocale(LC_TIME, 'Spanish');
+        $course = Course::findOrFail($request->id);
+        $query = DB::table('user_inscriptions')
+            ->select(
+                'users.dni',
+                DB::Raw('CONCAT(users.firstlastname, " ", users.secondlastname, " ", users.name) AS participante'),
+                'user_inscriptions.id as id',
+                'nameCurso as curso', 'startDate as fecha'
+
+            )
+            ->join('inscriptions','inscriptions.id', '=', 'user_inscriptions.id_inscription')
+            ->join('users', 'users.id', '=', 'user_inscriptions.id_user')
+            ->whereIn('user_inscriptions.state', [0,1])
+            ->whereRaw('user_inscriptions.point>=inscriptions.point_min')
+            ->where('users.id_company', 2)
+            ->where('inscriptions.id_course', $request->id)
+            ->orderBy('users.firstlastname')
+            ->get();
+
+            $view = 'certificado.pisco_all';
+
+        $pdf = PDF::loadView($view, compact('query'));
+        $sheet = $pdf->setPaper('a4', 'landscape');
+        return $sheet->download('certificado del '.$course->name.'.pdf');
+    }
+
+    public function export_certification(Request $request) {
+        // Recuperamos el usuario usuario de la compañia
+        $course = Course::findOrFail($request->id);
+        $user = Auth::user();
+
+        // recuperamos el el id de la unidad minera
+        $id_unity = $user->id_unity;
+
+        Excel::Create('Lista de participantes del curso '.$course->name, function ($excel)  use($request) {
+            // Set the title
+            $excel->setTitle('lista de particpantes minsur');
+            // Chain the setters
+            $excel->setCreator('IGH Group')
+                ->setCompany('IGH');
+            // Call them separately
+            $excel->setDescription('lista de participantes');
+
+            $excel->sheet('lista participante', function ($sheet) use($request) {
+
+                $query = DB::table('user_inscriptions')
+                    ->select(
+                        'users.dni as documento',
+                        DB::Raw('CONCAT(users.firstlastname, " ", users.secondlastname, " ", users.name) AS participante'),
+                        'nameCurso as curso', 'startDate as fecha'
+                    )
+                    ->join('inscriptions','inscriptions.id', '=', 'user_inscriptions.id_inscription')
+                    ->join('users', 'users.id', '=', 'user_inscriptions.id_user')
+                    ->whereIn('user_inscriptions.state', [0,1])
+                    ->whereRaw('user_inscriptions.point>=inscriptions.point_min')
+                    ->where('users.id_company', 2)
+                    ->where('inscriptions.id_course', $request->id)
+                    ->get();
+
+                $data = json_decode( json_encode($query), true);
+
+                $sheet->fromArray($data, null, 'A1', false, true);
+                $sheet->row(1, function($row) {
+                    // call cell manipulation methods
+                    $row->setBackground('#2980b9');
+                    $row->setFontColor('#ffffff');
+                });
+            });
+
+        })->export('xlsx');
     }
 }

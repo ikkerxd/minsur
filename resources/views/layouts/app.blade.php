@@ -55,9 +55,11 @@
             </div>
         </div>
     </div>
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/login.js') }}"></script>
     @yield('script')
+
 </body>
 </html>

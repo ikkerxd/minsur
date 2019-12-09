@@ -45,12 +45,11 @@
             </div>
         </div>
     @endif
-
-
 @endsection
+
 @section('script')
 <script>    
- $('#myModal').modal('show'); 
+ // $('#modal-default').modal('show');
 </script>
 @endsection
 

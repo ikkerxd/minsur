@@ -63,7 +63,9 @@
                         @if($inscription->id_course == 8)
                             <th>Sustitutorio</th>
                         @endif
-                        <th>Eliminar</th>
+                        @if(true)
+                            <th>Anular</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody style="text-transform: uppercase">
@@ -90,12 +92,14 @@
                         @if($inscription->id_course == 8)
                             <td>{{ $participant->sustitutorio }}</td>
                         @endif
+                        @if(true)
                         <td>
                             <form action="{{ route('anulate_user_inscription', ['id' =>  $participant->id ])}}" method="post">
                                 {{ csrf_field() }}
                                 <a class="btn btn-xs btn-danger btn-anulate" style="text-transform: capitalize">Anular</a>
                             </form>
                         </td>
+                        @endif
                      </tr>
                   @endforeach
                 </tbody>

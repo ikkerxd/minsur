@@ -95,3 +95,50 @@ table thead tr{
    color:white;
 }
 
+.box-process {
+  display: flex;
+  justify-content: center;
+}
+
+.box-process__border--val {
+  border: 1px solid #27ae60;
+  padding: 2px;
+  border-radius: 50%;
+  -webkit-box-shadow: 0px 0px 5px 0px #27ae60;
+  -moz-box-shadow: 0px 0px 5px 0px #27ae60;
+  box-shadow: 0px 0px 5px 0px #27ae60;
+}
+
+.box-process__val {
+  background-color: #2ecc71;
+  color: #fff;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.box-process__border--fac {
+  border: 1px solid #2d98da;
+  padding: 2px;
+  border-radius: 50%;
+  -webkit-box-shadow: 0px 0px 5px 0px #2d98da;
+  -moz-box-shadow: 0px 0px 5px 0px #2d98da;
+  box-shadow: 0px 0px 5px 0px #2d98da;
+}
+
+.box-process__fac {
+  background-color: #45aaf2;
+  color: #fff;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.group-fact {
+  margin-top: 2em;
+  display: flex;
+  flex-direction: column;
+}
+
+.group-fact input {
+  border-radius: 5px;
+  margin-bottom: 1em;
+}

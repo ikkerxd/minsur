@@ -141,7 +141,10 @@
 <span class="codigo">{{ $codigo }}</span>
 <span class="title user">{{ $nombres }}</span>
 <spam class="dni">{{ $dni }}</spam>
-@if($curso == 'Curso Obligatorio I' or $curso == 'Curso Obligatorio II' or $curso == 'Curso Obligatorio III'or $curso == 'Curso Obligatorio IV'or $curso == 'Curso Obligatorio V'or $curso == 'Curso Obligatorio VI'or $curso == 'Curso Obligatorio VII')
+@if($curso == 'Curso Obligatorio I' or $curso == 'Curso Obligatorio II' or $curso == 'Curso Obligatorio III' or
+    $curso == 'Curso Obligatorio IV' or $curso == 'Curso Obligatorio V'or $curso == 'Curso Obligatorio VI'or
+    $curso == 'Curso Obligatorio VII'or trim($curso) == 'Curso Obligatorio VIII'or $curso == 'Curso Obligatorio IX'or
+    $curso == 'Curso Obligatorio X')
     <span class="title curso">{{ $curso }}</span>
 @else
     <span class="title curso-xl">{{ $curso }}</span>
@@ -231,6 +234,39 @@
     <span class="title horas">Con una duración de 08 horas lectivas.</span>
 @endif
 
-<spam class="fecha">{{ $fecha }}</spam>
+@if($curso == 'Curso Obligatorio VIII')
+    <div class="detalle">
+        <div class="container">
+            <div class="item-1">Tópicos: </div>
+            <div class="item-2">
+                Estándar Trabajos en Caliente, Estándar Trabajos en Altura.</div>
+        </div>
+    </div>
+    <div class="title horas">Con una duración de 08 horas lectivas.</div>
+@endif
+
+@if($curso == 'Curso Obligatorio IX')
+    <div class="detalle">
+        <div class="container">
+            <div class="item-1">Tópicos: </div>
+            <div class="item-2">
+                Estándar Pruebas en Equipos Energizados, Estándar Subestaciones Eléctricas Salas Eléctricas y CCM.</div>
+        </div>
+    </div>
+    <div class="title horas">Con una duración de 08 horas lectivas.</div>
+@endif
+
+@if($curso == 'Curso Obligatorio X')
+    <div class="detalle">
+        <div class="container">
+            <div class="item-1">Tópicos: </div>
+            <div class="item-2">
+                Manejo Defensivo, Ritran, Estándar Izaje de Cargas.</div>
+        </div>
+    </div>
+    <div class="horas">Con una duración de 08 horas lectivas.</div>
+@endif
+
+<spam class="title fecha">{{ $fecha }}</spam>
 </body>
 </html>

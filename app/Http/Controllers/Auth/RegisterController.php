@@ -33,6 +33,7 @@ class RegisterController extends Controller
     {
         //$companies = Company::pluck('businessName','id');
         $companies = Company::all();
+        // $unities = Unity::all();
         $unities = Unity::where('id', '<>', 5)->get();
         return view('auth.register',compact('companies', 'unities'));
     }

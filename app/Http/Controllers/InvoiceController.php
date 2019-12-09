@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Company;
 use App\Invoice;
 use App\Unity;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Excel;
@@ -97,57 +99,129 @@ class InvoiceController extends Controller
 
     public function report_valorization ($id) {
 
-        $invoice = Invoice::find($id);
+        // buscamos la valorizacion
+        $invoice = Invoice::findOrFail($id);
+        // seleccioans la unidad que esta la valurizacion
         $id_unity = $invoice->id_unity;
 
+        // mostramos el formato del el exel de acurod a la unidad
         if ($id_unity != 1) {
             $source = public_path('files/formato-val-minsur.xlsx');
         } else {
             $source = public_path('files/formato-val-raura.xlsx');
         }
 
+        // --
+        //  proceso para la primera hoja
+        // --
 
+        // recuperamos los id
+        $id_company = $invoice->id_company;
+        $id_unity = $invoice->id_unity;
 
-        Excel::load($source, function ($file) use($id) {
-            $invoice = Invoice::find($id);
-            $id_company = $invoice->id_company;
-            $id_unity = $invoice->id_unity;
+        // buscamaos la company y unity
+        $company = Company::find($id_company);
+        $unity = Unity::find($id_unity);
 
-            $company = Company::find($id_company);
-            $unity = Unity::find($id_unity);
-            $name_unity = $unity->name;
+        // nombre de la unidad y compania
+        $name_unity = $unity->name;
+        $name_company = $company->businessName;
 
-            $cobros = $invoice->cobros;
-            $precio = $invoice->precio;
-            $total = $cobros * $precio;
-            // mes de facturacion
-            setlocale(LC_TIME, 'Spanish');
-            $date_start = Carbon::parse($invoice->start_date);
-            $dia1 = $date_start->day;
-            $mes1 = $date_start->localeMonth;
-            $anio1 = $date_start->year;
+        $horas = $invoice->horas;
+        $cobros = $invoice->cobros;
+        $precio = $invoice->precio;
+        $total = $cobros * $precio;
 
-            $date_end = Carbon::parse($invoice->end_date);
-            $dia2 = $date_end->day;
-            $mes2 = $date_end->localeMonth;
-            $anio2 = $date_end->year;
+        setlocale(LC_TIME, 'Spanish');
+        /** Fechas de corte **/
 
-            $periodo = $dia1.' '.$mes1.' '.$anio1.' al '.$dia2.' '.$mes2.' '.$anio2;
-            //dd($this->convertir(99.99, 'soles'));
-            $total_igv = $total + $total*0.18;
-            $total_texto = 'TOTAL A PAGAR: S/ '.$total_igv.' (INC. IGV) '.$this->convertir($total_igv, 'soles');
+        // primera fecha
+        $date_start = Carbon::parse($invoice->start_date);
+        $dia1 = $date_start->day;
+        $mes1 = $date_start->localeMonth;
+        $anio1 = $date_start->year;
 
+        // segunda fecha
+        $date_end = Carbon::parse($invoice->end_date);
+        $dia2 = $date_end->day;
+        $mes2 = $date_end->localeMonth;
+        $anio2 = $date_end->year;
 
+        $periodo = $dia1.' '.$mes1.' '.$anio1.' al '.$dia2.' '.$mes2.' '.$anio2;
+        //dd($this->convertir(99.99, 'soles'));
+        $total_igv = $total + $total*0.18;
+        $total_texto = 'TOTAL A PAGAR: S/ '.$total_igv.' (INC. IGV) '.$this->convertir($total_igv, 'soles');
+
+        // --
+        // Proceso para la SEGUNDA HOJA
+        // --
+
+        // recuperamos el id de la cuenta de usaurio responable de la contrata(company) de inscripcion
+        $user_inscription = DB::table('users')
+            ->select('users.id')
+            ->join('role_user', 'role_user.user_id', '=', 'users.id')
+            ->where('role_user.role_id', 4)
+            ->where('users.id_company', $id_company)
+            ->where('users.id_unity', $id_unity)
+            ->first();
+
+        // dd($user_inscription);
+
+        // recuperamos las fechas de corte
+        $start = $invoice->start_date;
+        $end = $invoice->end_date;
+
+        $participant = DB::table('user_inscriptions')
+            ->select(
+                'UP.dni as DNI',
+                'UP.firstlastname as Apellido Materno',
+                'UP.secondlastname as Apellido Paterno',
+                'UP.name as Nombre',
+                'UP.position as Cargo',
+                'UP.superintendence as Area',
+                'companies.businessName as Empresa',
+                'inscriptions.nameCurso as Curso',
+                'inscriptions.hours as Horas',
+                'inscriptions.startDate as Fecha'
+            )
+            ->join('users', 'users.id', '=', 'user_inscriptions.id_user_inscription')
+            ->join('users as UP', 'UP.id', '=', 'user_inscriptions.id_user')
+            ->join('companies', 'companies.id', '=', 'users.id_company')
+            ->join('inscriptions', 'inscriptions.id', '=', 'user_inscriptions.id_inscription')
+            ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
+            ->whereIn('user_inscriptions.state', [0,1])
+            ->where('users.id_unity', $id_unity)
+            ->where('courses.required','=', 0)
+            ->where('user_inscriptions.payment_form', 'a cuenta')
+            ->whereBetween('inscriptions.startDate', [$start, $end])
+            ->where('user_inscriptions.id_user_inscription', $user_inscription->id)
+            ->orderBy('dni')
+            ->get();
+
+        $data = json_decode( json_encode($participant), true);
+
+        Excel::load($source, function ($file) use($company, $horas, $name_unity, $periodo, $cobros, $total, $precio, $total_texto, $data) {
+            // RECUPERAMOS EL FORMATO BASE DE LA VALORIZACION
             $sheet = $file->getExcel()->getActiveSheet(0);
+
+            // primer sheet(hoja)
             $sheet->setCellValue('C7', $company->businessName);
             $sheet->setCellValue('G7', $company->ruc);
             $sheet->setCellValue('C9', strtoupper($name_unity));
             $sheet->setCellValue('H10', $total);
             $sheet->setCellValue('C10', $periodo);
-            $sheet->setCellValue('E18', $invoice->horas);
+            $sheet->setCellValue('E18', $horas);
             $sheet->setCellValue('F18', $cobros);
             $sheet->setCellValue('G18', $precio);
             $sheet->setCellValue('B24', $total_texto);
+            // Segunda hoja
+
+            $file->sheet('Participantes', function ($sheet) use ($data) {
+                //dd($data);
+
+                $sheet->fromArray($data, null, 'A2', false, false);
+            });
+
         }, 'UTF-8')->download('xlsx');
     }
 
@@ -275,4 +349,5 @@ class InvoiceController extends Controller
         }
         return $output;
     }
+
 }

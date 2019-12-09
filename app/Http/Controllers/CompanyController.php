@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Company;
+use App\Invoice;
+use App\Unity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -122,6 +124,10 @@ class CompanyController extends Controller
         return redirect()->route('register');
     }
 
+    /************/
+    /****** FUNCION PARA RECUPERAR LA RELACION DE EMPRESAS QUE SE DBBEN FACTURAR Y VALORIZAR ******/
+    /************/
+
     public function report_company(Request $request) {
         // Recuperamos el usuario usuario de la compañia
         $id_um = $request->id;
@@ -137,7 +143,7 @@ class CompanyController extends Controller
         $query = [];
 
         if ($request->method() == 'POST') {
-                $start = $request->startDate;
+            $start = $request->startDate;
             $end = $request->endDate;
             $sub_query = DB::table('user_inscriptions')
                 ->select(
@@ -185,28 +191,129 @@ class CompanyController extends Controller
                 compact('query', 'count_company', 'total_horas', 'total_cobros', 'monto_total'));
     }
 
+    ///
+    ///
+    /// FUNCION PARA EL NUEVO PROCESO DE VALORIZACION, FACTURACION Y PAGO DE LA MISMA
+    ///
+    ///
 
     public function report_list_company(Request $request) {
+        // recuperamos el id de la unidad minera
         $id_um = $request->id;
-        $id_unity = $id_um;
-
+        // buscamos la UM por su id
+        $unity = Unity::findOrFail($id_um);
+        // Inicializamos los rangos de fechas
         $start = null;
         $end = null;
 
-        // recuperamos el el id de la unidad minera
+        // Inicializamos las variables para el proceso
         $count_company = 0;
         $total_cobros = 0;
         $total_horas = 0;
         $monto_total = 0;
         $query = [];
-
+        //dd('entee a fet');
         if ($request->method() == 'POST') {
+
+            //dd($request->input('action'));
+            //dd($request);
+            // fechas de corte de la valorizacion
+
+            /* escogemos segun sea el caso de valorizacion, facturacion pagado, observado o anualdo */
+
+            switch ($request->input('action')) {
+
+                case 'val': // valorizado
+                    $flat = Invoice::where('start_date', $request->startDate)
+                        ->where('end_date', $request->endDate)
+                        ->where('id_unity', $id_um)
+                        ->where('id_company', $request->company)
+                        ->where('state', 1)
+                        ->count();
+
+                    // si no existe una valorizacion
+                    if ($flat == 0) {
+                        $state = 1; // en progreso
+                        $process = 1; // valorizacion
+                        $invoice = new Invoice;
+                        $invoice->id_user_inscription = Auth::id(); // is del usuario que facturo
+                        $invoice->id_company = $request->company;
+                        $invoice->id_unity = $id_um;
+                        $invoice->start_date = $request->startDate;
+                        $invoice->end_date = $request->endDate;
+                        $invoice->cobros = $request->cobros;
+                        $invoice->precio = 13;
+                        $invoice->igv = 18;
+                        $invoice->horas = $request->horas;
+                        $invoice->state = $state;
+                        $invoice->process = $process;
+                        $invoice->save();
+                    } else {
+                        dd($flat);
+                    }
+                    break;
+
+                case 'fact': // facturado
+                    $state = 1; // en activo
+                    $process = 2; // facturado
+
+                    // recuperamos el registo de la invvoice
+                    $inv = Invoice::findOrFail($request->invoice);
+                    if ($inv->process == 1) {
+                        $inv->process = $process;
+                        $inv->nro_invoice = $request->factura;
+                        $inv->url = $request->url;
+                        $inv->user_fact = Auth::id();
+                        $inv->save();
+                    }
+                    break;
+
+                case 'paid': // pagado
+                    $state = 1; // activo
+                    $process = 3; // Pagado
+                    // recuperamos el registo de la invvoice
+                    $inv = Invoice::findOrFail($request->invoice);
+                    if ($inv->process == 2) {
+                        $inv->process = $process;
+                        $inv->user_paid = Auth::id();
+                        $inv->save();
+                    }
+                    break;
+
+                case 'obs': // observado
+                    $state = 2; // observaddo
+                    $inv = Invoice::findOrFail($request->invoice);
+                    if (($inv->process == 1 or $inv->process == 2) and $inv->state == 1) {
+                        //dd($request);
+                        $inv->state = $state;
+                        $inv->observation = $request->observation;
+                        $inv->save();
+                    } elseif($inv->state == 2) {
+                        //dd('desanulo');
+                        $inv->observation = null;
+                        $inv->state = 1;
+                        $inv->save();
+                    }
+                    break;
+
+                case 'del': // anulado;
+                    $state = 0; // anulado
+                    $inv = Invoice::findOrFail($request->invoice);
+                    if ($inv->state == 1 || $inv->state == 2) {
+                        $inv->state = $state;
+                        $inv->user_del = Auth::id();
+                        $inv->save();
+                    }
+                    break;
+            }
 
             $start = $request->startDate;
             $end = $request->endDate;
+
             $sub_query = DB::table('user_inscriptions')
                 ->select(
-                    'companies.id as codigo_company', 'companies.businessName as businessName', 'companies.ruc as ruc',
+                    'companies.id as codigo_company',
+                    'companies.businessName', 'companies.ruc',
                     'users.email_valorization', 'users.phone',
                     'user_inscriptions.id_user_inscription',
                     DB::raw('SUM(inscriptions.hours) as total_horas'),
@@ -217,45 +324,52 @@ class CompanyController extends Controller
                 ->join('inscriptions', 'inscriptions.id', '=', 'user_inscriptions.id_inscription')
                 ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
                 ->whereIn('user_inscriptions.state', [0,1])
-                ->where('users.id_unity', $id_unity)
+                ->where('users.id_unity', $id_um)
                 //->where('users.id_company', 107)
                 ->where('courses.required','=', 0)
                 ->where('user_inscriptions.payment_form', 'a cuenta')
                 ->whereBetween('inscriptions.startDate', [$start, $end])
                 ->groupBy('user_inscriptions.id_user_inscription', 'user_inscriptions.id_user');
-
+            // dd($id_um, $start, $end);
+            //return $sub_query->get();
             $query = DB::table( DB::raw("({$sub_query->toSql()}) as t") )
                 ->mergeBindings($sub_query)
                 ->select(
-                    'invoices.id as codigo_invoices', 't.codigo_company', 't.ruc', 't.businessName',
-                    't.email_valorization', 't.phone',
-                    't.id_user_inscription as A',
-                    DB::raw('SUM(t.total_horas) as horas'),
+//                     'invoices.id',
+//                     'invoices.id_user_inscription',
+//                     'invoices.id_company',
+//                    'invoices.id_unity', 'invoices.nro_invoice',
+//                    't.codigo_company', 't.ruc', 't.businessName',
+//                    't.email_valorization', 't.phone',
+//                    't.id_user_inscription',
+                    '*',
+                    DB::raw('SUM(t.total_horas) as total_horas'),
                     DB::raw('SUM(t.cobros) as total_cobros'),
                     DB::raw('SUM(t.cobros*13) as monto_cobros')
                 )
-                ->leftJoin('invoices', function ($join) use ($id_unity, $start, $end) {
+                //->LeftJoin('invoices','invoices.id_company', '=', 't.codigo_company')
+                ->leftJoin('invoices', function ($join) use ($id_um, $start, $end) {
                     $join->on('invoices.id_company', '=', 't.codigo_company')
-                        ->where('invoices.id_unity', '=', $id_unity)
-                        ->whereRaw('invoices.start_date=2019-07-25')
-                        ->whereRaw('invoices.end_date=2019-08-24')
-                    ;
+                        //->whereRaw('invoices.id_unity='.$id_um.'and invoices.state=1')
+                        //;
+                        ->whereRaw('invoices.id_unity='.$id_um)
+                        ->whereRaw('invoices.start_date="'.$start.'"')
+                        ->whereRaw('invoices.end_date="'.$end.'"')
+                        ->whereRaw('invoices.state in (1, 2)');
                 })
                 ->where('t.ruc', '<>', '20508931621')
                 ->groupBy('t.ruc')
                 ->get();
-            return $query;
+            //return $query;
             $count_company = $query->count();
-            $total_horas = $query->sum('horas');
+            $total_horas = $query->sum('total_horas');
             $total_cobros = $query->sum('total_cobros');
             $monto_total = $query->sum('monto_cobros');
             //dd($query1);
-
         }
-        //return $sub_query->get();
         return view('companies.report_list_company',
-            compact('query', 'count_company',
-                'total_horas', 'total_cobros', 'monto_total', 'id_unity', 'start', 'end'));
+            compact('query',  'unity', 'count_company',
+                'total_horas', 'total_cobros', 'monto_total', 'id_um', 'start', 'end'));
     }
 
     public function report_company_participant(Request $request) {
@@ -283,7 +397,6 @@ class CompanyController extends Controller
         $flat = ($dia0-$dia1==1 and $mes0-$mes1==-1) ? true : false;
         // mes solo para mostrar
         $mes = ucfirst($dt->localeMonth);
-
 
         // recueramos si tenemos una factura
         $invoice = DB::table('invoices')

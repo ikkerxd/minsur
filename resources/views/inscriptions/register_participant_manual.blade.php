@@ -60,7 +60,9 @@
         {{ Form::close() }}               
       </div>               
     </div>
-  </section> 
+  </div>
+</section>
+
   @endsection
 
   @section('script')

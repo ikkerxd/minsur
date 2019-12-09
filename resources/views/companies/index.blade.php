@@ -36,28 +36,35 @@
                 <th>RAZON SOCIAL</th>
                 <th>TELEFONO</th>
                 <th>CORREO</th>
-                <th>CORREO VLORIZACION</th>
+                <th>CORREO VALORIZACION</th>
                 <th>ESTADO</th>
-                <th></th>
+                <th>ACCIONES</th>
             </tr>
           </thead>
           <tbody>
            @foreach ($companies as $company)
            <tr>  
-           <th>{{ $company->id_company }}</th>
-               <td>{{ $company->ruc }}</td>
-               <td>{{ $company->businessName }}</td>
-               <td>{{ $company->phone }}</td>
-               <td>{{ $company->email}}</td>
-               <td>{{ $company->email_valorization }}</td>
-            <td>
-              @if ($company->state == 0)
-                <span>Activo</span>
-              @else
-                <span>Inactivo</span>
-              @endif
-            </td>
-             <td width="10px"><a href="{{ route('companies.show', $company->id_company) }}" class="btn btn-sm btn-warning">Ver</a></td>
+                <td>{{ $company->id_company }}</td>
+                <td>{{ $company->ruc }}</td>
+                <td>{{ $company->businessName }}</td>
+                <td>{{ $company->phone }}</td>
+                <td>{{ $company->email}}</td>
+                <td>{{ $company->email_valorization }}</td>
+                <td>
+                  @if ($company->state == 0)
+                    <span>Activo</span>
+                  @else
+                    <span>Inactivo</span>
+                  @endif
+                </td>
+                <td>
+                    <a href="{{ route('companies.show', $company->id_company) }}" class="btn btn-xs btn-primary">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                    <a href="{{ route('edit_user_company', $company->id_user) }}" class="btn btn-xs btn-warning">
+                        <i class="fa fa-pencil-square-o"></i>
+                    </a>
+                </td>
             {{-- @can('companies.show')
             <td width="10px"><a href="{{ route('companies.show', $company->id) }}" class="btn btn-sm btn-default">Ver</a></td>
             @endcan

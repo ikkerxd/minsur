@@ -75,19 +75,19 @@ class UserController extends Controller
     }
     public function register_participant(Request $request)
     {
-        $this->validate($request, [ 
-            'dni' => 'required|min:8',
+        $this->validate($request, [
+            'dni' => 'required|min:8|alpha_num',
             'firstlastname' => 'required',
             'secondlastname' => 'required',
             'name' => 'required',
             'email' => 'required',
             'phone' => 'required',
             //'image' => 'mimes:jpeg,jpg,png,gif|required',
-
         ],
         [
             'dni.required' => 'El campo DNI es obligatorio',
             'dni.min' => 'El campo DNI debe tener como minimo 8 y como maximo 9 digitos si es un pasaporte',
+            'dni.alpha_num' => 'El campo DNI debe contener solo letras y numeros',
             'firstlastname.required' => 'El campo apellido paterno es obligatorio',
             'secondlastname.required' => 'El campo apellido materno es obligatorio',
             'name.required' => 'El campo nombre es obligatorio',
@@ -97,24 +97,30 @@ class UserController extends Controller
         ]);
 
         $user = Auth::user();
+        // Recuperamos el rol del suario logueado
         $id_rol = DB::table('role_user')
             ->where('user_id', $user->id)
             ->first()->role_id;
         $id_company = $user->id_company;
+        // verificar si el rol es administrador facilitador ellos solo regitran los participantes de company
         if ($id_rol == 1) {
             $id_company = '2';
         }
-
+        // rregister_participantespecto a su unidad minera y dni y rol 5(partcipante)
         $d =  DB::table('users')
             ->join('role_user','users.id','=','role_user.user_id')
+            ->join('companies', 'companies.id', 'users.id_company')
             ->where('dni', $request->dni)
             ->where('id_unity', $user->id_unity)
             ->where('role_id',5);
 
         if ($d->exists()) {
             return redirect()->route('new_participant')
-                ->with('error','Error de duplicidad: el usuario con dni '.$request->dni.'  ya esta registrado');
+                ->with('error',
+                    'El usuario con dni '.
+                    $request->dni.'  ya esta registrado en la contrata '.$d->first()->businessName);
         } else {
+            // usuario en el q esta loageuado
             $idUser = Auth::user();
             $participant = new User();
             $participant->id_company = $id_company;
@@ -132,6 +138,28 @@ class UserController extends Controller
             $participant->medical_exam = $request->medical_exam;
             $participant->id_management = $request->id_management;
             $participant->superintendence = $request->superintendence;
+
+            //-- Manejar el archivo de la imagen
+
+            /*PENDIENTE */
+
+//            if ($request->hasFile('image')) {
+//                // Recuperamos el nombre y extnsion del archivo del archivo
+//                $filenameWithExt = $request->file('image')->getClientOriginalName();
+//                // recuperamos solo el nombre
+//                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+//                // Recuperamos solo la extension
+//                $ext = $request->file('image')->getClientOriginalExtension();
+//                // Nombre de archivo para alamcenar
+//                $filenameToStore = $filename.'_'.time().'_'.$ext;
+//                // Upload Image
+//                $path = $request->file('image')->storeAs('public/avatar/', $filenameToStore);
+//                // dd(storage_path(), $filenameToStore, public_path());
+//                // dd($filenameWithExt, $filename,$ext);
+//            } else {
+//                $filenameToStore = 'noimage.jpg';
+//            }
+
             if ($request->image != "") {
                 $name_original = $request->file('image')->getClientOriginalName();
                 $name = $request->file('image');
@@ -143,6 +171,8 @@ class UserController extends Controller
                 $participant->image = "";
                 $participant->image_hash = "";
             }
+            //$participant->image = $filenameToStore;
+            //$participant->image_hash = '';
             $participant->birth_date = $request->birth_date;
             $participant->gender = $request->gender;
             $participant->origin = $request->origin;
@@ -165,13 +195,13 @@ class UserController extends Controller
 
 
     }
-    
+
     public function show(User $user)
-    {        
+    {
         return view('users.show',compact('user'));
     }
 
-    
+
     public function edit(User $user)
     {
         $companies = Company::pluck('businessName','id');
@@ -179,7 +209,7 @@ class UserController extends Controller
         return view('users.edit',compact('user','roles','companies'));
     }
 
-    
+
     public function update(Request $request, User $user)
     {
         //actualizar usuarios
@@ -190,7 +220,7 @@ class UserController extends Controller
         return redirect()->route('users.edit', $user->id)->with('info','Usuario actualizado con exito');
     }
 
-    
+
     public function destroy(User $user)
     {
         $user->delete();
@@ -241,15 +271,15 @@ class UserController extends Controller
 
     public function update_participant(Request $request, $id)
     {
-        
-        $this->validate($request, [ 
+
+        $this->validate($request, [
             'dni' => 'required',
             'firstlastname' => 'required',
             'secondlastname' => 'required',
             'name' => 'required',
             'email' => 'required',
             'phone' => 'required',
-            
+
         ],
         [
             'dni.required' => 'El campo DNI es obligatorio',
@@ -258,8 +288,8 @@ class UserController extends Controller
             'name.required' => 'El campo nombre es obligatorio',
             'email.required' => 'El campo correo es obligatorio',
             'phone.required' => 'El campo celular es obligatorio',
-            
-        ]); 
+
+        ]);
 
         $user = User::find($id);
         $user->type_document = $request->type_document;
@@ -285,7 +315,7 @@ class UserController extends Controller
         $user->birth_date = $request->birth_date;
         $user->gender = $request->gender;
         $user->origin = $request->origin;
-        $user->address = $request->address; 
+        $user->address = $request->address;
         $user->save();
 
         return redirect()->route('list_participants')->with('success','El participante fue actualizado');
@@ -299,7 +329,7 @@ class UserController extends Controller
     {
         $idUser = Auth::id();
         $id_company =  DB::table('companies')
-        ->join('users','companies.id','=','users.id_company')    
+        ->join('users','companies.id','=','users.id_company')
         ->where('users.id',$idUser)
         ->select('companies.id as ID')->first()->ID;
         return $id_company;
@@ -310,28 +340,28 @@ class UserController extends Controller
     }
 
     public function detail_history($dni)
-    {   
+    {
         $histories = DB::table('historico')
                     ->where('dni',$dni)
                     ->select(DB::raw('origen as nameLocation,id_curso,curso as nameCourses,empresa as businessName,fecha as fecha,nota,asistencia,participante,dni'))
                     ->orderBy('fecha','desc')
                     ->get();
-        
+
         $data_generals = DB::table('companies')
-                    ->join('users','companies.id','=','users.id_company') 
-                    ->join('role_user','users.id','=','role_user.user_id') 
-                    ->join('user_inscriptions','user_inscriptions.id_user','=','users.id') 
-                    ->join('inscriptions','inscriptions.id','=','user_inscriptions.id_inscription') 
-                    ->join('courses','courses.id','=','inscriptions.id_course') 
-                    ->join('locations','locations.id','=','inscriptions.id_location') 
+                    ->join('users','companies.id','=','users.id_company')
+                    ->join('role_user','users.id','=','role_user.user_id')
+                    ->join('user_inscriptions','user_inscriptions.id_user','=','users.id')
+                    ->join('inscriptions','inscriptions.id','=','user_inscriptions.id_inscription')
+                    ->join('courses','courses.id','=','inscriptions.id_course')
+                    ->join('locations','locations.id','=','inscriptions.id_location')
                     ->select(DB::raw('locations.name as nameLocation,courses.id as id_curso,courses.name as nameCourses,companies.businessName as businessName,inscriptions.startDate as fecha,point as nota,assistence as asistencia,CONCAT(users.name," ",users.firstlastname," ",users.secondlastname) AS participante,users.dni as dni'))
                     ->where('dni',$dni)
                     ->where('inscriptions.startDate','<',date('Y-m-d'))
                     ->where('role_id',5)
                     ->orderBy('inscriptions.startDate','desc')
-                    ->get(); 
+                    ->get();
 
-        
+
         $merged = $data_generals->merge($histories);
         return view('participants.detail_validate_user',compact('merged'));
     }
@@ -339,14 +369,14 @@ class UserController extends Controller
     public function export($id)
     {
         $inscriptions =  DB::table('inscriptions')
-        ->join('locations','inscriptions.id_location','=','locations.id')    
+        ->join('locations','inscriptions.id_location','=','locations.id')
         ->join('courses','inscriptions.id_course','=','courses.id')
         ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state')
         ->where('inscriptions.id',$id)
         ->get()->toArray();
 
         $facilitador = DB::table('user_inscriptions')
-        ->join('users','users.id','=','user_inscriptions.id_user')    
+        ->join('users','users.id','=','user_inscriptions.id_user')
         ->join('role_user','users.id','=','role_user.user_id')
         ->where('role_id',3)
         ->where('user_inscriptions.id_inscription',$id)
@@ -354,14 +384,14 @@ class UserController extends Controller
         ->first()->full_name;
 
         $participants = DB::table('user_inscriptions')
-        ->join('users','users.id','=','user_inscriptions.id_user')    
+        ->join('users','users.id','=','user_inscriptions.id_user')
         ->join('role_user','users.id','=','role_user.user_id')
         ->join('companies','companies.id','=','users.id_company')
         ->where('role_id',5)
         ->where('user_inscriptions.id_inscription',$id)
         ->get();
 
-        $customer_array[] = array('DNI','AP.PATERNO', 'AP.MATERNO','NOMBRES','EMPRESA','SUBCONTRATA','CARGO');        
+        $customer_array[] = array('DNI','AP.PATERNO', 'AP.MATERNO','NOMBRES','EMPRESA','SUBCONTRATA','CARGO');
         foreach ($participants as $participant) {
             $customer_array[] = array(
                 'DNI'           =>  $participant->dni,
@@ -370,11 +400,11 @@ class UserController extends Controller
                 'NOMBRES'       =>  $participant->name,
                 'EMPRESA'       =>  $participant->businessName,
                 'SUBCONTRATA'   =>  $participant->subcontrata,
-                'CARGO'         =>  $participant->position,    
+                'CARGO'         =>  $participant->position,
             );
-        } 
+        }
 
-        $customer_head[] = array('FECHA','CURSO','LUGAR', 'DIRECCION','FACILITADOR');        
+        $customer_head[] = array('FECHA','CURSO','LUGAR', 'DIRECCION','FACILITADOR');
         foreach ($inscriptions as $inscription) {
             $customer_head[] = array(
                 'FECHA'         => $inscription->startDate,
@@ -383,19 +413,19 @@ class UserController extends Controller
                 'DIRECCION'     => $inscription->address,
                 //'FACILITADOR'   => $facilitador[0]->full_name,   
             );
-        } 
+        }
 
         Excel::create('Lista participantes', function($excel) use($customer_array,$customer_head){
             $excel->setTitle('MMG Data');
             $excel->sheet('MMG Data', function($sheet) use ($customer_array,$customer_head){
                 $sheet->row(1, ["LISTA DE PARTICIPANTES"]);
-                $sheet->mergeCells('A1:G1');  
+                $sheet->mergeCells('A1:G1');
 
                 $sheet->fromArray($customer_head, null, 'A2', false, false);
 
                 $sheet->fromArray($customer_array, null, 'A5', false, false);
                 $sheet->cells('A1:G50', function($cells) {
-                    $cells->setAlignment('center');   
+                    $cells->setAlignment('center');
                     $cells->setFont(array(
                         'family'     => 'Calibri',
                         'size'       => '13',
@@ -596,4 +626,77 @@ class UserController extends Controller
         return $message;
     }
 
+    public function editUserCompany (Request $request) {
+        $user = User::findOrFail($request->id);
+        $company = Company::findOrFail($user);
+        // dd($company);
+
+        return view('companies.user_company',compact('user', 'company'));
+    }
+
+    public function updateUserCompany (Request $request, $id)
+    {
+
+        $this->validate($request, [
+            'dni' => 'required|alpha_num',
+            'firstlastname' => 'required',
+            'secondlastname' => 'required',
+            'name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+        ],
+            [
+                'dni.required' => 'El campo DNI es obligatorio',
+                'dni.alpha_num' => 'El campo DNI solo debe contener letras y números',
+                'firstlastname.required' => 'El campo apellido paterno es obligatorio',
+                'secondlastname.required' => 'El campo apellido materno es obligatorio',
+                'name.required' => 'El campo nombre es obligatorio',
+                'email.required' => 'El campo correo electronico es obligatorio',
+                'phone.required' => 'El campo celular es obligatorio',
+            ]);
+
+        // dd($request);
+
+        $userAuth = Auth::id();
+        $user = User::find($id);
+        $user->type_document = $request->type_document;
+        $user->dni = strtoupper(trim($request->dni));
+        $user->firstlastname = strtoupper(trim($request->firstlastname));
+        $user->secondlastname = strtoupper(trim($request->secondlastname));
+        $user->name = trim($request->name);
+        $user->email_valorization = trim($request->email_valorization);
+        $user->phone = trim($request->phone);
+
+        // dd($user);
+
+        // $user->email = $request->email;
+        // $user->code_bloqueo = $request->code_bloqueo;
+        // $user->medical_exam = $request->medical_exam;
+        //$user->id_management = $request->id_management;
+        //$user->superintendence = $request->superintendence;
+//        if ($request->image != "") {
+//            $name_original = $request->file('image')->getClientOriginalName();
+//            $name = $request->file('image');
+//            $name_hash = $name->hashName();
+//            $name->move('img/', $name_hash);
+//            $user->image = $name_original;
+//            $user->image_hash = $name_hash;
+//        }
+        // $user->birth_date = $request->birth_date;
+        // $user->gender = $request->gender;
+        // $user->origin = $request->origin;
+        // $user->address = $request->address;
+        $user->save();
+
+        $view = 'companies.index';
+        if ($user->id === $userAuth) {
+            $view = 'home';
+        }
+        $company = Company::where('id', $user->id_company)->first();
+        return redirect()->route($view)
+            ->with(
+                'success',
+                'Se a actualizado satisfactoriamente el USUARIO: '.  $user->email . ' de la EMPRESA: ' . $company->businessName
+            );
+    }
 }

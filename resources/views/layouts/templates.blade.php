@@ -88,7 +88,7 @@
 
         <li class="user-footer">
           <div class="pull-left">
-            <a href="#" class="btn btn-success"><i class="fa fa-cog" aria-hidden="true"></i> Perfil</a>
+            <a href="{{ route('edit_user_company', Auth::id()) }}" class="btn btn-success"><i class="fa fa-cog" aria-hidden="true"></i> Perfil</a>
           </div>
           <div class="pull-right">
             <a href="{{ route('logout') }}" class="btn btn-danger btn-block" onclick="event.preventDefault();
@@ -142,6 +142,9 @@
           </span>
         </a>
         <ul class="treeview-menu">
+          @if(Auth::user()->id_unity == 4)
+            <li><a href="{{ route('list_course') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Lista de Cursos</span></a></li>
+          @endif
           <li><a href="{{ route('report_company') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Reporte por empresa</span></a></li>
           <li><a href="{{ route('daily_report_required') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Status Contrata</span></a></li>
           <li><a href="{{ route('status_company') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Status Compañia</span></a></li>
@@ -217,13 +220,14 @@
     @endrole
 
 
-    @role('contabilidad')
+    @role('facturacion')
     <ul class="sidebar-menu" data-widget="tree">
-      <li class="header">CONTABILIDAD</li>
+      <li class="header">FACTURACIÓN</li>
       <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
       <li><a href="{{ route('companies_um', 1) }}"><i class="fa fa-dashboard"></i> <span>Raura</span></a></li>
       <li><a href="{{ route('companies_um', ['id' => 2]) }}"><i class="fa fa-dashboard"></i> <span>San Rafael</span></a></li>
       <li><a href="{{ route('companies_um', ['id' => 3]) }}"><i class="fa fa-dashboard"></i> <span>Pucamarca</span></a></li>
+      <li><a href="{{ route('companies_um', ['id' => 4]) }}"><i class="fa fa-dashboard"></i> <span>Pisco</span></a></li>
     </ul>
     @endrole
 

@@ -18,8 +18,14 @@ Route::get('/',function(){
 Route::get('/certificado/search', 'CertificateController@search')->name('certificate_search');
 Route::post('/certificado/search/', 'CertificateController@search')->name('certificate_search');
 Route::get('/certificado/{id}/', 'CertificateController@certification')->name('certificado');
-Route::get('/sustitutorio2', 'CertificateController@ingresar')->name('carga_import');
-Route::post('/sustitutorio2', 'CertificateController@cargardni')->name('cargardni');
+
+Route::get('/certificado/list/cursos/', 'CertificateController@course')->name('list_course');
+// Route::get('/sustitutorio2', 'CertificateController@ingresar')->name('carga_import');
+// Route::post('/sustitutorio2', 'CertificateController@cargardni')->name('cargardni');
+
+Route::get('/certificado/course/{id}/', 'CertificateController@course_certificado_pisco')->name('course_certificado');
+Route::get('/export/certificado/course/{id}/', 'CertificateController@export_certification')->name('export_course');
+Route::get('/user/all_certificado/{id}/', 'CertificateController@all_certification')->name('all_certificado');
 
 Auth::routes();
 
@@ -116,12 +122,15 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::get('report/company/u','UserController@list_participants')->name('list_participants');
 
-	Route::get('edit_participant/{id}','UserController@edit_participants')->name('edit_participant');
     Route::get('new_participant','UserController@new_participant')->name('new_participant');
+    Route::get('edit_participant/{id}','UserController@edit_participants')->name('edit_participant');
     Route::get('upload_participant','UserController@upload_participant')->name('upload_participant');
     Route::post('participant/upload-participant-validate','UserController@upload_participant_validate')->name('upload_participant_validate');
 
-	Route::put('update_participants/{id}','UserController@update_participant')->name('update_participants');
+    Route::get('user/company/edit/{id}','UserController@editUserCompany')->name('edit_user_company');
+    Route::put('user/company/update/{id}','UserController@updateUserCompany')->name('update_user_company');
+
+    Route::put('update_participants/{id}','UserController@update_participant')->name('update_participants');
 
 	Route::post('user_store','UserController@register_participant')->name('user_store');
 	Route::get('register_point/{id}','InscriptionController@register_point')->name('register_point');
@@ -133,8 +142,6 @@ Route::middleware(['auth'])->group(function(){
     Route::get('report/company','CompanyController@report_company')->name('report_company');
     Route::post('report/company','CompanyController@report_company')->name('report_company');
 
-    Route::get('report/company/um/{id}','CompanyController@report_list_company')->name('companies_um');
-    Route::post('report/company/um/{id}','CompanyController@report_list_company')->name('companies_um');
 
     Route::get('report/company/{id}/{startDate}/{endDate}','CompanyController@report_company_participant')->name('report_company_participant');
     Route::get('report/company/{id}','CompanyController@report_company_participant')->name('report_company_participant');
@@ -162,6 +169,12 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/invoice/contrata', 'InvoiceController@invoice')->name('invoice-contrata');
     Route::get('/invoice/valorizacion/{id}', 'InvoiceController@report_valorization')->name('invoice-valorizacion');
 
+    Route::post('/invoice/valorization', 'InvoiceController@valorization')->name('invoice-val');
+    Route::post('/invoice/billing', 'InvoiceController@report_valorization')->name('invoice-billing');
+    Route::post('/invoice/paid', 'InvoiceController@report_valorization')->name('invoice-paid');
+    Route::post('/invoice/anulate', 'InvoiceController@report_valorization')->name('invoice-anulate');
+    Route::post('/invoice/observation', 'InvoiceController@report_valorization')->name('invoice-observation');
+
     Route::post('/user-inscriptions/{id}', 'UserInscriptionController@anulateUserInscription')->name('anulate_user_inscription');
 
     Route::get('reporte/curso/obligatorio/', 'CourseController@reportRequiredCourses')->name('required_courses');
@@ -179,5 +192,9 @@ Route::middleware(['auth'])->group(function(){
     Route::get('raura','ChartController@raura')->name('chart_raura');
     Route::get('san-rafael','ChartController@sanrafael')->name('chart_sanrafael');
     Route::get('pucamarca','ChartController@pucamarca')->name('chart_pucamarca');
+
+    /********* Proceso de facturacion de por cada unidad minera *********/
+    Route::get('report/company/um/{id}','CompanyController@report_list_company')->name('companies_um');
+    Route::post('report/company/um/{id}','CompanyController@report_list_company')->name('companies_um');
 
 });

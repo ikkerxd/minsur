@@ -93,6 +93,6 @@
   {{ Form::hidden('type_register',1) }}
     {{ Form::hidden('email','mail@mail.com') }}
     {{ Form::hidden('phone','98764321') }}
-    {!! Html::linkRoute('list_participants', 'Cancelar  ', null, array('class' => 'btn btn-default')) !!}
-  {!! Form::submit('GUARDAR', ['class' => 'btn btn-info pull-right']) !!}{{ Form::hidden('type_register',1) }}
+    {!! Html::linkRoute('list_participants', 'Cancelar ', null, array('class' => 'btn btn-default')) !!}
+  {!! Form::submit('GUARDAR', ['class' => 'btn btn-info pull-right', 'id' => 'btn_submit_register']) !!}{{ Form::hidden('type_register',1) }}
 </div>

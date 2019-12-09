@@ -144,12 +144,23 @@
 @endrole
 
 </section>
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body" style="padding: 0; margin: 0">
+                <img src="{{ asset('img/COMUNICADO6.jpg') }}" class="center-block img-responsive" />
+            </div>
+            <div class="modal-footer" style="margin-top: 0">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
-
 
 @section('script')
 <script>
- // $('#myModal').modal('show');
+    $('#modal-default').modal('show');
 </script>
 @endsection
 

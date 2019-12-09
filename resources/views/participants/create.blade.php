@@ -22,7 +22,7 @@
               <div class="col-md-9">
                 <h3 class="box-title">Registar Participante</h3>
               </div>
-                    @if(true)
+                @if(false)
                     <div class="col-md-3">
                         <a href="#" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"> Formato</i></a>
                         <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
@@ -68,8 +68,8 @@
 
   <script type="text/javascript">
     $('#form_create_participant').submit(function(){
-      $('.btn_submit_register').prop('disabled',true);
-      $('.btn_submit_register').html('<p><i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only"></span> Registrando...</p>');
+      $('#btn_submit_register').prop('disabled',true);
+      $('#btn_submit_register').html('<p><i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only"></span> Registrando...</p>');
     });
   </script>
   @endsection

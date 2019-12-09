@@ -105,6 +105,10 @@
                         </div>
                     </div>
 
+                    <div class="box-footer clearfix">
+                        <a href="{{ route('all_certificado', $user->id) }}" class="btn btn-sm btn-default pull-right">DESCARGAR TODOS</a>
+                    </div>
+
                 </div>
             </div>
         </div>
