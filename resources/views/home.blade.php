@@ -144,18 +144,70 @@
 @endrole
 
 </section>
-<div class="modal fade" id="modal-default">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-body" style="padding: 0; margin: 0">
-                <img src="{{ asset('img/COMUNICADO6.jpg') }}" class="center-block img-responsive" />
-            </div>
-            <div class="modal-footer" style="margin-top: 0">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+@if( Auth::user()->id_unity == 1)
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body" style="padding: 0; margin: 0">
+
+                    <img src="{{ asset('img/COMUNICADO-RAURA.png') }}" class="center-block img-responsive" />
+
+                </div>
+                <div class="modal-footer" style="margin-top: 0">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+@elseif(Auth::user()->id_unity == 2)
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body" style="padding: 0; margin: 0">
+
+                    <img src="{{ asset('img/COMUNICADO6.jpg') }}" class="center-block img-responsive" />
+
+                </div>
+                <div class="modal-footer" style="margin-top: 0">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@elseif(Auth::user()->id_unity == 3)
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body" style="padding: 0; margin: 0">
+
+                    <img src="{{ asset('img/COMUNICADO-PUC.PNG') }}" class="center-block img-responsive" />
+
+                </div>
+                <div class="modal-footer" style="margin-top: 0">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@elseif(Auth::user()->id_unity == 4)
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body" style="padding: 0; margin: 0">
+
+                    <img src="{{ asset('img/COMUNICADO6.jpg') }}" class="center-block img-responsive" />
+
+                </div>
+                <div class="modal-footer" style="margin-top: 0">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@else
+
+@endif
+
 @endsection
 
 @section('script')

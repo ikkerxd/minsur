@@ -169,11 +169,11 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/invoice/contrata', 'InvoiceController@invoice')->name('invoice-contrata');
     Route::get('/invoice/valorizacion/{id}', 'InvoiceController@report_valorization')->name('invoice-valorizacion');
 
-    Route::post('/invoice/valorization', 'InvoiceController@valorization')->name('invoice-val');
+    /*Route::post('/invoice/valorization', 'InvoiceController@valorization')->name('invoice-val');
     Route::post('/invoice/billing', 'InvoiceController@report_valorization')->name('invoice-billing');
     Route::post('/invoice/paid', 'InvoiceController@report_valorization')->name('invoice-paid');
     Route::post('/invoice/anulate', 'InvoiceController@report_valorization')->name('invoice-anulate');
-    Route::post('/invoice/observation', 'InvoiceController@report_valorization')->name('invoice-observation');
+    Route::post('/invoice/observation', 'InvoiceController@report_valorization')->name('invoice-observation');*/
 
     Route::post('/user-inscriptions/{id}', 'UserInscriptionController@anulateUserInscription')->name('anulate_user_inscription');
 

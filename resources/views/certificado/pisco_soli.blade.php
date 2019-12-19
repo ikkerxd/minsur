@@ -6,7 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <title>Certificado Perurail</title>
+    <title>Certificado Pisco</title>
 
     <style>
 
@@ -166,7 +166,7 @@
 
 
 {{-- SEGUNDA OPCION --}}
-@foreach ($query as $item)
+
     <div style="position: absolute; left: 0; top: -265px; right: 0; bottom: 0px; text-align: center;z-index: -1000;">
         <img src="https://www.ighgroup.com/minsur/img/certificado/minsur-pisco.jpg" style="width: 100%; margin-top: 25%;">
 
@@ -178,7 +178,7 @@
         @if($item->curso == 'Curso Obligatorio I' or $item->curso == 'Curso Obligatorio II' or $item->curso == 'Curso Obligatorio III'or $item->curso == 'Curso Obligatorio IV' or $item->curso == 'Curso Obligatorio V' or $item->curso == 'Curso Obligatorio VI' or $item->curso == 'Curso Obligatorio VII' or $item->curso == 'Curso Obligatorio VIII' or $item->curso == 'Curso Obligatorio IX'  or $item->curso == 'Curso Obligatorio X')
             <div class="curso">{{ $item->curso }}</div>
         @else
-            <div class="curso-xl">{{ $item->curso }}</div>
+            <div class="curso-xl">{{ $item->curso }}1</div>
         @endif
 
 
@@ -299,35 +299,9 @@
             <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
-        @if($item->curso == 'Curso Obligatorio XI')
-            <div class="detalle">
-                <div class="container">
-                    <div class="item-1">Tópicos: </div>
-                    <div class="item-2">
-                        Estándar Metales Fundidos, Estándar Espacios Confinados.</div>
-                </div>
-            </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
-        @endif
-
-        @if($item->curso == 'Curso Obligatorio XII')
-            <div class="detalle">
-                <div class="container">
-                    <div class="item-1">Tópicos: </div>
-                    <div class="item-2">
-                        Respuesta a emergencias en áreas específicas - Prevención y Protección contra Incendio, Higiene Ocupacional - Factores de riesgos ergonómicos y psicosociales - Disposición de Residuos Sólidos.</div>
-                </div>
-            </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
-        @endif
-
         <div class="fecha">{{ Carbon\Carbon::parse($item->fecha)->day }} de {{ Carbon\Carbon::parse($item->fecha)->localeMonth }} del  {{ Carbon\Carbon::parse($item->fecha)->year }}</div>
     </div>
-    @if(!$loop->last)
-        <div class="page-break"></div>
-    @endif
 
-@endforeach
 {{-- FIN SEGUNDA OPCION --}}
 </body>
 </html>

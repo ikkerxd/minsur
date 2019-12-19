@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use MongoDB\Driver\Cursor;
 use MongoDB\Driver\Query;
 use PDF;
@@ -233,13 +234,23 @@ class CertificateController extends Controller
     }
 
     public function course(Request $request) {
-        $query = DB::table('courses')->whereIn('id', [97,98,99,100,101,102,103,127,128,129])->get();
+        $query = DB::table('courses')->whereIn('id', [97,98,99,100,101,102,103,127,128,129,136,139])->get();
 
         return view('certificado.course', compact('query'));
         // return $query;
     }
 
     public function course_certificado_pisco(Request $request) {
+        /*$ddd = resolve('dompdf.wrapper');
+        $ddd->loadHTML('<h1>Test</h1>');
+        $ddd->save(public_path().'/mi_carpetita/holi'.'.pdf');
+
+        $dd1 = resolve('dompdf.wrapper');
+        $dd1->loadHTML('<h1>Test2</h1>');
+        $dd1->save(public_path().'/mi_carpetita/holi1'.'.pdf');
+
+        return $ddd->stream();*/
+
         ini_set('max_execution_time', 720000);
         ini_set('memory_limit', -1);
         setlocale(LC_TIME, 'Spanish');
@@ -261,7 +272,40 @@ class CertificateController extends Controller
             ->orderBy('users.firstlastname')
             ->get();
 
-            $view = 'certificado.pisco_all';
+        // vista del diseño del certificado
+        $view = 'certificado.pisco_soli';
+        // crear la carpeta del curso dodne se van a almacenar lso certificaodos
+        $path = 'pisco/curso/'.$course->id.'-'.$course->name;
+
+        $zip_file = $course->name.'.zip';
+        $zip = new \ZipArchive();
+
+        $zip->open($zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+
+        // recorremos uno por uno cada partcipante
+        foreach ($query as $item) {
+            // nobre del arcivo 'CODIGO-DNI-NOMBRES'
+            $file = $path.'/'.$item->id.' '.$item->dni.' '.$item->participante.'.pdf';
+            // DECLARACION DEL FLAT
+            $flat = Storage::exists($file);
+
+            // Si el archivo ya se encuentra en el servidor pasa a crear el archivo y almacenarlo en el mismo
+            if (!$flat) {
+                $pdf = PDF::loadView($view, compact('item'));
+                $pdf->setPaper('a4', 'landscape');
+                $content = $pdf->download()->getOriginalContent();
+                // Almacenamos el archivo en su ruta respectiva
+                Storage::put($file, $content) ;
+            }
+
+            /*$pdf->save(
+                public_path().'/mi_carpetita/'.$item->id.' '.$item->dni.' '.$item->participante.'.pdf'
+            );*/
+        }
+
+        return response()->download($zip_file);
+
+        dd('etc');
 
         $pdf = PDF::loadView($view, compact('query'));
         $sheet = $pdf->setPaper('a4', 'landscape');

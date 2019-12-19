@@ -267,6 +267,28 @@
     <div class="horas">Con una duración de 08 horas lectivas.</div>
 @endif
 
+@if($curso == 'Curso Obligatorio XI')
+    <div class="detalle">
+        <div class="container">
+            <div class="item-1">Tópicos: </div>
+            <div class="item-2">
+                Estándar Metales Fundidos, Estándar Espacios Confinados.</div>
+        </div>
+    </div>
+    <div class="horas">Con una duración de 08 horas lectivas.</div>
+@endif
+
+@if($curso == 'Curso Obligatorio XII')
+    <div class="detalle">
+        <div class="container">
+            <div class="item-1">Tópicos: </div>
+            <div class="item-2">
+                Respuesta a emergencias en áreas específicas - Prevención y Protección contra Incendio, Higiene Ocupacional - Factores de riesgos ergonómicos y psicosociales - Disposición de Residuos Sólidos.</div>
+        </div>
+    </div>
+    <div class="horas">Con una duración de 08 horas lectivas.</div>
+@endif
+
 <spam class="title fecha">{{ $fecha }}</spam>
 </body>
 </html>
