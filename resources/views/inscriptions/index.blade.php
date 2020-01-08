@@ -30,6 +30,7 @@
         </div>           
       </div>
       <div class="box-body">
+        @include('layouts.info')
         <div class="row">
           <div class="col-md-12">
             <table class="table table-bordered table-hover text-center" id="tb_prom_cur">

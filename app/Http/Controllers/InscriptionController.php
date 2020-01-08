@@ -13,6 +13,7 @@ use App\Historico;
 use App\Company;
 use App\User;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -67,7 +68,17 @@ class InscriptionController extends Controller
 
     public function store(Request $request)
     {        
-        // $nota = '<p><b>Indicaciones para el día de realización del curso:</b></p><p></p><ol><li>El participante debe presentarse 20 minutos antes del inicio del curso.</li><li>El participante debe acudir con su DNI y/o Pasaporte(vigente).</li><li>Una vez que el participante ingresa al aula no se otorgan permisos de ausencia.</li><li>El participante deberá asistir al 100% del dictado del curso y aprobar el examen para obtener su Anexo 4.</li><li>Si el participante desaprueba la evaluación final, se deberá realizar una nueva inscripción y pago.</li><li>NO podrán ingresar al aula vistiendo short, bermudas, gorras ó lentes de sol.</li></ol><p></p>';
+        $this->validate($request ,[
+            'startDate' => 'required',
+            'address' => 'required',
+            'slot' => 'required|min:1',
+        ],
+        [
+            'startDate.required' => 'El campo fecha es obligatorio',
+            'address.required' => 'El campo dirección es obligatorio',
+            'slot.required' => 'El campo vacantes es obligatorio',
+            'slot.min' => 'El campo vacantes debe ser mayor o igual a 1',
+        ]);
 
         $course = DB::table('courses')
             ->where('id', $request->id_course)
@@ -80,20 +91,30 @@ class InscriptionController extends Controller
         $inscription->endDate = $request->startDate;
         $inscription->address = $request->address;       
         $inscription->time = $request->time;
-        $inscription->slot = 100; // defecto
+        $inscription->slot = $request->slot;
         $inscription->id_user = $request->id_user;
         $inscription->nameCurso = $course->name;
         $inscription->price = $course->price;
         $inscription->hours = $course->hh;
         $inscription->validaty = $course->validaty;
         $inscription->point_min = $course->point_min;
-        // $inscription->slot = $request->slot;
         $inscription->note = 'sin notas';
         $inscription->type = 0;               
         $inscription->state = 0;
         $inscription->save();
 
-        return redirect()->route('inscriptions.index')->with('success','La inscripcion fue registrada');
+        setlocale(LC_TIME, 'Spanish');
+
+        // Fecha larga
+        $date_start = Carbon::parse($request->startDate);
+        $dia = $date_start->day;
+        $mes = $date_start->localeMonth;
+        $anio = $date_start->year;
+        $fecha = $dia.' de '.$mes.' del '.$anio;
+
+        return redirect()
+            ->route('inscriptions.index')
+            ->with('success','La programación del curso: '. $inscription->nameCurso.' en la fecha: '.$fecha.' fue registrado correctamente.');
     }
 
     public function show($id)
@@ -163,6 +184,18 @@ class InscriptionController extends Controller
 
     public function update(Request $request, $id)
     {
+        $this->validate($request ,[
+            'startDate' => 'required',
+            'address' => 'required',
+            'slot' => 'required|min:1',
+        ],
+        [
+            'startDate.required' => 'El campo fecha es obligatorio',
+            'address.required' => 'El campo dirección es obligatorio',
+            'slot.required' => 'El campo vacantes es obligatorio',
+            'slot.min' => 'El campo vacantes debe ser mayor o igual a 1',
+        ]);
+
         $course = DB::table('courses')
             ->where('id', $request->id_course)
             ->get()[0];
@@ -175,7 +208,7 @@ class InscriptionController extends Controller
         $inscription->endDate = $request->startDate;
         $inscription->address = $request->address;       
         $inscription->time = $request->time;       
-        $inscription->slot = 100;
+        $inscription->slot = $request->slot;
         $inscription->note = 'sin notas';
         $inscription->nameCurso = $course->name;
         $inscription->price = $course->price;
@@ -184,9 +217,18 @@ class InscriptionController extends Controller
         $inscription->point_min = $course->point_min;
         $inscription->save();
 
-        return redirect()->route('inscriptions.index')->with('success','La inscripción fue actualizada');
-    }
+        // Fecha larga
+        setlocale(LC_TIME, 'Spanish');
+        $date_start = Carbon::parse($request->startDate);
+        $dia = $date_start->day;
+        $mes = $date_start->localeMonth;
+        $anio = $date_start->year;
+        $fecha = $dia.' de '.$mes.' del '.$anio;
 
+        return redirect()
+            ->route('inscriptions.index')
+            ->with('success', 'La programación del curso: '. $inscription->nameCurso.' en la fecha: '.$fecha.' fue actulizada correctamente.');
+    }
     
     public function destroy(Request $request, $id)
     {

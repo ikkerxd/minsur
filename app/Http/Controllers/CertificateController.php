@@ -16,6 +16,7 @@ use MongoDB\Driver\Cursor;
 use MongoDB\Driver\Query;
 use PDF;
 use Excel;
+use ZipArchive;
 
 class CertificateController extends Controller
 {
@@ -277,39 +278,63 @@ class CertificateController extends Controller
         // crear la carpeta del curso dodne se van a almacenar lso certificaodos
         $path = 'pisco/curso/'.$course->id.'-'.$course->name;
 
-        $zip_file = $course->name.'.zip';
-        $zip = new \ZipArchive();
+        $path_zip = storage_path('app/').'pisco/curso/';
+        $zip_file = $course->id.'-'.str_slug($course->name).'.zip';
+        $zip = new ZipArchive();
 
-        $zip->open($zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+        if ($zip->open($path_zip.$zip_file, ZipArchive::CREATE|ZipArchive::OVERWRITE) === TRUE) {
 
-        // recorremos uno por uno cada partcipante
-        foreach ($query as $item) {
-            // nobre del arcivo 'CODIGO-DNI-NOMBRES'
-            $file = $path.'/'.$item->id.' '.$item->dni.' '.$item->participante.'.pdf';
-            // DECLARACION DEL FLAT
-            $flat = Storage::exists($file);
+            // recorremos uno por uno cada partcipante
+            foreach ($query as $item) {
+                // nobre del arcivo 'CODIGO-DNI-NOMBRES'
+                $nameFile = $item->id.' '.$item->dni.' '.$item->participante.'.pdf';
+                $file = $path.'/'.$nameFile;
+                //dd($path_zip);
+                // DECLARACION DEL FLAT
+                $flat = Storage::exists($file);
 
-            // Si el archivo ya se encuentra en el servidor pasa a crear el archivo y almacenarlo en el mismo
-            if (!$flat) {
-                $pdf = PDF::loadView($view, compact('item'));
-                $pdf->setPaper('a4', 'landscape');
-                $content = $pdf->download()->getOriginalContent();
-                // Almacenamos el archivo en su ruta respectiva
-                Storage::put($file, $content) ;
+                // Si el archivo ya se encuentra en el servidor pasa a crear el archivo y almacenarlo en el mismo
+                if (!$flat) {
+                    $pdf = PDF::loadView($view, compact('item'));
+                    $pdf->setPaper('a4', 'landscape');
+                    $content = $pdf->download()->getOriginalContent();
+                    // Almacenamos el archivo en su ruta respectiva
+                    Storage::put($file, $content);
+                    //dd($file);
+                    if(file_exists(storage_path('app/').$file)) {
+                        $zip->addFile(storage_path('app/').$file, $nameFile);
+                    };
+                } else {
+                    // si el archvo ya se encuentra en el servidor
+                    if(file_exists(storage_path('app/').$file)) {
+                        $zip->addFile(storage_path('app/').$file, $nameFile);
+                    };
+                }
+
+                /*$pdf->save(
+                    public_path().'/mi_carpetita/'.$item->id.' '.$item->dni.' '.$item->participante.'.pdf'
+                );*/
             }
+        } else {
+            dd('no entre');
+        };
+        // dd($path_zip.$zip_file);
+        //return response()->download($zip_file);
 
-            /*$pdf->save(
-                public_path().'/mi_carpetita/'.$item->id.' '.$item->dni.' '.$item->participante.'.pdf'
-            );*/
-        }
+        $zip->close();
+        $headers = array(
+            'Content-Type' => 'application/octet-stream',
+        );
 
-        return response()->download($zip_file);
+        $filetopath=$path_zip.$zip_file;
 
-        dd('etc');
+        return response()->download($filetopath, $zip_file, $headers);
 
-        $pdf = PDF::loadView($view, compact('query'));
-        $sheet = $pdf->setPaper('a4', 'landscape');
-        return $sheet->download('certificado del '.$course->name.'.pdf');
+//        dd('etc');
+//
+//        $pdf = PDF::loadView($view, compact('query'));
+//        $sheet = $pdf->setPaper('a4', 'landscape');
+//        return $sheet->download('certificado del '.$course->name.'.pdf');
     }
 
     public function export_certification(Request $request) {

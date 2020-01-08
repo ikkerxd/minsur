@@ -116,6 +116,8 @@ class InvoiceController extends Controller
         // --
 
         // recuperamos los id
+
+        $cod = $invoice->id;
         $id_company = $invoice->id_company;
         $id_unity = $invoice->id_unity;
 
@@ -200,7 +202,7 @@ class InvoiceController extends Controller
 
         $data = json_decode( json_encode($participant), true);
 
-        Excel::load($source, function ($file) use($company, $horas, $name_unity, $periodo, $cobros, $total, $precio, $total_texto, $data) {
+        Excel::load($source, function ($file) use($cod, $company, $horas, $name_unity, $periodo, $cobros, $total, $precio, $total_texto, $data) {
             // RECUPERAMOS EL FORMATO BASE DE LA VALORIZACION
             $sheet = $file->getExcel()->getActiveSheet(0);
 
@@ -208,11 +210,12 @@ class InvoiceController extends Controller
             $sheet->setCellValue('C7', $company->businessName);
             $sheet->setCellValue('G7', $company->ruc);
             $sheet->setCellValue('C9', strtoupper($name_unity));
+            $sheet->setCellValue('H9', $cod);
             $sheet->setCellValue('H10', $total);
             $sheet->setCellValue('C10', $periodo);
-            $sheet->setCellValue('E18', $horas);
+            $sheet->setCellValue('E18', $precio);
             $sheet->setCellValue('F18', $cobros);
-            $sheet->setCellValue('G18', $precio);
+            $sheet->setCellValue('G18', $horas);
             $sheet->setCellValue('B24', $total_texto);
             // Segunda hoja
 
