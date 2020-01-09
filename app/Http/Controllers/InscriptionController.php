@@ -59,9 +59,13 @@ class InscriptionController extends Controller
         $locations = Location::pluck('name','id');  
         $courses = Course::where('id_unity', $user->id_unity)->pluck('name','id');
         $users = DB::table('users')
+            ->select(
+                DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name, users.id AS id')
+            )
             ->join('role_user','users.id','=','role_user.user_id')
-            ->select(DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name, users.id AS id'))
             ->whereIn('role_id', [1, 3])
+            ->whereNotIn('users.id', [12753]) // administrativo
+            ->where('users.state', 0)
             ->pluck('full_name', 'id');
         return view('inscriptions.create',compact('locations','courses','users'));
     }
@@ -175,10 +179,14 @@ class InscriptionController extends Controller
         $locations = Location::pluck('name','id');
         $courses = Course::where('id_unity', $user->id_unity)->pluck('name','id');
         $users = DB::table('users')
-                        ->join('role_user','users.id','=','role_user.user_id')
-                        ->select(DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name, users.id AS id'))
-                        ->whereIn('role_id', [1, 3])
-                        ->pluck('full_name', 'id');
+            ->select(
+                DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name, users.id AS id')
+            )
+            ->join('role_user','users.id','=','role_user.user_id')
+            ->whereIn('role_id', [1, 3])
+            ->whereNotIn('users.id', [12753]) // administrativo
+            ->where('users.state', 0)
+            ->pluck('full_name', 'id');
         return view('inscriptions.edit',compact('inscription','locations','courses','users'));
     }
 
