@@ -22,7 +22,6 @@ class CertificateController extends Controller
 {
 
     public function certification (Request $request) {
-
         $query = DB::table('user_inscriptions')
             ->select(
                 'users.dni', 'users.firstlastname', 'users.secondlastname', 'users.name', 'users.id_unity',
@@ -70,10 +69,10 @@ class CertificateController extends Controller
             $view = 'certificado.pisco';
         }
 
-        // dd($curso);
         $pdf = PDF::loadView($view, compact('dni', 'nombres', 'curso', 'fecha', 'codigo', 'xl'))
             ->setPaper('a4', 'landscape');
         return $pdf->download('CERTIFICADO DE  '.$dni.'-'.$nombres.'- CURSO '.strtoupper($curso.'.pdf'));
+
     }
 
     public function search (Request $request) {
@@ -235,22 +234,13 @@ class CertificateController extends Controller
     }
 
     public function course(Request $request) {
-        $query = DB::table('courses')->whereIn('id', [97,98,99,100,101,102,103,127,128,129,136,139])->get();
+        $query = DB::table('courses')->whereIn('id', [98,97,99,100,101,102,103,127,128,129,136,139])->get();
 
         return view('certificado.course', compact('query'));
         // return $query;
     }
 
     public function course_certificado_pisco(Request $request) {
-        /*$ddd = resolve('dompdf.wrapper');
-        $ddd->loadHTML('<h1>Test</h1>');
-        $ddd->save(public_path().'/mi_carpetita/holi'.'.pdf');
-
-        $dd1 = resolve('dompdf.wrapper');
-        $dd1->loadHTML('<h1>Test2</h1>');
-        $dd1->save(public_path().'/mi_carpetita/holi1'.'.pdf');
-
-        return $ddd->stream();*/
 
         ini_set('max_execution_time', 720000);
         ini_set('memory_limit', -1);

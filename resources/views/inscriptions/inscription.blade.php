@@ -54,7 +54,7 @@
                 <th>FECHA</th>      
                 <th>HORARIO</th>
                 <th>HORAS DEL CURSO</th>
-                <th>VACANTES</th>        
+                <th>VACANTES</th>
                 <th></th>
               </tr>
             </thead>

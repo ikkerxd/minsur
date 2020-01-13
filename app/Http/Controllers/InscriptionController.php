@@ -56,7 +56,7 @@ class InscriptionController extends Controller
     public function create()
     {
         $user = Auth::user();
-        $locations = Location::pluck('name','id');  
+        $locations = Location::pluck('name','id');
         $courses = Course::where('id_unity', $user->id_unity)->pluck('name','id');
         $users = DB::table('users')
             ->select(
@@ -64,25 +64,25 @@ class InscriptionController extends Controller
             )
             ->join('role_user','users.id','=','role_user.user_id')
             ->whereIn('role_id', [1, 3])
-            ->whereNotIn('users.id', [12753]) // administrativo
+            ->whereNotIn('users.id', [12753, 2683, 4141, 14078, 1097, 14179, 14180, 7053]) // administrativo
             ->where('users.state', 0)
             ->pluck('full_name', 'id');
         return view('inscriptions.create',compact('locations','courses','users'));
     }
 
     public function store(Request $request)
-    {        
+    {
         $this->validate($request ,[
             'startDate' => 'required',
             'address' => 'required',
             'slot' => 'required|min:1',
         ],
-        [
-            'startDate.required' => 'El campo fecha es obligatorio',
-            'address.required' => 'El campo dirección es obligatorio',
-            'slot.required' => 'El campo vacantes es obligatorio',
-            'slot.min' => 'El campo vacantes debe ser mayor o igual a 1',
-        ]);
+            [
+                'startDate.required' => 'El campo fecha es obligatorio',
+                'address.required' => 'El campo direcci車n es obligatorio',
+                'slot.required' => 'El campo vacantes es obligatorio',
+                'slot.min' => 'El campo vacantes debe ser mayor o igual a 1',
+            ]);
 
         $course = DB::table('courses')
             ->where('id', $request->id_course)
@@ -90,10 +90,10 @@ class InscriptionController extends Controller
 
         $inscription = new Inscription;
         $inscription->id_course = $request->id_course;
-        $inscription->id_location = $request->id_location;       
-        $inscription->startDate = $request->startDate;       
+        $inscription->id_location = $request->id_location;
+        $inscription->startDate = $request->startDate;
         $inscription->endDate = $request->startDate;
-        $inscription->address = $request->address;       
+        $inscription->address = $request->address;
         $inscription->time = $request->time;
         $inscription->slot = $request->slot;
         $inscription->id_user = $request->id_user;
@@ -103,7 +103,7 @@ class InscriptionController extends Controller
         $inscription->validaty = $course->validaty;
         $inscription->point_min = $course->point_min;
         $inscription->note = 'sin notas';
-        $inscription->type = 0;               
+        $inscription->type = 0;
         $inscription->state = 0;
         $inscription->save();
 
@@ -118,11 +118,11 @@ class InscriptionController extends Controller
 
         return redirect()
             ->route('inscriptions.index')
-            ->with('success','La programación del curso: '. $inscription->nameCurso.' en la fecha: '.$fecha.' fue registrado correctamente.');
+            ->with('success','La programaci車n del curso: '. $inscription->nameCurso.' en la fecha: '.$fecha.' fue registrado correctamente.');
     }
 
     public function show($id)
-    {        
+    {
         $inscription =  DB::table('inscriptions')
             ->select('inscriptions.id as id',
                 'id_course', 'nameCurso','locations.name as nameLocation',
@@ -172,7 +172,6 @@ class InscriptionController extends Controller
         return view('inscriptions.show',compact('inscription','participants'));
     }
 
-    
     public function edit(Inscription $inscription)
     {
         $user = Auth::user();
@@ -184,7 +183,7 @@ class InscriptionController extends Controller
             )
             ->join('role_user','users.id','=','role_user.user_id')
             ->whereIn('role_id', [1, 3])
-            ->whereNotIn('users.id', [12753]) // administrativo
+            ->whereNotIn('users.id', [12753, 2683, 4141, 14078, 1097, 14179, 14180, 7053]) // administrativo
             ->where('users.state', 0)
             ->pluck('full_name', 'id');
         return view('inscriptions.edit',compact('inscription','locations','courses','users'));
@@ -197,25 +196,25 @@ class InscriptionController extends Controller
             'address' => 'required',
             'slot' => 'required|min:1',
         ],
-        [
-            'startDate.required' => 'El campo fecha es obligatorio',
-            'address.required' => 'El campo dirección es obligatorio',
-            'slot.required' => 'El campo vacantes es obligatorio',
-            'slot.min' => 'El campo vacantes debe ser mayor o igual a 1',
-        ]);
+            [
+                'startDate.required' => 'El campo fecha es obligatorio',
+                'address.required' => 'El campo direcci車n es obligatorio',
+                'slot.required' => 'El campo vacantes es obligatorio',
+                'slot.min' => 'El campo vacantes debe ser mayor o igual a 1',
+            ]);
 
         $course = DB::table('courses')
             ->where('id', $request->id_course)
             ->get()[0];
 
         $inscription = Inscription::find($id);
-        $inscription->id_course = $request->id_course;       
+        $inscription->id_course = $request->id_course;
         $inscription->id_location = $request->id_location;
         $inscription->id_user = $request->id_user;
         $inscription->startDate = $request->startDate;
         $inscription->endDate = $request->startDate;
-        $inscription->address = $request->address;       
-        $inscription->time = $request->time;       
+        $inscription->address = $request->address;
+        $inscription->time = $request->time;
         $inscription->slot = $request->slot;
         $inscription->note = 'sin notas';
         $inscription->nameCurso = $course->name;
@@ -235,17 +234,17 @@ class InscriptionController extends Controller
 
         return redirect()
             ->route('inscriptions.index')
-            ->with('success', 'La programación del curso: '. $inscription->nameCurso.' en la fecha: '.$fecha.' fue actulizada correctamente.');
+            ->with('success', 'La programaci車n del curso: '. $inscription->nameCurso.' en la fecha: '.$fecha.' fue actulizada correctamente.');
     }
-    
+
     public function destroy(Request $request, $id)
     {
-        if ($request->ajax()) {            
+        if ($request->ajax()) {
             $inscription = \App\Inscription::find($id);
-            $inscription->delete();  
-            return response()->json([                
+            $inscription->delete();
+            return response()->json([
                 'success'   => $inscription->name.' fue eliminado.',
-            ]);          
+            ]);
         }
     }
 
@@ -275,22 +274,22 @@ class InscriptionController extends Controller
         $dt = date('Y-m-d', time() - 60*60*0);
 
         $inscriptions =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')
-                        ->join('courses','inscriptions.id_course','=','courses.id')
-                        ->join('type_courses','type_courses.id','=','courses.id_type_course')
-                        ->select('inscriptions.id as id',
-                            'inscriptions.nameCurso as nameCourse',
-                            'locations.name as nameLocation',
-                            'inscriptions.startDate',
-                            'inscriptions.endDate',
-                            'inscriptions.address',
-                            'inscriptions.time',
-                            'inscriptions.slot','inscriptions.state as state','inscriptions.price','inscriptions.hours','minimum')
-                        ->where('type_courses.id',$idTypeCourse)
-                        ->where('id_location',$idLocation)
-                        ->where('startDate','>=',$dt)
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses','inscriptions.id_course','=','courses.id')
+            ->join('type_courses','type_courses.id','=','courses.id_type_course')
+            ->select('inscriptions.id as id',
+                'inscriptions.nameCurso as nameCourse',
+                'locations.name as nameLocation',
+                'inscriptions.startDate',
+                'inscriptions.endDate',
+                'inscriptions.address',
+                'inscriptions.time',
+                'inscriptions.slot','inscriptions.state as state','inscriptions.price','inscriptions.hours','minimum')
+            ->where('type_courses.id',$idTypeCourse)
+            ->where('id_location',$idLocation)
+            ->where('startDate','>=',$dt)
             ->orderBy('startDate','asc')
-                        ->get();
+            ->get();
         return response()->json($inscriptions);
     }
 
@@ -300,31 +299,31 @@ class InscriptionController extends Controller
         $user = Auth::user();
         $id_company = $user->id_company;
         $id_rol = DB::table('role_user')
-                    ->where('user_id', $idUser)
-                    ->first()->role_id;
+            ->where('user_id', $idUser)
+            ->first()->role_id;
 
         if ($id_rol == 1) {
             $id_company = 2;
         }
 
         $businessName = DB::table('companies')
-                         ->join('users','users.id_company','=','companies.id')
-                         ->where('users.id',$idUser)
-                         ->select('businessName')->first()->businessName;
+            ->join('users','users.id_company','=','companies.id')
+            ->where('users.id',$idUser)
+            ->select('businessName')->first()->businessName;
 
         // datos de la inscripcion
         $inscriptions =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')    
-                        ->join('courses','inscriptions.id_course','=','courses.id')
-                        ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation', 'locations.id as idLocaltion','startDate','address','slot','hh','time','minimum')
-                        ->where('inscriptions.id',$id)
-                        ->get();
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses','inscriptions.id_course','=','courses.id')
+            ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation', 'locations.id as idLocaltion','startDate','address','slot','hh','time','minimum')
+            ->where('inscriptions.id',$id)
+            ->get();
         //participantes inscritos
         $parts_insc = DB::table('user_inscriptions')
-                        ->select('id_user')
-                        ->where('id_inscription',$id)
-                        ->where('id_user_inscription',$user->id)
-                        ->whereIn('state',[0,1]);
+            ->select('id_user')
+            ->where('id_inscription',$id)
+            ->where('id_user_inscription',$user->id)
+            ->whereIn('state',[0,1]);
         // numero de paticpntes incritos por el momento de acuerdo al  contrata
         $count_part = $parts_insc->count();
         // id de prticpants
@@ -335,58 +334,58 @@ class InscriptionController extends Controller
         }
         // Lista de partcipntes q no estan inscritos
         $participants = DB::table('users')
-                        ->select('users.id as id','dni', 'firstlastname','secondlastname','name',
-                            'position','superintendence', 'users.state')
-                        ->join('role_user','role_user.user_id','=','users.id')
-                        ->where('id_unity', $user->id_unity)
-                        ->where('id_company',$id_company)
-                        ->where('role_id',5)
-                        ->where('users.state','='. 0)
-                        ->whereNotIn('users.id', $ids_part)
-                        ->orderBy('firstlastname', 'ASC')
-                        ->get();
+            ->select('users.id as id','dni', 'firstlastname','secondlastname','name',
+                'position','superintendence', 'users.state')
+            ->join('role_user','role_user.user_id','=','users.id')
+            ->where('id_unity', $user->id_unity)
+            ->where('id_company',$id_company)
+            ->where('role_id',5)
+            ->where('users.state','='. 0)
+            ->whereNotIn('users.id', $ids_part)
+            ->orderBy('firstlastname', 'ASC')
+            ->get();
 
         return view('inscriptions.register',
             compact('inscriptions','idUser','id','businessName','participants', 'count_part'));
-    } 
+    }
 
     public function details()
     {
         $idUser = Auth::id();
         $dt = date('Y-m-d');
         $inscriptions = DB::table('user_inscriptions')
-                        ->select(
-                            'user_inscriptions.id_inscription',
-                            'inscriptions.startDate',
-                            'inscriptions.nameCurso', 'locations.name', 'inscriptions.state')
-                        ->distinct()
-                        ->join('inscriptions', 'inscriptions.id', '=', 'user_inscriptions.id_inscription')
-                        ->join('locations', 'locations.id', '=', 'inscriptions.id_location')
-                        ->where('id_user_inscription', $idUser)
-                        ->where('inscriptions.startDate', '>=', $dt)
-                        ->get();
+            ->select(
+                'user_inscriptions.id_inscription',
+                'inscriptions.startDate',
+                'inscriptions.nameCurso', 'locations.name', 'inscriptions.state')
+            ->distinct()
+            ->join('inscriptions', 'inscriptions.id', '=', 'user_inscriptions.id_inscription')
+            ->join('locations', 'locations.id', '=', 'inscriptions.id_location')
+            ->where('id_user_inscription', $idUser)
+            ->where('inscriptions.startDate', '>=', $dt)
+            ->get();
 
         return view('inscriptions.details',compact('inscriptions'));
     }
 
     public function details_id($id)
-    {        
+    {
         $idUser = Auth::id();
         $inscriptions =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')    
-                        ->join('courses','inscriptions.id_course','=','courses.id')
-                        ->join('user_inscriptions','inscriptions.id','=','user_inscriptions.id_inscription')                        
-                        ->select('user_inscriptions.id as id','locations.name as nameLocation','courses.name as nameCourse','startDate','time','note','address')
-                        ->where('id_user',$idUser)                        
-                        ->where('user_inscriptions.id',$id)
-                        ->get();
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses','inscriptions.id_course','=','courses.id')
+            ->join('user_inscriptions','inscriptions.id','=','user_inscriptions.id_inscription')
+            ->select('user_inscriptions.id as id','locations.name as nameLocation','courses.name as nameCourse','startDate','time','note','address')
+            ->where('id_user',$idUser)
+            ->where('user_inscriptions.id',$id)
+            ->get();
         $participants = DB::table('users')
-                        ->join('user_inscriptions','users.id','=','user_inscriptions.id_user')        
-                        // ->select('user_inscriptions.id as id','locations.name as nameLocation','courses.name as nameCourse','startDate','time','note','address')
-                        ->where('user_inscriptions.id',$id)                        
-                        ->get();
+            ->join('user_inscriptions','users.id','=','user_inscriptions.id_user')
+            // ->select('user_inscriptions.id as id','locations.name as nameLocation','courses.name as nameCourse','startDate','time','note','address')
+            ->where('user_inscriptions.id',$id)
+            ->get();
         $participants = DB::table('participants')->where('id_user_inscription',$id)->where('state','!=',2)->get();
-        
+
         return view('inscriptions.details_users');
     }
 
@@ -395,12 +394,12 @@ class InscriptionController extends Controller
         //$decrypted = Crypt::decryptString($id);
         //$participants = DB::table('participants')->where('id_user_inscription',$decrypted)->get();
 
-        //$participants = DB::table('participants')->where('id_user_inscription',$id)->get();        
+        //$participants = DB::table('participants')->where('id_user_inscription',$id)->get();
         return view('inscriptions.register_participants',compact('participants','id'));
     }
     public function buscar_dni($dni)
     {
-        $client = new Client(['base_uri' => 'https://api.reniec.cloud','timeout'  => 2.0,]);        
+        $client = new Client(['base_uri' => 'https://api.reniec.cloud','timeout'  => 2.0,]);
         $response = $client->request('GET', "dni/{$dni}", ['verify' => false]);
         //$response = $client->request('GET', "dni/{$dni}");
         $result = json_decode($response->getBody()->getContents());
@@ -409,18 +408,18 @@ class InscriptionController extends Controller
     public function reschedule(Request $request)
     {
         $id_user_inscription = $request->input('id');
-        
+
         $participants = DB::table('participants')
-                        ->where('id_user_inscription',$id_user_inscription)
-                        ->where('state','!=',2)
-                        ->get();
+            ->where('id_user_inscription',$id_user_inscription)
+            ->where('state','!=',2)
+            ->get();
 
         $type_courses = TypeCourse::all();
         $locations = Location::all();
         $inscriptions =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')    
-                        ->join('courses','inscriptions.id_course','=','courses.id')                    
-                        ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state')->get();
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses','inscriptions.id_course','=','courses.id')
+            ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state')->get();
 
         return view('inscriptions.reschedule',compact('inscriptions','participants','id_user_inscription','type_courses','locations'));
     }
@@ -428,34 +427,34 @@ class InscriptionController extends Controller
     public function cancel(Request $request)
     {
         $id_user_inscription = $request->input('id');
-        
+
         $participants = DB::table('participants')->where('id_user_inscription',$id_user_inscription)->where('state','!=',2)->get();
 
         $type_courses = TypeCourse::all();
         $locations = Location::all();
         $inscriptions =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')    
-                        ->join('courses','inscriptions.id_course','=','courses.id')                    
-                        ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state')->get();
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses','inscriptions.id_course','=','courses.id')
+            ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state')->get();
 
         return view('inscriptions.cancel',compact('inscriptions','participants','id_user_inscription','type_courses','locations'));
     }
     public function detail_inscription($id)
     {
-         $inscription =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')    
-                        ->join('courses','inscriptions.id_course','=','courses.id')                    
-                        ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state')
-                        ->where('inscriptions.id',$id)
-                        ->get();
+        $inscription =  DB::table('inscriptions')
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses','inscriptions.id_course','=','courses.id')
+            ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state')
+            ->where('inscriptions.id',$id)
+            ->get();
 
         $detail_inscriptions =  DB::table('inscriptions')
-                        ->join('user_inscriptions','inscriptions.id','=','user_inscriptions.id_inscription')   
-                        ->join('users','users.id','=','user_inscriptions.id_user')                    
-                        ->join('companies','companies.id','=','users.id_company')                    
-                        ->select('ruc','businessName','voucher','voucher_hash')
-                        ->where('inscriptions.id',$id)
-                        ->get();
+            ->join('user_inscriptions','inscriptions.id','=','user_inscriptions.id_inscription')
+            ->join('users','users.id','=','user_inscriptions.id_user')
+            ->join('companies','companies.id','=','users.id_company')
+            ->select('ruc','businessName','voucher','voucher_hash')
+            ->where('inscriptions.id',$id)
+            ->get();
         return view('inscriptions.detail_inscriptions',compact('detail_inscriptions','inscription'));
     }
 
@@ -471,24 +470,24 @@ class InscriptionController extends Controller
             $id_company = 2;
         }
         $inscriptions =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')
-                        ->select('inscriptions.id as id',
-                            'nameCurso',
-                            'locations.name as nameLocation',
-                            'startDate','address',
-                            'time',
-                            'inscriptions.state as state')
-                        ->where('inscriptions.id',$id)
-                        ->get();
-        
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->select('inscriptions.id as id',
+                'nameCurso',
+                'locations.name as nameLocation',
+                'startDate','address',
+                'time',
+                'inscriptions.state as state')
+            ->where('inscriptions.id',$id)
+            ->get();
+
         $participants = DB::table('users')
-                        ->join('user_inscriptions','users.id','=','user_inscriptions.id_user') 
-                        ->select('users.id as id',
-                            'dni','firstlastname','secondlastname','name',
-                            'position','subcontrata','user_inscriptions.state',
-                            'user_inscriptions.id as id_user_inscription')
-                        ->where('user_inscriptions.id_inscription', $id)
-                        ->where('users.id_company', $id_company)
+            ->join('user_inscriptions','users.id','=','user_inscriptions.id_user')
+            ->select('users.id as id',
+                'dni','firstlastname','secondlastname','name',
+                'position','subcontrata','user_inscriptions.state',
+                'user_inscriptions.id as id_user_inscription')
+            ->where('user_inscriptions.id_inscription', $id)
+            ->where('users.id_company', $id_company)
 //                        ->where(function ($query) use ($id) {
 //                            $query->where('id_user_inscription','=',$id)
 //                                    ->where('user_inscriptions.state','=','0');
@@ -497,41 +496,41 @@ class InscriptionController extends Controller
 //                            $query->where('id_user_inscription','=',$id)
 //                                ->where('user_inscriptions.state','=','1');
 //                        })
-                        ->get();
-        
+            ->get();
+
         return view('inscriptions.details_users',compact('inscriptions','id','participants'));
     }
 
     public function register_point($id)
     {
         $inscription =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')    
-                        ->join('courses','inscriptions.id_course','=','courses.id')                    
-                        ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state','hh')
-                        ->where('inscriptions.id',$id)
-                        ->get();
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses','inscriptions.id_course','=','courses.id')
+            ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state','hh')
+            ->where('inscriptions.id',$id)
+            ->get();
 
         $facilitador = DB::table('user_inscriptions')
-                        ->join('users','users.id','=','user_inscriptions.id_user')    
-                        ->join('role_user','users.id','=','role_user.user_id')
-                        ->where('role_id',3)
-                        ->where('user_inscriptions.id_inscription',$id)
-                        ->select(DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name'))
-                        ->get();
+            ->join('users','users.id','=','user_inscriptions.id_user')
+            ->join('role_user','users.id','=','role_user.user_id')
+            ->where('role_id',3)
+            ->where('user_inscriptions.id_inscription',$id)
+            ->select(DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name'))
+            ->get();
 
-                        
+
         $participants = DB::table('user_inscriptions')
-                        ->join('users','users.id','=','user_inscriptions.id_user')    
-                        ->join('role_user','users.id','=','role_user.user_id')
-                        ->join('companies','companies.id','=','users.id_company')
-                        ->select('user_inscriptions.id as id','firstlastname','secondlastname','name','assistence','point','obs','dni')
-                        ->where('role_id',5)
-                        ->where('user_inscriptions.id_inscription',$id)
-                        ->where('users.id','<>',179)
-                        ->where('user_inscriptions.state','<>',2)
-                        ->orderBy('firstlastname','asc')
-                        ->get();
-                        
+            ->join('users','users.id','=','user_inscriptions.id_user')
+            ->join('role_user','users.id','=','role_user.user_id')
+            ->join('companies','companies.id','=','users.id_company')
+            ->select('user_inscriptions.id as id','firstlastname','secondlastname','name','assistence','point','obs','dni')
+            ->where('role_id',5)
+            ->where('user_inscriptions.id_inscription',$id)
+            ->where('users.id','<>',179)
+            ->where('user_inscriptions.state','<>',2)
+            ->orderBy('firstlastname','asc')
+            ->get();
+
         return view('inscriptions.register_point',compact('inscription','facilitador','participants'));
     }
     public function update_point(Request $request){
@@ -542,34 +541,34 @@ class InscriptionController extends Controller
                 'point'         => $request->input('point')[$key],
                 'obs'           => $request->input('obs')[$key],
             );
-            $id_user_inscription = $request->input('id_user_inscription')[$key];            
+            $id_user_inscription = $request->input('id_user_inscription')[$key];
             UserInscription::whereId($id_user_inscription)->update($data);
-        }  
+        }
         return redirect()->route('register_point',$request->id_inscription)->with('success','Las notas y asistencia fueron actualizadas');
     }
     public function medical_center(){
 
         $inscriptions =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')    
-                        ->join('courses','inscriptions.id_course','=','courses.id')
-                        ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state','inscriptions.type as type')
-                        ->where('type',0)
-                        ->where('startDate','>',date('2019-03-01'))
-                        ->orderBy('startDate','asc')
-                        ->get();
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses','inscriptions.id_course','=','courses.id')
+            ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state','inscriptions.type as type')
+            ->where('type',0)
+            ->where('startDate','>',date('2019-03-01'))
+            ->orderBy('startDate','asc')
+            ->get();
 
         return view('inscriptions.medical_center',compact('inscriptions'));
     }
     public function json_list_prom_curso()
     {
         $inscriptions =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')    
-                        ->join('courses','inscriptions.id_course','=','courses.id')
-                        ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state','inscriptions.type as type')
-                        ->where('type',0)
-                        ->where('startDate','>',date('2019-03-01'))
-                        ->orderBy('startDate','asc')
-                        ->get();
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses','inscriptions.id_course','=','courses.id')
+            ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state','inscriptions.type as type')
+            ->where('type',0)
+            ->where('startDate','>',date('2019-03-01'))
+            ->orderBy('startDate','asc')
+            ->get();
         return Datatables::of($inscriptions)->make(true);
     }
 
@@ -577,56 +576,56 @@ class InscriptionController extends Controller
     {
         $id = Crypt::decryptString($id);
         $inscription =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')    
-                        ->join('courses','inscriptions.id_course','=','courses.id')                    
-                        ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state','hh')
-                        ->where('inscriptions.id',$id)
-                        ->get();
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses','inscriptions.id_course','=','courses.id')
+            ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state','hh')
+            ->where('inscriptions.id',$id)
+            ->get();
 
         $facilitador = DB::table('user_inscriptions')
-                        ->join('users','users.id','=','user_inscriptions.id_user')    
-                        ->join('role_user','users.id','=','role_user.user_id')
-                        ->where('role_id',3)
-                        ->where('user_inscriptions.id_inscription',$id)
-                        ->select(DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name'))
-                        ->get();
+            ->join('users','users.id','=','user_inscriptions.id_user')
+            ->join('role_user','users.id','=','role_user.user_id')
+            ->where('role_id',3)
+            ->where('user_inscriptions.id_inscription',$id)
+            ->select(DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name'))
+            ->get();
 
         return view('inscriptions.upload_participants',compact('inscription','facilitador'));
     }
     public function centroMedico()
     {
         $inscriptions =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')    
-                        ->join('courses','inscriptions.id_course','=','courses.id')
-                        ->join('user_inscriptions','user_inscriptions.id_inscription','=','inscriptions.id')
-                        ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state','inscriptions.type as type')
-                        ->where('type',0)
-                        ->where('user_inscriptions.id_user',552)
-                        ->orderBy('startDate','desc')
-                        ->get();
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses','inscriptions.id_course','=','courses.id')
+            ->join('user_inscriptions','user_inscriptions.id_inscription','=','inscriptions.id')
+            ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state','inscriptions.type as type')
+            ->where('type',0)
+            ->where('user_inscriptions.id_user',552)
+            ->orderBy('startDate','desc')
+            ->get();
         return view('centromedico.index',compact('inscriptions'));
     }
     public function createInscription()
     {
-        $locations = Location::pluck('name','id');  
+        $locations = Location::pluck('name','id');
         $courses = Course::where('id',10)->pluck('name','id');
         return view('CentroMedico.create',compact('locations','courses'));
     }
     public function save_cm(Request $request)
     {
         $inscription = new Inscription;
-        $inscription->id_course = $request->id_course;       
-        $inscription->id_location = $request->id_location;       
-        $inscription->startDate = $request->startDate;       
-        $inscription->endDate = $request->endDate;       
-        $inscription->address = $request->address;       
-        $inscription->time = $request->time;       
-        $inscription->slot = 0;       
-        $inscription->note = "";       
-        $inscription->type = 0;               
+        $inscription->id_course = $request->id_course;
+        $inscription->id_location = $request->id_location;
+        $inscription->startDate = $request->startDate;
+        $inscription->endDate = $request->endDate;
+        $inscription->address = $request->address;
+        $inscription->time = $request->time;
+        $inscription->slot = 0;
+        $inscription->note = "";
+        $inscription->type = 0;
         $inscription->state = 0;
         $inscription->save();
-        
+
         $id_new_inscription = $inscription->id;
 
         $userInscription = new UserInscription;
@@ -653,18 +652,18 @@ class InscriptionController extends Controller
     public function register_cm($id)
     {
         $inscription =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')    
-                        ->join('courses','inscriptions.id_course','=','courses.id')                    
-                        ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state','hh')
-                        ->where('inscriptions.id',$id)
-                        ->get();
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses','inscriptions.id_course','=','courses.id')
+            ->select('inscriptions.id as id','courses.name as nameCourse','locations.name as nameLocation','startDate','endDate','address','time','slot','inscriptions.state as state','hh')
+            ->where('inscriptions.id',$id)
+            ->get();
 
         $facilitador = DB::table('user_inscriptions')
-                        ->join('users','users.id','=','user_inscriptions.id_user')
-                        ->where('user_inscriptions.id_inscription',$id)
-                        ->select(DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name'))
-                        ->get();
-        
+            ->join('users','users.id','=','user_inscriptions.id_user')
+            ->where('user_inscriptions.id_inscription',$id)
+            ->select(DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name'))
+            ->get();
+
         return view('CentroMedico.register',compact('inscription','facilitador'));
     }
 
@@ -678,9 +677,9 @@ class InscriptionController extends Controller
         $ids = $request->get('ids');
 
         $cantidad = DB::table('user_inscriptions')
-                    ->where('id_inscription',$id_inscription)
-                    ->where('state',0)
-                    ->count();
+            ->where('id_inscription',$id_inscription)
+            ->where('state',0)
+            ->count();
 
         // cambimos el estado a 2(anulado) del particonte
         DB::table('user_inscriptions')
@@ -693,7 +692,7 @@ class InscriptionController extends Controller
 
         if ($cantidad > 0) {
             $id_inscription = $request->id_inscription;
-            
+
             return redirect()->route('detail-inscriptionc', $id_inscription);
         }
 
@@ -715,21 +714,21 @@ class InscriptionController extends Controller
 
         // aumentamos el numero de vacantes a la aula actual
         DB::table('inscriptions')
-           ->where('id',$id_inscription)
-           ->increment('slot', count($ids));
+            ->where('id',$id_inscription)
+            ->increment('slot', count($ids));
 
         // actualizacion de los prticipantes a su nueva aula
         foreach ($ids as $id) {
-           DB::table('user_inscriptions')->where('id', $id)
+            DB::table('user_inscriptions')->where('id', $id)
                 ->update([
                     'id_inscription' => $id_course,
                     'state' => 1,
                 ]);
         }
-        // disminuir el numero de vacantes en la nueva aula 
+        // disminuir el numero de vacantes en la nueva aula
         DB::table('inscriptions')
-           ->where('id',$id_course)
-           ->decrement('slot', count($ids));
+            ->where('id',$id_course)
+            ->decrement('slot', count($ids));
 
         return redirect()->route('inscription_participants_details');
     }
@@ -740,57 +739,57 @@ class InscriptionController extends Controller
         $id = $request->id_inscription;
         $user = Auth::user();
         $inscriptions =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location', '=', 'locations.id')
-                        ->select('inscriptions.id as id','nameCurso',
-                            'locations.name as nameLocation','startDate', 'id_course',
-                            'address','time','inscriptions.state as state')
-                        ->where('inscriptions.id', $id)
-                        ->get();
+            ->join('locations','inscriptions.id_location', '=', 'locations.id')
+            ->select('inscriptions.id as id','nameCurso',
+                'locations.name as nameLocation','startDate', 'id_course',
+                'address','time','inscriptions.state as state')
+            ->where('inscriptions.id', $id)
+            ->get();
         // inscripcion al que esta inscrito
         $id_insc = $inscriptions[0]->id;
 
         $participants = DB::table('users')
-                        ->join('user_inscriptions','users.id', '=', 'user_inscriptions.id_user')
-                        ->select('users.id as id','dni','firstlastname','secondlastname','name','user_inscriptions.state', 'user_inscriptions.id as idUI')
-                        ->whereIn('user_inscriptions.id',$ids)
-                        ->get();
+            ->join('user_inscriptions','users.id', '=', 'user_inscriptions.id_user')
+            ->select('users.id as id','dni','firstlastname','secondlastname','name','user_inscriptions.state', 'user_inscriptions.id as idUI')
+            ->whereIn('user_inscriptions.id',$ids)
+            ->get();
 
         $courses =  DB::table('inscriptions')
-                        ->join('locations','inscriptions.id_location','=','locations.id')
-                        ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
-                        ->select('inscriptions.id as id', 'nameCurso',
-                            'locations.name as nameLocation','startDate',
-                            'time','slot',
-                            'inscriptions.state as state','hours')
-                        ->where('type',0)
-                        ->where('slot','>',0)
-                        ->where('courses.id_unity', $user->id_unity)
-                        ->where('startDate', '>=', date('Y-m-d'))
-                        ->where('inscriptions.id', '<>', $id_insc)
-                        ->orderBy('startDate', 'des')
-                        ->get();
+            ->join('locations','inscriptions.id_location','=','locations.id')
+            ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
+            ->select('inscriptions.id as id', 'nameCurso',
+                'locations.name as nameLocation','startDate',
+                'time','slot',
+                'inscriptions.state as state','hours')
+            ->where('type',0)
+            ->where('slot','>',0)
+            ->where('courses.id_unity', $user->id_unity)
+            ->where('startDate', '>=', date('Y-m-d'))
+            ->where('inscriptions.id', '<>', $id_insc)
+            ->orderBy('startDate', 'des')
+            ->get();
 
         return view('inscriptions.reschedule_user', compact('inscriptions', 'participants', 'courses'));
     }
     public function register_part_manual()
     {
-         $solicitantes = DB::table('users')
-                        ->join('role_user','users.id','=','role_user.user_id')   
-                        ->select('users.id','users.name','firstlastname','secondlastname')  
-                        ->where('users.state',0)                   
-                        ->where('role_id',4)
-                        ->get(); 
+        $solicitantes = DB::table('users')
+            ->join('role_user','users.id','=','role_user.user_id')
+            ->select('users.id','users.name','firstlastname','secondlastname')
+            ->where('users.state',0)
+            ->where('role_id',4)
+            ->get();
 
         $participantes = DB::table('users')
-                        ->join('role_user','users.id','=','role_user.user_id') 
-                         ->select('users.id','users.name','firstlastname','secondlastname')  
-                        ->where('users.state',0)                          
-                        ->where('role_id',5)
-                        ->get(); 
+            ->join('role_user','users.id','=','role_user.user_id')
+            ->select('users.id','users.name','firstlastname','secondlastname')
+            ->where('users.state',0)
+            ->where('role_id',5)
+            ->get();
         return view('inscriptions.register_participant_manual',compact('solicitantes','participantes'));
     }
     public function register_part_manual_post(Request $request)
-    {        
+    {
         $userInscription = new UserInscription;
         $userInscription->id_inscription = $request->id;
         $userInscription->id_user = $request->solicitante;
@@ -983,7 +982,7 @@ class InscriptionController extends Controller
 
         $pago = 'a cuenta';
         if ($id_localidad == 2) {
-         $pago = 'al contado';
+            $pago = 'al contado';
         }
 
         // id de la unidad minera del facilitador

@@ -24,212 +24,222 @@
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
   <style>
-  body {
-    color: #566787;
-    font-family: 'Varela Round', sans-serif;
-    font-size:12px;
-  }
-</style>
-@yield('style')
+    body {
+      color: #566787;
+      font-family: 'Varela Round', sans-serif;
+      font-size:12px;
+    }
+  </style>
+  @yield('style')
 
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
-  <div class="wrapper">
+<div class="wrapper">
 
-    <header class="main-header">
-      <a href="#" class="logo">
+  <header class="main-header">
+    <a href="#" class="logo">
 
-        @if( Auth::user()->id_unity == 1)
-          <span class="logo-mini"><b>RAU</b></span>
-          <span class="logo-lg"><b>RAU</b>RA</span>
-        @elseif(Auth::user()->id_unity == 2)
-          <span class="logo-mini"><b>SAN</b></span>
-          <span class="logo-lg"><b>SAN</b> RAFAEL</span>
-        @elseif(Auth::user()->id_unity == 3)
-          <span class="logo-mini"><b>PUC</b></span>
-          <span class="logo-lg"><b>PUC</b>AMARCA</span>
-        @elseif(Auth::user()->id_unity == 4)
-          <span class="logo-mini"><b>PIS</b></span>
-          <span class="logo-lg"><b>PIS</b>CO</span>
-        @else
-          <span class="logo-mini"><b>IGH</b></span>
-          <span class="logo-lg"><b>IGH</b>PERU</span>
-        @endif
+      @if( Auth::user()->id_unity == 1)
+        <span class="logo-mini"><b>RAU</b></span>
+        <span class="logo-lg"><b>RAU</b>RA</span>
+      @elseif(Auth::user()->id_unity == 2)
+        <span class="logo-mini"><b>SAN</b></span>
+        <span class="logo-lg"><b>SAN</b> RAFAEL</span>
+      @elseif(Auth::user()->id_unity == 3)
+        <span class="logo-mini"><b>PUC</b></span>
+        <span class="logo-lg"><b>PUC</b>AMARCA</span>
+      @elseif(Auth::user()->id_unity == 4)
+        <span class="logo-mini"><b>PIS</b></span>
+        <span class="logo-lg"><b>PIS</b>CO</span>
+      @else
+        <span class="logo-mini"><b>IGH</b></span>
+        <span class="logo-lg"><b>IGH</b>PERU</span>
+      @endif
 
+    </a>
+
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
       </a>
 
-      <nav class="navbar navbar-static-top">
-        <!-- Sidebar toggle button-->
-        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-          <span class="sr-only">Toggle navigation</span>
-        </a>
-
-        <div class="navbar-custom-menu">
-          <ul class="nav navbar-nav">
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
 
 
-    <!-- User Account: style can be found in dropdown.less -->
-    <li class="dropdown user user-menu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        <img src="{{ asset('img/contrata.png') }}" class="user-image" alt="User Image">
-        <span class="hidden-xs">{{ Auth::user()->name }} {{ Auth::user()->firstlastname }}</span>
-      </a>
-      <ul class="dropdown-menu">
-        <!-- User image -->
-        <li class="user-header">
+          <!-- User Account: style can be found in dropdown.less -->
+          <li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img src="{{ asset('img/contrata.png') }}" class="user-image" alt="User Image">
+              <span class="hidden-xs">{{ Auth::user()->name }} {{ Auth::user()->firstlastname }}</span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <img src="{{ asset('img/contrata.png') }}" class="img-circle" alt="User Image">
+
+                <p>
+                  {{ Auth::user()->name }}
+                  <small>{{ Auth::user()->email }}</small>
+                </p>
+              </li>
+
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a href="{{ route('edit_user_company', Auth::id()) }}" class="btn btn-success"><i class="fa fa-cog" aria-hidden="true"></i> Perfil</a>
+                </div>
+                <div class="pull-right">
+                  <a href="{{ route('logout') }}" class="btn btn-danger btn-block" onclick="event.preventDefault();
+document.getElementById('logout-form').submit();">
+                    <i class="fa fa-power-off" aria-hidden="true"></i> Salir
+                  </a>
+                  <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    {{ csrf_field() }}
+                  </form>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel -->
+      <div class="user-panel">
+        <div class="pull-left image">
           <img src="{{ asset('img/contrata.png') }}" class="img-circle" alt="User Image">
+        </div>
+        <div class="pull-left info">
+          <p>{{ Auth::user()->name }} {{ Auth::user()->firstlastname }}</p>
+          <a href="#"><i class="fa fa-circle text-success"></i>online</a>
+        </div>
+      </div>
+      <!-- sidebar menu: : style can be found in sidebar.less -->
 
-          <p>
-            {{ Auth::user()->name }}
-            <small>{{ Auth::user()->email }}</small>
-          </p>
+      @role('admin-general')
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">ADMINISTRADOR</li>
+        <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
+        @can('inscriptions.index')
+          <li><a href="{{route('inscriptions.index')}}"><i class="fa fa-pencil-square-o"></i> <span>Programación Cursos</span></a></li>
+        @endcan
+        @can('participants.index')
+          <li><a href="{{route('search-participant')}}"><i class="fa fa-check-circle-o"></i> <span>Buscar Participante</span></a></li>
+        @endcan
+
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-line-chart"></i> <span>Reportes</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            @if(Auth::user()->id_unity == 4)
+              <li><a href="{{ route('list_course') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Lista de Cursos</span></a></li>
+            @endif
+            @if(Auth::id() <> 2683 && Auth::id() <> 4141 && Auth::id() <> 14078 && Auth::id() <> 1097 && Auth::id() <> 14179 && Auth::id() <> 14180 && Auth::id() <> 7053)
+
+              <li><a href="{{ route('report_company') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Reporte por empresa</span></a></li>
+              <li><a href="{{ route('daily_report_required') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Status Contrata</span></a></li>
+              <li><a href="{{ route('status_company') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Status Compañia</span></a></li>
+            @endif
+          </ul>
         </li>
 
-        <li class="user-footer">
-          <div class="pull-left">
-            <a href="{{ route('edit_user_company', Auth::id()) }}" class="btn btn-success"><i class="fa fa-cog" aria-hidden="true"></i> Perfil</a>
-          </div>
-          <div class="pull-right">
-            <a href="{{ route('logout') }}" class="btn btn-danger btn-block" onclick="event.preventDefault();
-            document.getElementById('logout-form').submit();">
-            <i class="fa fa-power-off" aria-hidden="true"></i> Salir
-          </a>
+        <li class="header">COMPAÑIA PARTICIPANTE</li>
+        <li><a href="{{ route('list_participants') }}"><i class="fa fa-users" aria-hidden="true"></i> <span>Participantes</span></a></li>
 
-          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            {{ csrf_field() }}
-          </form>
-        </div>
-      </li>
-    </ul>
-  </li>
-</ul>
-</div>
-</nav>
-</header>
+        @if(Auth::id() <> 2683 && Auth::id() <> 4141 && Auth::id() <> 14078 && Auth::id() <> 1097 && Auth::id() <> 14179 && Auth::id() <> 14180 && Auth::id() <> 7053)
 
-<aside class="main-sidebar">
-  <!-- sidebar: style can be found in sidebar.less -->
-  <section class="sidebar">
-    <!-- Sidebar user panel -->
-    <div class="user-panel">
-      <div class="pull-left image">
-        <img src="{{ asset('img/contrata.png') }}" class="img-circle" alt="User Image">
-      </div>
-      <div class="pull-left info">
-        <p>{{ Auth::user()->name }} {{ Auth::user()->firstlastname }}</p>
-        <a href="#"><i class="fa fa-circle text-success"></i>online</a>
-      </div>
-    </div>
-    <!-- sidebar menu: : style can be found in sidebar.less -->
+          <li><a href="{{url('/inscription')}}"><i class="fa fa-pencil-square-o"></i> <span>Inscripcíon</span></a></li>
+          <li><a href="{{url('/details')}}"><i class="fa fa-list-ul"></i> <span>Detalle Inscripción</span></a></li>
+        @endif
+        <li class="header">CONFIGURACION</li>
+        @can('companies.index')
+          <li><a href="{{route('companies.index')}}"><i class="fa fa-building-o"></i> <span>Empresas</span></a></li>
+        @endcan
 
-    @role('admin-general')
-    <ul class="sidebar-menu" data-widget="tree">
-      <li class="header">ADMINISTRADOR</li>
-      <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
-      @can('inscriptions.index')
-      <li><a href="{{route('inscriptions.index')}}"><i class="fa fa-pencil-square-o"></i> <span>Programación Cursos</span></a></li>
-      @endcan
-      @can('participants.index')
-      <li><a href="{{route('search-participant')}}"><i class="fa fa-check-circle-o"></i> <span>Buscar Participante</span></a></li>
-      @endcan
+        @can('type_courses.index')
+          @if(Auth::id() <> 2683 && Auth::id() <> 4141 && Auth::id() <> 14078 && Auth::id() <> 1097 && Auth::id() <> 14179 && Auth::id() <> 14180 && Auth::id() <> 7053)
 
-      <li class="treeview">
-        <a href="#">
-          <i class="fa fa-line-chart"></i> <span>Reportes</span>
-          <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-        </a>
-        <ul class="treeview-menu">
-          @if(Auth::user()->id_unity == 4)
-            <li><a href="{{ route('list_course') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Lista de Cursos</span></a></li>
+            <li><a href="{{ route('type_courses.index')}}"><i class="fa fa-bookmark-o"></i> <span>Tipo Cursos</span></a></li>
           @endif
-          <li><a href="{{ route('report_company') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Reporte por empresa</span></a></li>
-          <li><a href="{{ route('daily_report_required') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Status Contrata</span></a></li>
-          <li><a href="{{ route('status_company') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Status Compañia</span></a></li>
-        </ul>
-      </li>
 
-      <li class="header">COMPAÑIA PARTICIPANTE</li>
-      <li><a href="{{ route('list_participants') }}"><i class="fa fa-users" aria-hidden="true"></i> <span>Participantes</span></a></li>
-      <li><a href="{{url('/inscription')}}"><i class="fa fa-pencil-square-o"></i> <span>Inscripcíon</span></a></li>
-      <li><a href="{{url('/details')}}"><i class="fa fa-list-ul"></i> <span>Detalle Inscripción</span></a></li>
-      <li class="header">CONFIGURACION</li>
-      @can('companies.index')
-      <li><a href="{{route('companies.index')}}"><i class="fa fa-building-o"></i> <span>Empresas</span></a></li>
-      @endcan
+        @endcan
 
-      @can('type_courses.index')
-      <li><a href="{{ route('type_courses.index')}}"><i class="fa fa-bookmark-o"></i> <span>Tipo Cursos</span></a></li>
-      @endcan
-
-      @can('courses.index')
-      <li><a href="{{route('courses.index')}}"><i class="fa fa-book"></i> <span>Cursos</span></a></li>
+        @can('courses.index')
+          <li><a href="{{route('courses.index')}}"><i class="fa fa-book"></i> <span>Cursos</span></a></li>
       @endcan
 
       <!--@can('roles.index')
-      <li><a href="{{ route('roles.index') }}"><i class="fa fa-users" aria-hidden="true"></i> <span>Roles</span></a></li>
-      @endcan
-      -->
+        <li><a href="{{ route('roles.index') }}"><i class="fa fa-users" aria-hidden="true"></i> <span>Roles</span></a></li>
+        @endcan
+              -->
       <!--@can('users.index')
-      <li><a href="{{ route('users.index') }}"><i class="fa fa-user-o"></i> <span>Usuarios</span></a></li>
-      @endcan
-      -->
-    </ul>
-    @endrole
+        <li><a href="{{ route('users.index') }}"><i class="fa fa-user-o"></i> <span>Usuarios</span></a></li>
+        @endcan
+              -->
+      </ul>
+      @endrole
 
-    @role('facilitador' )
-    <ul class="sidebar-menu" data-widget="tree">
-      <li class="header">FACILITADORES</li>
-      <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
+      @role('facilitador' )
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">FACILITADORES</li>
+        <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
 
-      <li><a href="{{route('inscriptions.index')}}"><i class="fa fa-pencil-square-o"></i> <span>Programación Cursos</span></a></li>
+        <li><a href="{{route('inscriptions.index')}}"><i class="fa fa-pencil-square-o"></i> <span>Programación Cursos</span></a></li>
 
-    </ul>
-    @endrole
-    @role('admin-cont')
-    <ul class="sidebar-menu" data-widget="tree">
-      <li class="header">CONTRATISTA</li>
-      <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
-      <li><a href="{{route('search_participant_contrata')}}"><i class="fa fa-search-minus"></i> <span>Buscar Participante</span></a></li>
-      <li><a href="{{ route('list_participants') }}"><i class="fa fa-users" aria-hidden="true"></i> <span>Participantes</span></a></li>
-      <li><a href="{{url('/inscription')}}"><i class="fa fa-pencil-square-o"></i> <span>Inscripcíon</span></a></li>
-      <li><a href="{{url('/details')}}"><i class="fa fa-list-ul"></i> <span>Detalle Inscripción</span></a></li>
+      </ul>
+      @endrole
+      @role('admin-cont')
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">CONTRATISTA</li>
+        <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
+        <li><a href="{{route('search_participant_contrata')}}"><i class="fa fa-search-minus"></i> <span>Buscar Participante</span></a></li>
+        <li><a href="{{ route('list_participants') }}"><i class="fa fa-users" aria-hidden="true"></i> <span>Participantes</span></a></li>
+        <li><a href="{{url('/inscription')}}"><i class="fa fa-pencil-square-o"></i> <span>Inscripcíon</span></a></li>
+        <li><a href="{{url('/details')}}"><i class="fa fa-list-ul"></i> <span>Detalle Inscripción</span></a></li>
 
-      <li class="treeview">
-        <a href="#">
-          <i class="fa fa-line-chart"></i> <span>Reportes</span>
-          <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-        </a>
-        <ul class="treeview-menu">
-          <li><a href="{{ route('required_courses') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Reporte cursos obligatorio</span></a></li>
-        </ul>
-      </li>
-
-
-      @if(false)
-        <li><a href="{{url('/all-um')}}"><i class="fa fa-list-ul"></i> <span>Inicio</span></a></li>
-        <li><a href="{{url('/raura')}}"><i class="fa fa-list-ul"></i> <span>Raura</span></a></li>
-        <li><a href="{{url('/san-rafael')}}"><i class="fa fa-list-ul"></i> <span>San Rafael</span></a></li>
-        <li><a href="{{url('/pucamarca')}}"><i class="fa fa-list-ul"></i> <span>Pucamarca</span></a></li>
-    @endif
-    </ul>
-    @endrole
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-line-chart"></i> <span>Reportes</span>
+            <span class="pull-right-container">
+<i class="fa fa-angle-left pull-right"></i>
+</span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="{{ route('required_courses') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Reporte cursos obligatorio</span></a></li>
+          </ul>
+        </li>
 
 
-    @role('facturacion')
-    <ul class="sidebar-menu" data-widget="tree">
-      <li class="header">FACTURACIÓN</li>
-      <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
-      <li><a href="{{ route('companies_um', 1) }}"><i class="fa fa-dashboard"></i> <span>Raura</span></a></li>
-      <li><a href="{{ route('companies_um', ['id' => 2]) }}"><i class="fa fa-dashboard"></i> <span>San Rafael</span></a></li>
-      <li><a href="{{ route('companies_um', ['id' => 3]) }}"><i class="fa fa-dashboard"></i> <span>Pucamarca</span></a></li>
-      <li><a href="{{ route('companies_um', ['id' => 4]) }}"><i class="fa fa-dashboard"></i> <span>Pisco</span></a></li>
-    </ul>
-    @endrole
+        @if(false)
+          <li><a href="{{url('/all-um')}}"><i class="fa fa-list-ul"></i> <span>Inicio</span></a></li>
+          <li><a href="{{url('/raura')}}"><i class="fa fa-list-ul"></i> <span>Raura</span></a></li>
+          <li><a href="{{url('/san-rafael')}}"><i class="fa fa-list-ul"></i> <span>San Rafael</span></a></li>
+          <li><a href="{{url('/pucamarca')}}"><i class="fa fa-list-ul"></i> <span>Pucamarca</span></a></li>
+        @endif
+      </ul>
+      @endrole
+
+
+      @role('facturacion')
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">FACTURACIÓN</li>
+        <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
+        <li><a href="{{ route('companies_um', 1) }}"><i class="fa fa-dashboard"></i> <span>Raura</span></a></li>
+        <li><a href="{{ route('companies_um', ['id' => 2]) }}"><i class="fa fa-dashboard"></i> <span>San Rafael</span></a></li>
+        <li><a href="{{ route('companies_um', ['id' => 3]) }}"><i class="fa fa-dashboard"></i> <span>Pucamarca</span></a></li>
+        <li><a href="{{ route('companies_um', ['id' => 4]) }}"><i class="fa fa-dashboard"></i> <span>Pisco</span></a></li>
+      </ul>
+      @endrole
 
       @role('super-sis' )
       <ul class="sidebar-menu" data-widget="tree">
@@ -240,20 +250,20 @@
         <li><a href="#"><i class="fa fa-cloud-download" aria-hidden="true"></i> <span>Formato Excel</span></a></li>
       </ul>
       @endrole
-  </section>
-</aside>
+    </section>
+  </aside>
 
-<div class="content-wrapper">
-  <div class="loader-page"></div>
-  @yield('content')
-</div>
-<footer class="main-footer" style="font-size: 10px">
-  <div class="pull-right hidden-xs">
-    <b>Version</b> 1.0.0
+  <div class="content-wrapper">
+    <div class="loader-page"></div>
+    @yield('content')
   </div>
-  <strong>Copyright &copy; 2019 <a href="https://www.ighgroup.com/peru.html" target="_black">INVERITAS GLOBAL HOLDINGS PERU</a>.</strong> All rights
-  reserved.
-</footer>
+  <footer class="main-footer" style="font-size: 10px">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 1.0.0
+    </div>
+    <strong>Copyright &copy; 2019 <a href="https://www.ighgroup.com/peru.html" target="_black">INVERITAS GLOBAL HOLDINGS PERU</a>.</strong> All rights
+    reserved.
+  </footer>
 
 </div>
 <script src="{{ asset('js/jquery.min.js') }}"></script>

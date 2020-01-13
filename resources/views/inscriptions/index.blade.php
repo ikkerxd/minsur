@@ -22,12 +22,14 @@
   <div class="row">
     <div class="col-md-12">
       <div class="box">
+        @if(Auth::id() <> 2683 && Auth::id() <> 4141 && Auth::id() <> 14078 && Auth::id() <> 1097 && Auth::id() <> 14179 && Auth::id() <> 14180 && Auth::id() <> 7053)
         <div class="box-header with-border">
          <div class="input-group input-group-sm">
           @can('inscriptions.create')
           <a href="{{route('inscriptions.create')}}" class="btn btn-primary btn-sm"><i class="fa fa-plus" aria-hidden="true"></i> NUEVA PROGRAMACIÓN</a>
           @endcan            
-        </div>           
+        </div>
+        @endif
       </div>
       <div class="box-body">
         @include('layouts.info')
@@ -60,18 +62,20 @@
                       <a href="{{ route('inscriptions.show', $inscription->id) }}" class="btn btn-info">
                         <i class="fa fa-list-ul" aria-hidden="true"></i> Consolidado
                       </a>
+                    @if(Auth::id() <> 2683 && Auth::id() <> 4141 && Auth::id() <> 14078 && Auth::id() <> 1097 && Auth::id() <> 14179 && Auth::id() <> 14180 && Auth::id() <> 7053)
 
-                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-                      <span class="caret"></span>
-                      <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                      <li>
-                        <a href="{{ route('inscriptions.edit', $inscription->id) }}">
-                          <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar
-                        </a>
-                      </li>
-                    </ul>
+                      <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                      </button>
+                      <ul class="dropdown-menu" role="menu">
+                        <li>
+                          <a href="{{ route('inscriptions.edit', $inscription->id) }}">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar
+                          </a>
+                        </li>
+                      </ul>
+                    @endif
                   </div>
                 </td>       
               </tr>

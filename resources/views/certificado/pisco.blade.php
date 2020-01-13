@@ -144,7 +144,7 @@
 @if($curso == 'Curso Obligatorio I' or $curso == 'Curso Obligatorio II' or $curso == 'Curso Obligatorio III' or
     $curso == 'Curso Obligatorio IV' or $curso == 'Curso Obligatorio V'or $curso == 'Curso Obligatorio VI'or
     $curso == 'Curso Obligatorio VII'or trim($curso) == 'Curso Obligatorio VIII'or $curso == 'Curso Obligatorio IX'or
-    $curso == 'Curso Obligatorio X')
+    $curso == 'Curso Obligatorio X' or $curso == 'Curso Obligatorio XI' or $curso == 'Curso Obligatorio XII')
     <span class="title curso">{{ $curso }}</span>
 @else
     <span class="title curso-xl">{{ $curso }}</span>
