@@ -124,9 +124,7 @@ class CompanyController extends Controller
         return redirect()->route('register');
     }
 
-    /************/
     /****** FUNCION PARA RECUPERAR LA RELACION DE EMPRESAS QUE SE DBBEN FACTURAR Y VALORIZAR ******/
-    /************/
 
     public function report_company(Request $request) {
         // Recuperamos el usuario usuario de la compañia
@@ -562,17 +560,44 @@ class CompanyController extends Controller
         })->export('xlsx');
     }
 
-    /*public function enviar_correo()
-    {
-        $data = array('title' => 'Adjunto comprobante de pago');
-        Mail::send('dynamic_email_template',$data, function($message){
-            $pathToFile = 'https://cdne.ojo.pe/thumbs/uploads/img/2018/05/16/imagen-de-mario-sin-bigote-deja-en-shock-a-muchos--256300-jpg_700x0.jpg';  
-            $mime = 'image/jpg';
-            $display = 'voucher';
-            $message->to('lvegameza@gmail.com')
-                    ->subject('Laravel File attachment')
-                    ->attach($pathToFile, ['as' => $display, 'mime' => $mime]);;
-            $message->from('sistemas@ighgroup.com','Sistema Online - MMG');
-        });
-    }*/
+    public function report_list_participants(Request $request) {
+        // recuperamos el id de la unidad minera
+        $id_um = Auth::user()->id_unity;
+
+        // Inicializamos los rangos de fechas
+        $start = null;
+        $end = null;
+
+        // Inicializamos las variables para el proceso
+        $query = [];
+
+        if ($request->method() == 'POST') {
+            dd('entre pos');
+            // fechas de corte de la valorizacion
+            $start = $request->startDate;
+            $end = $request->endDate;
+
+            $query = DB::table('user_inscriptions')
+                ->select(
+                    'UP.dni', 'UP.firstlastname', 'UP.secondlastname', 'UP.name',
+                    'inscriptions.nameCurso', 'inscriptions.nameCurso', 'inscriptions.startDate',
+                    'inscriptions.point_min', 'user_inscriptions.point'
+                )
+                ->join('users', 'users.id', '=', 'user_inscriptions.id_user_inscription')
+                ->join('companies', 'companies.id', '=', 'users.id_company')
+
+                ->join('users as UP', 'UP.id', '=', 'user_inscriptions.id_user')
+
+                ->join('inscriptions', 'inscriptions.id', '=', 'user_inscriptions.id_inscription')
+                ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
+
+                ->whereIn('user_inscriptions.state', [0,1])
+                ->where('users.id_unity', $id_um)
+
+                ->whereBetween('inscriptions.startDate', [$start, $end])
+                ->get();
+        }
+        return view('companies.report_list_participants',
+            compact('query', 'start', 'end'));
+    }
 }

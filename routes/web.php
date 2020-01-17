@@ -197,4 +197,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('report/company/um/{id}','CompanyController@report_list_company')->name('companies_um');
     Route::post('report/company/um/{id}','CompanyController@report_list_company')->name('companies_um');
 
+    /********* Reporte de de prtcipante del cliente *********/
+    Route::get('report/participante','CompanyController@report_list_participants')->name('report_participants');
+    Route::post('report/participante','CompanyController@report_list_participants')->name('report_participants');
 });

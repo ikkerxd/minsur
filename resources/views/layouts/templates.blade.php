@@ -211,11 +211,12 @@ document.getElementById('logout-form').submit();">
           <a href="#">
             <i class="fa fa-line-chart"></i> <span>Reportes</span>
             <span class="pull-right-container">
-<i class="fa fa-angle-left pull-right"></i>
-</span>
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
           </a>
           <ul class="treeview-menu">
             <li><a href="{{ route('required_courses') }}"><i class="fa fa-usd" aria-hidden="true"></i> <span>Reporte cursos obligatorio</span></a></li>
+            <li><a href="{{ route('report_participants') }}"><i class="fa fa-user" aria-hidden="true"></i> <span>Reporte Participantes</span></a></li>
           </ul>
         </li>
 
