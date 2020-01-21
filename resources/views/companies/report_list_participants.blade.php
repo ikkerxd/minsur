@@ -22,7 +22,7 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">Reportes de Participantes</h3>
                     </div>
-                    {!! Form::open(['route' => ['report_list_participants']]) !!}
+                    {!! Form::open(['route' => 'report_participants']) !!}
                     <div class="box-body">
 
                         <div class='col-md-3'>
@@ -51,7 +51,7 @@
 
                         <div class="col-md-2">
                             <div class="form-group">
-                                <button type="submit" name="action" value="read" class="btn bg-primary" style=" position: relative;top: 21.5px;">Buscar</button>
+                                <button type="submit" name="action" value="sub" class="btn bg-primary" style=" position: relative;top: 21.5px;">Buscar</button>
                             </div>
                         </div>
 
@@ -68,6 +68,11 @@
             <div class="col-sm-12">
                 <div class="box box-default">
                     <hr>
+                    @if($query)
+                        <div class="box-header">
+                            <a href="{{ route('export_list_participant', [Auth::id(), Request::get('startDate'), Request::get('endDate')] ) }}" class="btn btn-sm btn-success"><i class="fa fa-file-excel-o"></i> Descargar</a>
+                        </div>
+                    @endif
                     <div class="box-body table-responsive">
                         <table class="table table-bordered table-striped" id="datatable">
                             <thead>
@@ -77,44 +82,35 @@
                                 <th>Apellido Paterno</th>
                                 <th>Apellido Materno</th>
                                 <th>Nombres</th>
-                                <th>Cargo</th>
-                                <th>Area</th>
+                                <th>Tipo</th>
                                 <th>Curso</th>
                                 <th>Fecha</th>
-                                <th>Tipo</th>
                                 <th>Nota minima</th>
                                 <th>Nota</th>
                             </tr>
                             </thead>
                             <tbody>
-                           {{-- @foreach($query as $company)
-
-                                <tr  class="{{ ($company->horas == null || $company->cobros == null) ? '' : ((($company->horas != $company->total_horas) || ($company->cobros != $company->total_cobros)) ? 'danger' : '' ) }} {{ $company->cobros }} {{ $company->total_cobros }} "
-                                     data-id="{{ $company->id }}"
-                                    data-company="{{ $company->codigo_company }}"
-                                    data-observation = "{{ $company->observation }}"
-                                    data-state = "{{ $company->state }}">
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $company->ruc }}</td>
-                                    <td>
-                                        <a href="{{route(
-                                        'report_company_participant',
-                                        [$company->id_user_inscription.'/'.Request::get('startDate').'/'.Request::get('endDate')] ) }}"
-                                        >
-                                            {{ $company->businessName }}
-                                        </a>
-                                    </td>
-                                    <td>{{ $company->email_valorization }}</td>
-                                    <td>{{ $company->phone }}</td>
-                                    <td>{{ $company->total_horas }}</td>
-                                    <td>{{ $company->total_cobros }}</td>
-                                    <td>{{ $company->monto_cobros }}</td>
-                                </tr>
-                            @endforeach--}}
+                                @foreach($query as $participant)
+                                    <tr  class="">
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $participant->dni }}</td>
+                                        <td>{{ $participant->firstlastname }}</td>
+                                        <td>{{ $participant->secondlastname }}</td>
+                                        <td>{{ $participant->name }}</td>
+                                        @if($participant->payment_form == "a cuenta")
+                                            <td>UNDIAD MINERA</td>
+                                        @else
+                                            <td>EXTRAORDINARIO</td>
+                                        @endif
+                                        <td>{{ $participant->nameCurso }}</td>
+                                        <td>{{ $participant->startDate }} {{ $participant->time }}</td>
+                                        <td>{{ $participant->point_min }}</td>
+                                        <td>{{ $participant->nota }}</td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>

@@ -196,6 +196,8 @@ class CompanyController extends Controller
     ///
 
     public function report_list_company(Request $request) {
+        ini_set('max_execution_time', 720000);
+        ini_set('memory_limit', -1);
         // recuperamos el id de la unidad minera
         $id_um = $request->id;
         // buscamos la UM por su id
@@ -562,8 +564,8 @@ class CompanyController extends Controller
 
     public function report_list_participants(Request $request) {
         // recuperamos el id de la unidad minera
-        $id_um = Auth::user()->id_unity;
 
+        $user = Auth::user();
         // Inicializamos los rangos de fechas
         $start = null;
         $end = null;
@@ -572,7 +574,6 @@ class CompanyController extends Controller
         $query = [];
 
         if ($request->method() == 'POST') {
-            dd('entre pos');
             // fechas de corte de la valorizacion
             $start = $request->startDate;
             $end = $request->endDate;
@@ -580,8 +581,10 @@ class CompanyController extends Controller
             $query = DB::table('user_inscriptions')
                 ->select(
                     'UP.dni', 'UP.firstlastname', 'UP.secondlastname', 'UP.name',
-                    'inscriptions.nameCurso', 'inscriptions.nameCurso', 'inscriptions.startDate',
-                    'inscriptions.point_min', 'user_inscriptions.point'
+                    'inscriptions.nameCurso', 'user_inscriptions.payment_form', 'inscriptions.startDate', 'inscriptions.time',
+                    'inscriptions.hours',
+                    'inscriptions.point_min',
+                    DB::raw('IF(user_inscriptions.point=0 or ISNULL(user_inscriptions.point),if(DATE_SUB(CURDATE(),INTERVAL 2 DAY) <= inscriptions.startDate,NULL,"NSP"), user_inscriptions.point) as nota')
                 )
                 ->join('users', 'users.id', '=', 'user_inscriptions.id_user_inscription')
                 ->join('companies', 'companies.id', '=', 'users.id_company')
@@ -592,12 +595,69 @@ class CompanyController extends Controller
                 ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
 
                 ->whereIn('user_inscriptions.state', [0,1])
-                ->where('users.id_unity', $id_um)
-
+                // ->where('users.id_unity', $id_um)
+                ->where('courses.id_unity', $user->id_unity)
+                ->where('user_inscriptions.id_user_inscription', $user->id)
                 ->whereBetween('inscriptions.startDate', [$start, $end])
                 ->get();
         }
         return view('companies.report_list_participants',
             compact('query', 'start', 'end'));
+    }
+
+    public function export_list_participant(Request $request) {
+
+        $id = $request->segment(3);
+        $user = Auth::user();
+        $start = $request->segment(4);
+        $end = $request->segment(5);
+        Excel::Create('Consolidado ', function ($excel) use($user,$start,$end) {
+            // Set the title
+            $excel->setTitle('Lista de participantes');
+            // Chain the setters
+            $excel->setCreator('IGH GROUP')->setCompany('IGH');
+            // Call them separately
+            $excel->setDescription('Relacion de participantes');
+
+            $excel->sheet('Lista participante', function ($sheet) use($user,$start,$end) {
+
+                $query = DB::table('user_inscriptions')
+                    ->select(
+                        'UP.dni as DNI', 'UP.firstlastname AS APELLIDO PATERNO', 'UP.secondlastname AS APELLIDO MATERNO',
+                        'UP.name AS NOMBRES', 'inscriptions.nameCurso AS CURSO', 'inscriptions.hours AS HORAS',
+                        DB::raw('IF(user_inscriptions.payment_form = "a cuenta","UNIDAD MINERA","EXTRAORDINARIO") AS TIPO'),
+                        DB::raw('CONCAT(inscriptions.startDate," ",inscriptions.time) AS FECHA'),
+                        'inscriptions.point_min AS NOTA MINIMA',
+                        DB::raw('IF(user_inscriptions.point=0 or ISNULL(user_inscriptions.point),if(DATE_SUB(CURDATE(),INTERVAL 2 DAY) <= inscriptions.startDate,NULL,"NSP"), user_inscriptions.point) AS NOTA')
+                    )
+                    ->join('users', 'users.id', '=', 'user_inscriptions.id_user_inscription')
+                    ->join('companies', 'companies.id', '=', 'users.id_company')
+
+                    ->join('users as UP', 'UP.id', '=', 'user_inscriptions.id_user')
+
+                    ->join('inscriptions', 'inscriptions.id', '=', 'user_inscriptions.id_inscription')
+                    ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
+
+                    ->whereIn('user_inscriptions.state', [0,1])
+                    // ->where('users.id_unity', $id_um)
+                    ->where('courses.id_unity', $user->id_unity)
+                    ->where('user_inscriptions.id_user_inscription', $user->id)
+                    ->whereBetween('inscriptions.startDate', [$start, $end])
+                    ->get();
+
+                $data = json_decode( json_encode($query), true);
+
+//                $sheet->setColumnFormat(array(
+//                    'G' => '0'
+//                ));
+                $sheet->fromArray($data, null, 'A1', false, true);
+                $sheet->row(1, function($row) {
+                    // call cell manipulation methods
+                    $row->setBackground('#2980b9');
+                    $row->setFontColor('#ffffff');
+                });
+            });
+        })->export('xlsx');
+
     }
 }
