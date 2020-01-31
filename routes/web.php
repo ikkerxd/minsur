@@ -197,10 +197,15 @@ Route::middleware(['auth'])->group(function(){
     Route::get('report/company/um/{id}','CompanyController@report_list_company')->name('companies_um');
     Route::post('report/company/um/{id}','CompanyController@report_list_company')->name('companies_um');
 
-    /********* Reporte de de partcipante del cliente *********/
+    /********* Reporte de de partcipante del client *********/
     Route::get('report/participante','CompanyController@report_list_participants')->name('report_participants');
     Route::post('report/participante','CompanyController@report_list_participants')->name('report_participants');
     Route::get('export_list_participant/participante/{id}/{startDate}/{endDate}', 'CompanyController@export_list_participant')
         ->name('export_list_participant');
+
+    /********* Reporte de de partcipante del client *********/
+
+    Route::get('export/participante/{id}/{startDate}/{endDate}', 'CompanyController@export_consolidado')
+        ->name('export_consolidado');
 
 });

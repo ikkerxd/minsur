@@ -271,8 +271,114 @@ class UserController extends Controller
 
     public function update_participant(Request $request, $id)
     {
+        $user = Auth::user();
 
         $this->validate($request, [
+            'dni' => 'required|min:8|alpha_num',
+            'firstlastname' => 'required',
+            'secondlastname' => 'required',
+            'name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+
+        ],
+        [
+            'dni.required' => 'El campo DNI es obligatorio',
+            'dni.min' => 'El campo DNI debe tener como minimo 8 y como maximo 9 digitos si es un pasaporte',
+            'dni.alpha_num' => 'El campo DNI debe contener solo letras y numeros',
+            'firstlastname.required' => 'El campo apellido paterno es obligatorio',
+            'secondlastname.required' => 'El campo apellido materno es obligatorio',
+            'name.required' => 'El campo nombre es obligatorio',
+            'email.required' => 'El campo correo es obligatorio',
+            'phone.required' => 'El campo celular es obligatorio',
+
+        ]);
+
+        $busqueda = DB::table('users')
+            ->where('id','=',$id )
+            ->where('dni','=',trim($request->dni))
+            ->count();
+
+        if($busqueda>0) {
+
+            $user = User::find($id);
+            $user->type_document = $request->type_document;
+            $user->dni = $request->dni;
+            $user->firstlastname = $request->firstlastname;
+            $user->secondlastname = $request->secondlastname;
+            $user->name = $request->name;
+            $user->position = $request->position;
+            $user->phone = $request->phone;
+            $user->email = $request->email;
+            $user->code_bloqueo = $request->code_bloqueo;
+            $user->medical_exam = $request->medical_exam;
+            $user->id_management = $request->id_management;
+            $user->superintendence = $request->superintendence;
+            if ($request->image != "") {
+                $name_original = $request->file('image')->getClientOriginalName();
+                $name = $request->file('image');
+                $name_hash = $name->hashName();
+                $name->move('img/', $name_hash);
+                $user->image = $name_original;
+                $user->image_hash = $name_hash;
+            }
+            $user->birth_date = $request->birth_date;
+            $user->gender = $request->gender;
+            $user->origin = $request->origin;
+            $user->address = $request->address;
+            $user->save();
+
+            return redirect()->route('list_participants')->with('success','El participante fue actualizado');
+
+
+        } else {
+
+            $d = DB::table('users')
+                ->join('role_user', 'users.id', '=', 'role_user.user_id')
+                ->join('companies', 'companies.id', 'users.id_company')
+                ->where('dni', $request->dni)
+                ->where('id_unity', $user->id_unity)
+                ->where('role_id', 5);
+
+            if ($d->exists()) {
+                return redirect()->route('list_participants')->with('error',
+                    'El usuario con dni ' .
+                    $request->dni . '  ya esta registrado en la contrata ' . $d->first()->businessName);
+
+            } else {
+
+                $user = User::find($id);
+                $user->type_document = $request->type_document;
+                $user->dni = $request->dni;
+                $user->firstlastname = $request->firstlastname;
+                $user->secondlastname = $request->secondlastname;
+                $user->name = $request->name;
+                $user->position = $request->position;
+                $user->phone = $request->phone;
+                $user->email = $request->email;
+                $user->code_bloqueo = $request->code_bloqueo;
+                $user->medical_exam = $request->medical_exam;
+                $user->id_management = $request->id_management;
+                $user->superintendence = $request->superintendence;
+                if ($request->image != "") {
+                    $name_original = $request->file('image')->getClientOriginalName();
+                    $name = $request->file('image');
+                    $name_hash = $name->hashName();
+                    $name->move('img/', $name_hash);
+                    $user->image = $name_original;
+                    $user->image_hash = $name_hash;
+                }
+                $user->birth_date = $request->birth_date;
+                $user->gender = $request->gender;
+                $user->origin = $request->origin;
+                $user->address = $request->address;
+                $user->save();
+
+                return redirect()->route('list_participants')->with('success', 'El participante fue actualizado');
+            }
+        }
+
+        /*$this->validate($request, [
             'dni' => 'required',
             'firstlastname' => 'required',
             'secondlastname' => 'required',
@@ -318,7 +424,8 @@ class UserController extends Controller
         $user->address = $request->address;
         $user->save();
 
-        return redirect()->route('list_participants')->with('success','El participante fue actualizado');
+        return redirect()->route('list_participants')->with('success','El participante fue actualizado');*/
+
     }
     public function new_participant()
     {

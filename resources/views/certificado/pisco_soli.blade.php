@@ -175,10 +175,13 @@
         <div class="codigo">MI-{{ str_pad($item->id,8,"0", STR_PAD_LEFT) }}</div>
         <div class="nombre">{{ $item->participante }}</div>
         <div class="dni">{{ $item->dni }}</div>
-        @if($item->curso == 'Curso Obligatorio I' or $item->curso == 'Curso Obligatorio II' or $item->curso == 'Curso Obligatorio III'or $item->curso == 'Curso Obligatorio IV' or $item->curso == 'Curso Obligatorio V' or $item->curso == 'Curso Obligatorio VI' or $item->curso == 'Curso Obligatorio VII' or $item->curso == 'Curso Obligatorio VIII' or $item->curso == 'Curso Obligatorio IX'  or $item->curso == 'Curso Obligatorio X')
+        @if($item->curso == 'Curso Obligatorio I' or $item->curso == 'Curso Obligatorio II' or $item->curso == 'Curso Obligatorio III'or
+            $item->curso == 'Curso Obligatorio IV' or $item->curso == 'Curso Obligatorio V' or $item->curso == 'Curso Obligatorio VI' or
+            $item->curso == 'Curso Obligatorio VII' or $item->curso == 'Curso Obligatorio VIII' or $item->curso == 'Curso Obligatorio IX'  or
+            $item->curso == 'Curso Obligatorio X' or $item->curso == 'Curso Obligatorio XI' or $item->curso == 'Curso Obligatorio XII')
             <div class="curso">{{ $item->curso }}</div>
         @else
-            <div class="curso-xl">{{ $item->curso }}1</div>
+            <div class="curso-xl">{{ $item->curso }}</div>
         @endif
 
 
@@ -294,6 +297,29 @@
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">
                         Manejo Defensivo, Ritran, Estándar Izaje de Cargas.</div>
+                </div>
+            </div>
+            <div class="horas">Con una duración de 08 horas lectivas.</div>
+        @endif
+
+        @if($item->curso == 'Curso Obligatorio XI')
+            <div class="detalle">
+                <div class="container">
+                    <div class="item-1">Tópicos: </div>
+                    <div class="item-2">
+                        Estándar Metales Fundidos, Estándar Espacios Confinados.</div>
+                </div>
+            </div>
+            <div class="horas">Con una duración de 08 horas lectivas.</div>
+        @endif
+
+        @if($item->curso == 'Curso Obligatorio XII')
+            <div class="detalle">
+                <div class="container">
+                    <div class="item-1">Tópicos: </div>
+                    <div class="item-2">
+                        Respuesta a emergencias en áreas específicas - Prevención y Protección contra Incendio, Higiene Ocupacional - Factores de riesgos ergonómicos y psicosociales - Disposición de Residuos Sólidos.
+                    </div>
                 </div>
             </div>
             <div class="horas">Con una duración de 08 horas lectivas.</div>

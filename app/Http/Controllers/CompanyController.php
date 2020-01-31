@@ -127,6 +127,8 @@ class CompanyController extends Controller
     /****** FUNCION PARA RECUPERAR LA RELACION DE EMPRESAS QUE SE DBBEN FACTURAR Y VALORIZAR ******/
 
     public function report_company(Request $request) {
+        ini_set('max_execution_time', 720000);
+        ini_set('memory_limit', -1);
         // Recuperamos el usuario usuario de la compañia
         $id_um = $request->id;
         $user = Auth::user();
@@ -643,6 +645,68 @@ class CompanyController extends Controller
                     ->where('courses.id_unity', $user->id_unity)
                     ->where('user_inscriptions.id_user_inscription', $user->id)
                     ->whereBetween('inscriptions.startDate', [$start, $end])
+                    ->get();
+
+                $data = json_decode( json_encode($query), true);
+
+//                $sheet->setColumnFormat(array(
+//                    'G' => '0'
+//                ));
+                $sheet->fromArray($data, null, 'A1', false, true);
+                $sheet->row(1, function($row) {
+                    // call cell manipulation methods
+                    $row->setBackground('#2980b9');
+                    $row->setFontColor('#ffffff');
+                });
+            });
+        })->export('xlsx');
+
+    }
+
+    public function export_consolidado(Request $request) {
+
+        $id = $request->segment(3);
+        $user = Auth::user();
+        $start = $request->segment(4);
+        $end = $request->segment(5);
+        Excel::Create('Consolidado ', function ($excel) use($user,$start,$end) {
+            // Set the title
+            $excel->setTitle('Lista de participantes');
+            // Chain the setters
+            $excel->setCreator('IGH GROUP')->setCompany('IGH');
+            // Call them separately
+            $excel->setDescription('Relacion de participantes');
+
+            $excel->sheet('Lista participante', function ($sheet) use($user,$start,$end) {
+
+                $query = DB::table('user_inscriptions')
+                    ->select(
+                        DB::raw('IF(user_inscriptions.payment_form = "a cuenta", "UNIDAD MINERA", "EXTRAORDINARIO") AS TIPO'),
+                        DB::raw('DATE_FORMAT(inscriptions.startDate, "%d/%m/%Y") as FECHA, inscriptions.time AS HORA'),
+                        'UP.dni as DNI', 'UP.firstlastname AS APELLIDO PATERNO', 'UP.secondlastname AS APELLIDO MATERNO',
+                        'UP.name AS NOMBRES', 'UP.position as CARGO', 'UP.superintendence as AREA',
+                        DB::raw('IF(companies.ruc = 20508931621, "20100136741", companies.ruc) AS RUC'),
+                        DB::raw('IF(companies.ruc = 20508931621, "MINSUR", companies.businessName) AS CONTRATA'),
+                        'inscriptions.nameCurso AS CURSO', 'inscriptions.hours AS HORAS CURSO',
+                        'inscriptions.point_min AS NOTA MINIMA',
+                        DB::raw('IF(user_inscriptions.point=0 or ISNULL(user_inscriptions.point),if(DATE_SUB(CURDATE(),INTERVAL 2 DAY) <= inscriptions.startDate,NULL,"NSP"), user_inscriptions.point) AS NOTA'),
+                        DB::raw('CONCAT(COALESCE(UF.firstlastname, " "), " ", COALESCE(UF.secondlastname, " "), " ", COALESCE(UF.`name`, " ")) AS FACILITADOR')
+                    )
+                    ->join('users', 'users.id', '=', 'user_inscriptions.id_user_inscription')
+                    ->join('companies', 'companies.id', '=', 'users.id_company')
+
+                    ->join('users as UP', 'UP.id', '=', 'user_inscriptions.id_user')
+
+                    ->join('inscriptions', 'inscriptions.id', '=', 'user_inscriptions.id_inscription')
+                    ->join('users as UF', 'UF.id', '=', 'inscriptions.id_user')
+                    ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
+
+                    ->whereIn('user_inscriptions.state', [0,1])
+                    // ->where('users.id_unity', $id_um)
+                    ->where('courses.id_unity', $user->id_unity)
+                    // ->where('user_inscriptions.id_user_inscription', $user->id)
+                    ->whereBetween('inscriptions.startDate', [$start, $end])
+                    ->orderBy('inscriptions.startDate', 'inscriptions.nameCurso')
                     ->get();
 
                 $data = json_decode( json_encode($query), true);

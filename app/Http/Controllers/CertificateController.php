@@ -271,7 +271,7 @@ class CertificateController extends Controller
         $path_zip = storage_path('app/').'pisco/curso/';
         $zip_file = $course->id.'-'.str_slug($course->name).'.zip';
         $zip = new ZipArchive();
-
+        // dd($path_zip.$zip_file);
         if ($zip->open($path_zip.$zip_file, ZipArchive::CREATE|ZipArchive::OVERWRITE) === TRUE) {
 
             // recorremos uno por uno cada partcipante

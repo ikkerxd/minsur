@@ -69,6 +69,15 @@
             <div class="col-sm-12">
                 <div class="box box-default">
                     <hr>
+                    @if($query)
+                        <div class="box-header">
+                            <div class="box-tools pull-right">
+                                <a href="{{ route('export_consolidado', [Auth::id(), Request::get('startDate'), Request::get('endDate')]) }}" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Consolidado general</a>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                    @endif
                     <div class="box-body table-responsive">
                         <table class="table table-bordered table-striped" id="datatable">
                             <thead>

@@ -315,7 +315,8 @@
                 <div class="container">
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">
-                        Respuesta a emergencias en áreas específicas - Prevención y Protección contra Incendio, Higiene Ocupacional - Factores de riesgos ergonómicos y psicosociales - Disposición de Residuos Sólidos.</div>
+                        Respuesta a emergencias en áreas específicas - Prevención y Protección contra Incendio, Higiene Ocupacional - Factores de riesgos ergonómicos y psicosociales - Disposición de Residuos Sólidos.
+                    </div>
                 </div>
             </div>
             <div class="horas">Con una duración de 08 horas lectivas.</div>
