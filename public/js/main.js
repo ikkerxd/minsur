@@ -79,8 +79,8 @@
         //   $('.body').html('<br><p><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span></p><br>');
         // },
         success: function (data) {
-          console.log('henrry');
-          console.log(data);
+          // console.log('henrry');
+          // console.log(data);
          html3= '<span>';
          $.each(data, function(index, value){
           if (opt == 0) {
@@ -92,6 +92,7 @@
           html3 += '<tr>';
           html3 += "<td>"+
           value.nameLocation +"</td><td class='text-center'>"+
+          value.modalidad +"</td><td class='text-center'>"+
           value.nameCourse + "</td><td class='text-center'>" +
           value.startDate +"</td><td class='text-center'>" +
           value.time +"</td><td class='text-center'>" +

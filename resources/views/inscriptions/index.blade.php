@@ -40,6 +40,7 @@
                 <tr>     
                   <th>ID</th>                       
                   <th>LUGAR</th>
+                  <th>MODALIDAD</th>
                   <th>CURSO</th>
                   <th>HORA</th>
                   <th>FECHA</th>
@@ -52,6 +53,11 @@
                <tr> 
                  <td>{{ $inscription->id }}</td>      
                  <td>{{ $inscription->nameLocation }}</td>
+                 @if($inscription->modality == "O")
+                  <td>ONLINE</td>
+                 @else
+                   <td>PRESENCIAL</td>
+                 @endif
                  <td>{{ $inscription->nameCurso }}</td>
                  <td>{{ $inscription->time }}</td>
                  <td>{{ \Carbon\Carbon::parse($inscription->startDate)->format('d/m/Y') }}</td>

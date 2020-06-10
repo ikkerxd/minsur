@@ -17,6 +17,7 @@ use MongoDB\Driver\Query;
 use PDF;
 use Excel;
 use ZipArchive;
+use QrCode;
 
 class CertificateController extends Controller
 {
@@ -75,6 +76,64 @@ class CertificateController extends Controller
 
     }
 
+    public function anexo4 (Request $request) {
+        $query = DB::table('user_inscriptions')
+            ->select(
+                'users.dni', 'users.firstlastname', 'users.secondlastname', 'users.name',
+                'users.position', 'users.superintendence', 'users.id_unity',
+                'user_inscriptions.id as id', 'user_inscriptions.point', 'user_inscriptions.state',
+                'nameCurso as course', 'startDate as date',
+                'inscriptions.id_course',
+                'companies.businessName',
+                DB::raw('IF(user_inscriptions.point >= inscriptions.point_min , 1,0) as aprobado'),
+                DB::raw('
+                    IF(
+                        user_inscriptions.point >= inscriptions.point_min ,
+                        DATE_ADD(inscriptions.startDate, INTERVAL inscriptions.validaty year), 0
+                    ) as vigencia'
+                )
+            )
+            ->join('inscriptions','inscriptions.id', '=', 'user_inscriptions.id_inscription')
+            ->join('users', 'users.id', '=', 'user_inscriptions.id_user')
+            ->join('companies', 'companies.id', '=', 'users.id_company')
+            ->where('user_inscriptions.id', $request->id)
+            ->whereIn('user_inscriptions.state', [0,1])
+            ->first();
+        $dni = $query->dni;
+        $nombres = $query->firstlastname.' '.$query->secondlastname.' '.$query->name;
+        $curso = $query->course;
+        $company = $query->businessName;
+        $area = $query->superintendence;
+        $cargo = $query->position;
+        setlocale(LC_TIME, 'Spanish');
+        $date_start = Carbon::parse($query->date);
+        $dia = $date_start->day;
+        $mes = $date_start->localeMonth;
+        $anio = $date_start->year;
+        $fecha = $dia.' de '.ucfirst($mes).' del '.$anio;
+
+
+        $id = str_pad($query->id,8,"0", STR_PAD_LEFT);
+        $codigo = 'MI-'.$id;
+        $view = 'certificado.anexo4_sanrafael';
+
+        if ($query->id_unity == 1) {
+            $codigo = 'RA-'.$id;
+        }
+
+        if ($query->id_course == 8) {
+            $view = 'certificado.anexo4_sanrafael';
+        }
+
+        $text = "ANEXO 4\nDNI: $dni\nParticipante: $nombres\nContratista: $company\nCargo:$cargo\nArea: $area\nFecha Induccion: $fecha";
+        $codeQR = QrCode::format('png')->size(100)->generate($text);
+
+        $pdf = PDF::loadView($view, compact('dni', 'nombres', 'curso', 'area', 'cargo', 'fecha', 'codigo', 'company', 'codeQR'))
+            ->setPaper('a4', 'portrait');
+        return $pdf->download('CONSTANCIA DE  '.$dni.'-'.$nombres.'- CURSO '.strtoupper($curso.'.pdf'));
+
+    }
+
     public function search (Request $request) {
         $cursos = [];
         $doc = $request->doc;
@@ -86,6 +145,7 @@ class CertificateController extends Controller
                     'user_inscriptions.id as id',
                     'user_inscriptions.point',
                     'inscriptions.point_min',
+                    'inscriptions.id_course',
                     'users.firstlastname', 'users.secondlastname', 'users.name',
                     'nameCurso as curso', 'startDate as start',
                     DB::raw('IF(user_inscriptions.point >= inscriptions.point_min , 1,0) as aprobado'),

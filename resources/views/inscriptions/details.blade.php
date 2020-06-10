@@ -27,6 +27,7 @@
             <thead>
               <tr>
                 <th>LUGAR/SEDE</th>
+                <th>MODALIDAD</th>
                 <th>CURSO</th>
                 <th>FECHA</th>
                 <th>CONDICIÓN</th>            
@@ -37,6 +38,11 @@
               @foreach ($inscriptions as $inscription)
               <tr>
                 <td>{{$inscription->name}}</td>
+                @if($inscription->modality == "O")
+                  <td>ONLINE</td>
+                @else
+                  <td>PRESENCIAL</td>
+                @endif
                 <td>{{$inscription->nameCurso}}</td>
                 <td>{{$inscription->startDate}}</td>
                   <td>

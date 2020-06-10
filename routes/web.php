@@ -18,6 +18,7 @@ Route::get('/',function(){
 Route::get('/certificado/search', 'CertificateController@search')->name('certificate_search');
 Route::post('/certificado/search/', 'CertificateController@search')->name('certificate_search');
 Route::get('/certificado/{id}/', 'CertificateController@certification')->name('certificado');
+Route::get('/anexo4/{id}/', 'CertificateController@anexo4')->name('anexo4');
 
 Route::get('/certificado/list/cursos/', 'CertificateController@course')->name('list_course');
 // Route::get('/sustitutorio2', 'CertificateController@ingresar')->name('carga_import');

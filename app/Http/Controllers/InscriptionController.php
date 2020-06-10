@@ -41,14 +41,15 @@ class InscriptionController extends Controller
         $user = Auth::user();
         $inscriptions =  DB::table('inscriptions')
             ->select('inscriptions.id as id','inscriptions.nameCurso','locations.name as nameLocation',
-                'startDate','address','time', 'inscriptions.id_course')
+                'startDate','address','time', 'inscriptions.id_course', 'modality')
             ->join('locations','inscriptions.id_location','=','locations.id')
             ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
-            ->where('startDate','>',date('2019-03-01'))
+            ->where('startDate','>',date('2020-03-01'))
             ->where('courses.id_unity', $user->id_unity)
-            ->orderBy('startDate','asc')
+            ->orderBy('inscriptions.startDate','desc')
             ->where('type',0)
             ->get();
+        // dd($inscriptions);
 
         return view('inscriptions.index',compact('inscriptions'));
     }
@@ -56,6 +57,7 @@ class InscriptionController extends Controller
     public function create()
     {
         $user = Auth::user();
+        $modality = null;
         $locations = Location::pluck('name','id');
         $courses = Course::where('id_unity', $user->id_unity)->pluck('name','id');
         $users = DB::table('users')
@@ -67,7 +69,7 @@ class InscriptionController extends Controller
             ->whereNotIn('users.id', [12753, 2683, 4141, 14078, 1097, 14179, 14180, 7053]) // administrativo
             ->where('users.state', 0)
             ->pluck('full_name', 'id');
-        return view('inscriptions.create',compact('locations','courses','users'));
+        return view('inscriptions.create',compact('locations','courses','users', 'modality'));
     }
 
     public function store(Request $request)
@@ -75,6 +77,7 @@ class InscriptionController extends Controller
         $this->validate($request ,[
             'startDate' => 'required',
             'address' => 'required',
+            'modality' => 'required',
             'slot' => 'required|min:1',
         ],
             [
@@ -82,6 +85,7 @@ class InscriptionController extends Controller
                 'address.required' => 'El campo direcci車n es obligatorio',
                 'slot.required' => 'El campo vacantes es obligatorio',
                 'slot.min' => 'El campo vacantes debe ser mayor o igual a 1',
+                'modality.required' => 'El campo modalidad es obligatorio',
             ]);
 
         $course = DB::table('courses')
@@ -105,6 +109,14 @@ class InscriptionController extends Controller
         $inscription->note = 'sin notas';
         $inscription->type = 0;
         $inscription->state = 0;
+
+        $inscription->modality = $request->modality;
+        $inscription->platform = $request->platform;
+        $inscription->platform_id = $request->platform_id;
+        $inscription->platform_pwd = $request->platform_pwd;
+        $inscription->platform_url = $request->platform_url;
+        $inscription->test_url = $request->test_url;
+
         $inscription->save();
 
         setlocale(LC_TIME, 'Spanish');
@@ -127,6 +139,7 @@ class InscriptionController extends Controller
             ->select('inscriptions.id as id',
                 'id_course', 'nameCurso','locations.name as nameLocation',
                 'startDate','inscriptions.address','time','slot','inscriptions.state as state','hours',
+                'platform', 'platform_id', 'platform_pwd', 'platform_url', 'test_url', 'modality',
                 'users.firstlastname as firstName', 'users.name as nameUser')
             ->where('inscriptions.id',$id)
             ->join('locations','inscriptions.id_location','=','locations.id')
@@ -195,12 +208,14 @@ class InscriptionController extends Controller
             'startDate' => 'required',
             'address' => 'required',
             'slot' => 'required|min:1',
+            'modality' => 'required',
         ],
             [
                 'startDate.required' => 'El campo fecha es obligatorio',
                 'address.required' => 'El campo direcci車n es obligatorio',
                 'slot.required' => 'El campo vacantes es obligatorio',
                 'slot.min' => 'El campo vacantes debe ser mayor o igual a 1',
+                'modality.required' => 'El campo modalidad es obligatorio',
             ]);
 
         $course = DB::table('courses')
@@ -222,6 +237,14 @@ class InscriptionController extends Controller
         $inscription->hours = $course->hh;
         $inscription->validaty = $course->validaty;
         $inscription->point_min = $course->point_min;
+
+        $inscription->modality = $request->modality;
+        $inscription->platform = $request->platform;
+        $inscription->platform_id = $request->platform_id;
+        $inscription->platform_pwd = $request->platform_pwd;
+        $inscription->platform_url = $request->platform_url;
+        $inscription->test_url = $request->test_url;
+
         $inscription->save();
 
         // Fecha larga
@@ -284,6 +307,7 @@ class InscriptionController extends Controller
                 'inscriptions.endDate',
                 'inscriptions.address',
                 'inscriptions.time',
+                DB::raw('if(inscriptions.modality="O","ONLINE", "PRESENCIAL") AS modalidad'),
                 'inscriptions.slot','inscriptions.state as state','inscriptions.price','inscriptions.hours','minimum')
             ->where('type_courses.id',$idTypeCourse)
             ->where('id_location',$idLocation)
@@ -357,7 +381,9 @@ class InscriptionController extends Controller
             ->select(
                 'user_inscriptions.id_inscription',
                 'inscriptions.startDate',
-                'inscriptions.nameCurso', 'locations.name', 'inscriptions.state')
+                'inscriptions.nameCurso', 'locations.name', 'inscriptions.state',
+                'modality'
+            )
             ->distinct()
             ->join('inscriptions', 'inscriptions.id', '=', 'user_inscriptions.id_inscription')
             ->join('locations', 'locations.id', '=', 'inscriptions.id_location')
@@ -476,7 +502,9 @@ class InscriptionController extends Controller
                 'locations.name as nameLocation',
                 'startDate','address',
                 'time',
-                'inscriptions.state as state')
+                'inscriptions.state as state',
+                'modality', 'platform', 'platform_id', 'platform_pwd', 'platform_url'
+            )
             ->where('inscriptions.id',$id)
             ->get();
 

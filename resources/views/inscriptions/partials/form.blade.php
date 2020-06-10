@@ -14,19 +14,26 @@
 		</div>
 	</div>
 
-	<div class='col-md-5'>
+	<div class='col-md-4'>
+		<div class='form-group'>
+			{!! Form::label('modality', 'Modalidad') !!}
+			{!! Form::select('modality', ['O' => 'Online', 'P' => 'Presencial'], null, ['placeholder' => '--Seleccione Modalidad--', 'class' => 'form-control']) !!}
+		</div>
+	</div>
+
+	<div class='col-md-4'>
 		<div class='form-group'>
 			{!! Form::label('address', 'Dirección') !!}
 			{!! Form::text('address', null, ['class' => 'form-control','placeholder' => 'Ingresa dirección','required' => 'required']) !!}
 		</div>
 	</div>
-	<div class='col-md-3'>
+	<div class='col-md-4'>
 		<div class='form-group'>
 			{!! Form::label('slot', 'Vacantes') !!}
 			{!! Form::number('slot', null, ['class' => 'form-control','placeholder' => 'Ingrese vacantes','required' => 'required', 'min' => '1']) !!}
 		</div>
 	</div>
-	<div class='col-md-3'>
+	<div class='col-md-4'>
 		<div class="form-group">
 			{!! Form::label('startDate', 'Fecha') !!}
 			<div class="input-group date">
@@ -36,7 +43,7 @@
 		</div>
 	</div>
 
-	<div class='col-md-3'>
+	<div class='col-md-4'>
 		<div class="form-group">
 		{!! Form::label('time', 'Hora') !!}
 		<div class="input-group">
@@ -48,7 +55,7 @@
 		</div>
 	</div>
 
-	<div class='col-md-6'>
+	<div class='col-md-12'>
 		<div class="form-group">
 			{!! Form::label('users', 'Facilitador') !!}
 			<div class="input-group date">
@@ -57,6 +64,41 @@
 				</div>
 				{!! Form::select('id_user', $users, null, ['class' => 'form-control']) !!}
 			</div>
+		</div>
+	</div>
+
+	<div class='col-md-6'>
+		<div class='form-group'>
+			{!! Form::label('platform', 'Plataforma') !!}
+			{!! Form::text('platform', null, ['class' => 'form-control','placeholder' => 'Ingrese nombre de la plataforma']) !!}
+		</div>
+	</div>
+
+	<div class='col-md-6'>
+		<div class='form-group'>
+			{!! Form::label('platform_id', 'Codigo de la reunion') !!}
+			{!! Form::text('platform_id', null, ['class' => 'form-control','placeholder' => 'Ingresa codigo']) !!}
+		</div>
+	</div>
+
+	<div class='col-md-6'>
+		<div class='form-group'>
+			{!! Form::label('platform_pwd', 'Clave de la reunion') !!}
+			{!! Form::text('platform_pwd', null, ['class' => 'form-control','placeholder' => 'Ingresa clave']) !!}
+		</div>
+	</div>
+
+	<div class='col-md-6'>
+		<div class='form-group'>
+			{!! Form::label('platform_url', 'Enlace de la reunion') !!}
+			{!! Form::text('platform_url', null, ['class' => 'form-control','placeholder' => 'Ingrese enlace']) !!}
+		</div>
+	</div>
+
+	<div class='col-md-12'>
+		<div class='form-group'>
+			{!! Form::label('test_url', 'Evaluacion') !!}
+			{!! Form::text('test_url', null, ['class' => 'form-control','placeholder' => 'Ingrese link de la evaluacion']) !!}
 		</div>
 	</div>
 

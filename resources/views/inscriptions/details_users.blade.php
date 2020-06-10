@@ -28,41 +28,87 @@
         </div>
         
         <div class="box-body">
-          <div class="row">
+        <div class="row">
             <div class="container-fluid">
-              <div class="col-md-6">
-                  <div class="row">
-                    <div class="col-md-7">    
-                      <label ><i class="fa fa-book" aria-hidden="true"></i> CURSO Y FECHA</label> 
-                      <p>{{$inscriptions[0]->nameCurso}} {{ \Carbon\Carbon::parse($inscriptions[0]->startDate)->format('d/m')}}</p>
+
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <label ><i class="fa fa-book" aria-hidden="true"></i> CURSO Y FECHA</label>
+                            <p>{{$inscriptions[0]->nameCurso}} {{ \Carbon\Carbon::parse($inscriptions[0]->startDate)->format('d/m')}}</p>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label><i class="fa fa-clock-o" aria-hidden="true"></i> HORA INICIO</label>
+                            <p class="form-control-static">{{$inscriptions[0]->time}}</p>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-7">
+                            <label><i class="fa fa-location-arrow" aria-hidden="true"></i> DIRECCION:</label>
+                            <p class="form-control-static">{{$inscriptions[0]->address}}</p>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label><i class="fa fa-map-marker" aria-hidden="true"></i> LUGAR</label>
+                            <p class="form-control-static">{{$inscriptions[0]->nameLocation}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="row">
+                        <h3 style="margin-top: 0; font-size: 32px; background-color: #0d6aad; color: white; text-align: center">COMUNICADO</h3>
+                        <p class="" style="font-size: 18px">
+                            Los cursos online tedran acceso desde el enlace que esta en la parte inferior, por favor compartirlo con los participantes inscritos.
+                        </p>
+                    </div>
+                </div>
+
+                @if($inscriptions[0]->platform)
+                    <div class="col-md-12">
+                        <h3>Datos de la reunión</h3>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label ><i class="fa fa-book" aria-hidden="true"></i> Plataforma</label>
+                                <p>{{ $inscriptions[0]->platform }}</p>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label><i class="fa fa-clock-o" aria-hidden="true"></i> Codigo de la reunión</label>
+                                <p class="form-control-static">{{ $inscriptions[0]->platform_id }}</p>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label><i class="fa fa-clock-o" aria-hidden="true"></i> clave de la reunión</label>
+                                <p class="form-control-static">{{ $inscriptions[0]->platform_pwd }}</p>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label><i class="fa fa-copy" aria-hidden="true"></i> Copiar enlace</label> <br>
+                                <span>{{ $inscriptions[0]->platform_url }}</span>
+                                <textarea id="textCopy" name="textCopy" style="position: absolute; clip: rect(1px, 1px, 1px, 1px)">IGH le está invitando a una reunión programada.
+
+Curso: {{ $inscriptions[0]->nameCurso }}
+Fecha: {{ \Carbon\Carbon::parse($inscriptions[0]->startDate)->format('d/m/Y') }} {{ $inscriptions[0]->time }}
+
+Unirse a la reunión con el siguiente enlace:
+{{ $inscriptions[0]->platform_url }}
+                                </textarea>
+                                <button id="btnCopy" class="btn btn-success" data-clipboard-target="#textCopy">Copiar</button>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="col-md-5">
-                     <label><i class="fa fa-clock-o" aria-hidden="true"></i> HORA INICIO</label>
-                     <p class="form-control-static">{{$inscriptions[0]->time}}</p> 
-                   </div>
-                 </div>
-                <br>  
-                <div class="row">
-                  <div class="col-md-7">
-                    <label><i class="fa fa-location-arrow" aria-hidden="true"></i> DIRECCION:</label>
-                    <p class="form-control-static">{{$inscriptions[0]->address}}</p>   
-                  </div>
+                @endif
 
-                  <div class="col-md-5">
-                   <label><i class="fa fa-map-marker" aria-hidden="true"></i> LUGAR</label>           
-                   <p class="form-control-static">{{$inscriptions[0]->nameLocation}}</p> 
-                 </div>
-                </div>
-              </div>
 
-            <div class="col-md-6">
-                <div class="row">              
-
-                </div>
-              </div>
             </div>
-          </div>   
+        </div>
       <hr>
 
             <h3>Lista de particpantes inscritos</h3>
@@ -171,6 +217,15 @@
               $('#btn-reprogramar').prop('disabled',true);
           }
       })
+
+      let btnCopy = document.getElementById('btnCopy');
+      let clipboard = new ClipboardJS('#btnCopy');
+      clipboard.on('success', function(e) {
+          // console.log(btnCopy.classList);
+          btnCopy.classList.add('btn-info');
+          btnCopy.innerHTML = 'Copiado ...';
+          e.clearSelection();
+      });
    });
   $('#form_resh_del').submit(function(){
       $('#btn-reprogramar').prop('disabled',true);

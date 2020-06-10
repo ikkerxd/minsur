@@ -287,6 +287,7 @@ document.getElementById('logout-form').submit();">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 <script src="{{ asset('js/demo.js') }}"></script>
 <script src="{{ asset('js/main.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
 @yield('script')
 
 </body>

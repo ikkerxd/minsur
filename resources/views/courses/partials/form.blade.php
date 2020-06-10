@@ -14,10 +14,27 @@
 
   <div class="form-group">
     {!! Form::label('validaty', 'Vigencia',['class' => 'col-sm-2 control-label']) !!}
-    <div class="col-sm-2">
+    <div class="col-sm-1">
       {!! Form::number('validaty', null, ['class' => 'form-control','placeholder' => '0']) !!}
     </div>
-    {!! Form::label('hh', 'Horas',['class' => 'col-sm-2 control-label']) !!}
+    <div class="col-sm-2">
+      <select class="form-control"  name="tipo_validaty" type="text" id="tipo_validaty">
+          @if(isset($course) && $course->tipo_validaty==1)
+            <option value="1">Dia</option>
+            <option value="2">Mes</option>
+            <option value="3">Año</option>
+          @elseif(isset($course) && $course->tipo_validaty==2)
+            <option value="2">Mes</option>
+            <option value="1">Dia</option>
+            <option value="3">Año</option>
+          @else
+            <option value="3">Año</option>
+            <option value="2">Mes</option>
+            <option value="1">Dia</option>
+          @endif
+      </select>
+    </div>
+    {!! Form::label('hh', 'Horas',['class' => 'col-sm-1 control-label']) !!}
     <div class="col-sm-2">
       {!! Form::number('hh', null, ['class' => 'form-control','placeholder' => '0']) !!}
     </div>

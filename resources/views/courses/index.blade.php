@@ -40,6 +40,7 @@
                             <th>TIPO</th>
                             <th>CURSO</th>
                             <th>HORAS</th>
+                            <th>VIGENCIA</th>
                             <th>TIPO DE COSTO</th>
                             @if(Auth::id() <> 2683 && Auth::id() <> 4141 && Auth::id() <> 14078 && Auth::id() <> 1097 && Auth::id() <> 14179 && Auth::id() <> 14180 && Auth::id() <> 7053)
 
@@ -55,6 +56,13 @@
                                     <td>{{ $course->nameTypeCourse }}</td>
                                     <td>{{ $course->nameCourse }}</td>
                                     <td>{{ $course->hh }}</td>
+{{--                                    @if($course->tipo_validaty==1)--}}
+{{--                                        <td>{{ $course->validaty.' Dias' }}</td>--}}
+{{--                                    @elseif($course->tipo_validaty==2)--}}
+{{--                                        <td>{{ $course->validaty.' Meses' }}</td>--}}
+{{--                                    @else($course->tipo_validaty==3)--}}
+{{--                                        <td>{{ $course->validaty.' Años' }}</td>--}}
+{{--                                    @endif--}}
                                     @if($course->required)
                                         <td><small class="label bg-green">Costo 0</small></td>
                                     @else

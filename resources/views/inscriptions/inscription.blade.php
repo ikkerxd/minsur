@@ -50,8 +50,9 @@
             <thead>
               <tr>                            
                 <th>LUGAR / SEDE</th>
+                <th>MODALIDAD</th>
                 <th>CURSO</th>
-                <th>FECHA</th>      
+                <th>FECHA</th>
                 <th>HORARIO</th>
                 <th>HORAS DEL CURSO</th>
                 <th>VACANTES</th>

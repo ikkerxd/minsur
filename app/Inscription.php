@@ -9,6 +9,7 @@ class Inscription extends Model
     protected $fillable = [
         'id_course','id_location','startDate','endData','address','time','slot',
         'note','type','state', 'id_user', 'nameCurso', 'price', 'hours',
+        'platform', 'platform_id', 'platform_pwd', 'platform_url', 'test_url', 'modality',
     ];
     
     protected $hidden = [

@@ -41,15 +41,34 @@
                     <div class="box-body table-responsive no-padding">
                         <table class="table text-center table table-bordered" style="text-transform: uppercase">
                             <tr>
-                                <th>SEDE:</th><td style=background:#fffa65>{{$inscription->nameLocation}}</td>
-                                <th>FECHA:</th><td style=background:#fffa65>{{$inscription->startDate}}</td>
-                                <th>HORA:</th><td style=background:#fffa65>{{$inscription->time}}</td>
-                                <th>DURACION (hr):</th><td style=background:#fffa65>{{$inscription->hours}}</td>
+                                <th>SEDE:</th><td>{{$inscription->nameLocation}}</td>
+                                <th>FECHA:</th><td>{{$inscription->startDate}}</td>
+                                <th>HORA:</th><td>{{$inscription->time}}</td>
+                                <th>DURACION (hr):</th><td>{{$inscription->hours}}</td>
                             </tr>
                             <tr>
-                                <th>DIRECCION : </th><td colspan="5"  style=background:#fffa65>{{ $inscription->address }}</td>
-                                <th>FACILITADOR: </th><td  style=background:#fffa65;>{{ $inscription->firstName." ".$inscription->nameUser }}</td>
+                                <th>DIRECCION: </th><td colspan="5">{{ $inscription->address }}</td>
+                                <th>FACILITADOR: </th><td>{{ $inscription->firstName." ".$inscription->nameUser }}</td>
                             </tr>
+                            <tr>
+                                <th  colspan="8"></th>
+                            </tr>
+                            <tr>
+                                <th  colspan="8"> DATOS DE LA REUNION</th>
+                            </tr>
+                            <tr>
+                                <th>PLATAFORMA: </th><td>{{ $inscription->platform }}</td>
+                                <th>CODIGO DE LA REUNION: </th><td colspan="2">{{ $inscription->platform_id }}</td>
+                                <th>CLAVE DE LA REUNION: </th><td colspan="2">{{ $inscription->platform_pwd }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>ENLACE DE LA REUNION: </th><td colspan="7">{{ $inscription->platform_url }}</td>
+                            </tr>
+                            <tr>
+                                <th>ENLACE DE LA EVALUACION: </th><td colspan="7">{{ $inscription->test_url }}</td>
+                            </tr>
+
                         </table>
                         <br>
                         <div id="alert" class="alert alert-info"></div>

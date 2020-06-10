@@ -65,7 +65,6 @@
                     </thead>
                     <tbody>
                     @forelse($cursos as $curso)
-
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <th>{{ $curso->firstlastname }} {{ $curso->secondlastname }} {{ $curso->name  }}</th>
@@ -74,15 +73,21 @@
                             <td>{{ $curso->end }}</td>
                             <td><a href="{{ route('certificado', $curso->id) }}" class="btn btn-sm btn-outline-success">certificado</a></td>
                         </tr>
+                        @if($curso->id_course == '8')
+                            <tr>
+                                <td colspan="6">
+                                    <a href="{{ route('anexo4', $curso->id) }}" class="btn btn-sm btn-success">anexo 4</a>
+                                </td>
+                            </tr>
+                        @endif
                     @empty
-                        <th>
-                        <td colspan="5">No tiene ningun certificado.</td>
-                        </th>
+                        <tr>
+                            <td colspan="5">No tiene ningun certificado.</td>
+                        </tr>
                     @endforelse
                     </tbody>
                 </table>
             </div>
-
         </div>
     </div>
 
