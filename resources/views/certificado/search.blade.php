@@ -71,7 +71,16 @@
                             <th>{{ $curso->curso }}</th>
                             <td>{{ $curso->start }}</td>
                             <td>{{ $curso->end }}</td>
-                            <td><a href="{{ route('certificado', $curso->id) }}" class="btn btn-sm btn-outline-success">certificado</a></td>
+                            <td>
+                                <a href="{{ route('certificado', $curso->id) }}" class="btn btn-sm btn-outline-success">
+                                    certificado
+                                </a>
+                                @if($curso->id_course == '160' || $curso->id_course == '3')
+                                    <a href="{{ route('covid', $curso->id) }}" class="btn btn-sm btn-outline-info">
+                                        Constancia
+                                    </a>
+                                @endif
+                            </td>
                         </tr>
                         @if($curso->id_course == '8')
                             <tr>

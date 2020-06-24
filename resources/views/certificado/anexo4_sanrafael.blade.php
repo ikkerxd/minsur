@@ -10,7 +10,7 @@
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
-            padding: 0px 70px 0px 70px;
+            padding: 0px 20px 0px 20px;
         }
         input[type=checkbox]:before { font-family: DejaVu Sans; }
         input[type=checkbox] { display: inline; }
@@ -117,7 +117,7 @@
             </td>
         </tr>
     </table>
-    <center><img src="data:image/svg+xml;base64,{{ base64_encode($codeQR) }}" style="margin: 0"></center>
-    <p style="text-align:center;font-size:10px">Codigo QR - IGH GROUP</p>
+    <center><img src="data:image/svg+xml;base64,{{ base64_encode($codeQR) }}" style="margin: 0; padding: 0"></center>
+    <p style="text-align:center;font-size:10px; margin: 0; padding: 0">Codigo QR - IGH GROUP</p>
 </body>
 </html>
