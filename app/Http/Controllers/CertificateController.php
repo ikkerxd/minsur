@@ -121,13 +121,17 @@ class CertificateController extends Controller
             $codigo = 'RA-'.$id;
         }
 
-        if ($query->id_course == 8) {
+        if ($query->id_course == 8 || $query->id_course == 125 ) {
             $view = 'certificado.anexo4_sanrafael';
+        }
+
+        if ($query->id_course == 71) {
+            $view = 'certificado.anexo4_pucamarca';
         }
 
         $text = "ANEXO 4\nDNI: $dni\nParticipante: $nombres\nContratista: $company\nCargo:$cargo\nArea: $area\nFecha Induccion: $fecha";
         $codeQR = QrCode::format('png')->size(100)->generate($text);
-
+    
         $pdf = PDF::loadView($view, compact('dni', 'nombres', 'curso', 'area', 'cargo', 'fecha', 'codigo', 'company', 'codeQR'))
             ->setPaper('a4', 'portrait');
         return $pdf->download('CONSTANCIA DE  '.$dni.'-'.$nombres.'- CURSO '.strtoupper($curso.'.pdf'));
@@ -138,6 +142,11 @@ class CertificateController extends Controller
         $doc = $request->doc;
 
         if ($request->method() == 'POST') {
+
+            $user = User::query()
+                ->where('dni', $doc)
+                ->where('id_unity', '4')
+                ->first();
 
             $cursos = DB::table('user_inscriptions')
                 ->select(
@@ -163,8 +172,7 @@ class CertificateController extends Controller
                 ->whereIn('user_inscriptions.state', [0,1])
                 ->get();
         };
-
-        return view('certificado.search', compact('cursos'));
+        return view('certificado.search', compact('cursos', 'user'));
     }
 
 

@@ -28,7 +28,7 @@
             <td style="padding:5px;width:25%;border: 1px solid silver;">Titular</td>
             <td style="padding:5px;width:25%;border: 1px solid silver;">MINSUR S.A</td>
             <td style="padding:5px;;width:25%;border: 1px solid silver;">Trabajador</td>
-            <td style="padding:5px;width:25% ;border: 1px solid silver">{{ $nombres }}</td>
+            <td style="padding:5px;width:25%;border: 1px solid silver;">{{ $nombres }}</td>
         </tr>
         <tr>
             <td style="padding:5px;border: 1px solid silver;">E.C.M./CONEXAS</td>
@@ -38,19 +38,19 @@
         </tr>
         <tr>
             <td style="padding:5px;border: 1px solid silver;">Unidad de Producción</td>
-            <td style="padding:5px;border: 1px solid silver;">U.M San Rafael</td>
+            <td style="padding:5px;border: 1px solid silver;">U.M Pucamarca</td>
             <td style="padding:5px;border: 1px solid silver;">Registro o N° de Fotocheck</td>
             <td style="padding:5px;border: 1px solid silver;">{{ $dni }}</td>
         </tr>
         <tr>
             <td style="padding:5px;border: 1px solid silver;">Distrito</td>
-            <td style="padding:5px;border: 1px solid silver;">Antauta</td>
+            <td style="padding:5px;border: 1px solid silver;">PALCA</td>
             <td style="padding:5px;border: 1px solid silver;">Ocupación</td>
             <td style="padding:5px;border: 1px solid silver;">{{ $cargo }}</td>
         </tr>
         <tr>
             <td style="padding:5px;border: 1px solid silver;">Provincia</td>
-            <td style="padding:5px;border: 1px solid silver;">Melgar</td>
+            <td style="padding:5px;border: 1px solid silver;">TACNA</td>
             <td style="padding:5px;border: 1px solid silver;">Área de Trabajo</td>
             <td style="padding:5px;border: 1px solid silver;">{{ $area }}</td>
         </tr>

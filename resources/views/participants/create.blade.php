@@ -22,7 +22,7 @@
               <div class="col-md-9">
                 <h3 class="box-title">Registar Participante</h3>
               </div>
-                @if(false)
+                @if(true)
                     <div class="col-md-3">
                         <a href="#" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"> Formato</i></a>
                         <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">

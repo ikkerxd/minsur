@@ -124,7 +124,7 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::get('report/company/u','UserController@list_participants')->name('list_participants');
 
-    Route::get('new_participant','UserController@new_participant')->name('new_participant');
+    Route::get('upload_participant_validate_participant','UserController@new_participant')->name('new_participant');
     Route::get('edit_participant/{id}','UserController@edit_participants')->name('edit_participant');
     Route::get('upload_participant','UserController@upload_participant')->name('upload_participant');
     Route::post('participant/upload-participant-validate','UserController@upload_participant_validate')->name('upload_participant_validate');

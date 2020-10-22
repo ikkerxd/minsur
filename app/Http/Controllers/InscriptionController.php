@@ -44,7 +44,7 @@ class InscriptionController extends Controller
                 'startDate','address','time', 'inscriptions.id_course', 'modality')
             ->join('locations','inscriptions.id_location','=','locations.id')
             ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
-            ->where('startDate','>',date('2020-03-01'))
+            ->where('startDate','>',date('2019-10-15'))
             ->where('courses.id_unity', $user->id_unity)
             ->orderBy('inscriptions.startDate','desc')
             ->where('type',0)
@@ -62,12 +62,13 @@ class InscriptionController extends Controller
         $courses = Course::where('id_unity', $user->id_unity)->pluck('name','id');
         $users = DB::table('users')
             ->select(
-                DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name, users.id AS id')
+                DB::raw('CONCAT(firstlastname, " ",secondlastname, " ", users.name) AS full_name, users.id AS id')
             )
             ->join('role_user','users.id','=','role_user.user_id')
             ->whereIn('role_id', [1, 3])
             ->whereNotIn('users.id', [12753, 2683, 4141, 14078, 1097, 14179, 14180, 7053]) // administrativo
             ->where('users.state', 0)
+            ->orderby('users.firstlastname')
             ->pluck('full_name', 'id');
         return view('inscriptions.create',compact('locations','courses','users', 'modality'));
     }
@@ -192,12 +193,13 @@ class InscriptionController extends Controller
         $courses = Course::where('id_unity', $user->id_unity)->pluck('name','id');
         $users = DB::table('users')
             ->select(
-                DB::raw('CONCAT(name, " ", firstlastname, " ",secondlastname) AS full_name, users.id AS id')
+                DB::raw('CONCAT(firstlastname, " ",secondlastname, " ", name ) AS full_name, users.id AS id')
             )
             ->join('role_user','users.id','=','role_user.user_id')
             ->whereIn('role_id', [1, 3])
             ->whereNotIn('users.id', [12753, 2683, 4141, 14078, 1097, 14179, 14180, 7053]) // administrativo
             ->where('users.state', 0)
+            ->orderBy('firstlastname')
             ->pluck('full_name', 'id');
         return view('inscriptions.edit',compact('inscription','locations','courses','users'));
     }
@@ -1204,6 +1206,11 @@ class InscriptionController extends Controller
                                     'id_company_inscription' => $id_company
                                 ]
                             );
+
+                            if ($ui->state == 2) {
+                                $ui->state = 0;
+                                $ui->save();
+                            }
                         }
 
                     }

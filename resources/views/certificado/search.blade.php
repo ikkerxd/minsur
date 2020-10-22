@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ asset('css/login.css')}}">
-    <title>Certifiado de raura Minsur</title>
+    <title>Certificado de raura Minsur</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
@@ -45,8 +45,13 @@
 
         </div>
         <div class="row pt-4">
-            <div class="col">
+            <div class="col d-flex align-items-center justify-content-between">
                 <h4 style="color: rgb(174,17,34);">LISTA DE CERTIFICADOS</h4>
+                @isset($user)
+                    <a href="https://1drv.ms/u/s!AokUWcP9xVhIgvJeikELMN3YWhZSPg?e=NpGT7B" target="_blank" class="btn btn-sm btn-primary">
+                        Descarga material de apoyo
+                    </a>
+                @endisset
             </div>
         </div>
         <hr style="background-color: rgb(205,50,67);">
@@ -82,7 +87,7 @@
                                 @endif
                             </td>
                         </tr>
-                        @if($curso->id_course == '8')
+                        @if($curso->id_course == '8' || $curso->id_course == '71' || $curso->id_course == '125')
                             <tr>
                                 <td colspan="6">
                                     <a href="{{ route('anexo4', $curso->id) }}" class="btn btn-sm btn-success">anexo 4</a>
