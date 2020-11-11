@@ -18,20 +18,10 @@
       {!! Form::number('validaty', null, ['class' => 'form-control','placeholder' => '0']) !!}
     </div>
     <div class="col-sm-2">
-      <select class="form-control"  name="tipo_validaty" type="text" id="tipo_validaty">
-          @if(isset($course) && $course->tipo_validaty==1)
-            <option value="1">Dia</option>
-            <option value="2">Mes</option>
-            <option value="3">Año</option>
-          @elseif(isset($course) && $course->tipo_validaty==2)
-            <option value="2">Mes</option>
-            <option value="1">Dia</option>
-            <option value="3">Año</option>
-          @else
-            <option value="3">Año</option>
-            <option value="2">Mes</option>
-            <option value="1">Dia</option>
-          @endif
+      <select class="form-control"  name="type_validaty" id="tipo_validaty">
+          <option value="1" {{ old('type_validaty', $course->type_validaty) == '1' ? 'selected' : '' }}>Dia {{$course->type_validaty}}</option>
+          <option value="2" {{ old('type_validaty', $course->type_validaty) == '2' ? 'selected' : '' }}>Mes {{ $course->type_validaty }}</option>
+          <option value="3" {{ old('type_validaty', $course->type_validaty) == '3' ? 'selected' : '' }}>Año {{ $course->type_validaty }}</option>
       </select>
     </div>
     {!! Form::label('hh', 'Horas',['class' => 'col-sm-1 control-label']) !!}
@@ -48,7 +38,7 @@
 
   <div class="checkbox">
     <label>
-      {!! Form::checkbox('required', null) !!} ¿Es curso de pago unico?
+      {!! Form::checkbox('required', null) !!} ¿Es asumido por el cliente?
     </label>
   </div>
 </div>

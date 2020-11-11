@@ -301,7 +301,9 @@ class CertificateController extends Controller
     }
 
     public function course(Request $request) {
-        $query = DB::table('courses')->whereIn('id', [98, 97,99,100,101,102,103,127,128,129,136,139,145, 156, 160])->get();
+        $query = DB::table('courses')
+            ->whereIn('id', [98, 97,99,100,101,102,103,127,128,129,136,139,145, 156, 160, 161, 182, 187])
+            ->get();
 
         return view('certificado.course', compact('query'));
         // return $query;
