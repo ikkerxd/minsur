@@ -27,7 +27,10 @@ class CourseController extends Controller
         //$courses = Course::paginate();  
         $courses =  DB::table('type_courses')
             ->join('courses','courses.id_type_course','=','type_courses.id')
-            ->select('courses.id as id','courses.name as nameCourse','hh','courses.required as required','type_courses.name as nameTypeCourse')
+            ->select(
+                'courses.id as id','courses.name as nameCourse',
+                'courses.validaty', 'courses.type_validaty', 'courses.point_min',
+                'hh','courses.required as required','type_courses.name as nameTypeCourse')
             ->where('courses.id_unity', '=', $user->id_unity)
             ->get();
         return view('courses.index',compact('courses'));
@@ -35,11 +38,12 @@ class CourseController extends Controller
 
     public function create()
     {
+        $course = new Course();
         $user = Auth::user();
         $type_courses = DB::table('type_courses')
             ->where('id_unity','=', $user->id_unity)
             ->pluck('name','id');
-        return view('courses.create',compact('type_courses'));
+        return view('courses.create',compact('type_courses', 'course'));
     }
 
     public function store(Request $request)
@@ -58,6 +62,7 @@ class CourseController extends Controller
         }
         $course->id_unity = $user->id_unity;
         $course->validaty = $request->validaty;
+        $course->type_validaty = $request->validaty;
         $course->point_min = $request->point_min;
 
         $course->save();
@@ -72,8 +77,12 @@ class CourseController extends Controller
 
     
     public function edit(Course $course)
-    {        
-        $type_courses = TypeCourse::pluck('name','id');
+    {
+        $user = Auth::user();
+        $type_courses = DB::table('type_courses')
+            ->where('id_unity','=', $user->id_unity)
+            ->pluck('name','id');
+
         return view('courses.edit',compact('course','type_courses'));
     }
 
@@ -85,6 +94,7 @@ class CourseController extends Controller
         $course->name = $request->name;
         $course->hh = $request->hh;
         $course->validaty = $request->validaty;
+        $course->type_validaty = $request->type_validaty;
         $course->point_min = $request->point_min;
         if ($request->required) {
             $course->required = 1; // pago es unico

@@ -31,7 +31,7 @@
          <table class="table table-bordered table-striped">
           <thead>
             <tr>                            
-              <th>TIPO CURSO</th>              
+              <th>TIPO CURSO</th>
               <th>ESTADO</th>
               <th colspan="3">&nbsp;</th>
             </tr>

@@ -41,9 +41,9 @@
                             <th>CURSO</th>
                             <th>HORAS</th>
                             <th>VIGENCIA</th>
+                            <th>NOTA MINIMA</th>
                             <th>TIPO DE COSTO</th>
                             @if(Auth::id() <> 2683 && Auth::id() <> 4141 && Auth::id() <> 14078 && Auth::id() <> 1097 && Auth::id() <> 14179 && Auth::id() <> 14180 && Auth::id() <> 7053)
-
                                 <th colspan="3">ACCIONES</th>
                             @endif
 
@@ -56,15 +56,21 @@
                                     <td>{{ $course->nameTypeCourse }}</td>
                                     <td>{{ $course->nameCourse }}</td>
                                     <td>{{ $course->hh }}</td>
-{{--                                    @if($course->tipo_validaty==1)--}}
-{{--                                        <td>{{ $course->validaty.' Dias' }}</td>--}}
-{{--                                    @elseif($course->tipo_validaty==2)--}}
-{{--                                        <td>{{ $course->validaty.' Meses' }}</td>--}}
-{{--                                    @else($course->tipo_validaty==3)--}}
-{{--                                        <td>{{ $course->validaty.' Años' }}</td>--}}
-{{--                                    @endif--}}
+                                    <td>
+                                        {{ $course->validaty }}
+                                        @if($course->type_validaty == 1)
+                                            {{ Str::plural('dia', $course->validaty) }}
+                                        @endif
+                                        @if($course->type_validaty == 2)
+                                            {{ Str::plural('mes', $course->validaty) }}
+                                        @endif
+                                        @if($course->type_validaty == 3)
+                                            {{ Str::plural('año', $course->validaty) }}
+                                        @endif
+                                    </td>
+                                    <td>{{ $course->point_min }}</td>
                                     @if($course->required)
-                                        <td><small class="label bg-green">Costo 0</small></td>
+                                        <td><small class="label bg-green">Asume minsur</small></td>
                                     @else
                                         <td><small class="label bg-gray">Costo de 2 X 1</small></td>
                                     @endif
