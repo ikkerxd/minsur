@@ -309,8 +309,8 @@ class UserController extends Controller
             $user->position = $request->position;
             $user->phone = $request->phone;
             $user->email = $request->email;
-            $user->code_bloqueo = $request->code_bloqueo;
-            $user->medical_exam = $request->medical_exam;
+            //$user->code_bloqueo = $request->code_bloqueo;
+            $user->medical_exam = $request->medical_exam;   
             $user->id_management = $request->id_management;
             $user->superintendence = $request->superintendence;
             if ($request->image != "") {
@@ -320,7 +320,10 @@ class UserController extends Controller
                 $name->move('img/', $name_hash);
                 $user->image = $name_original;
                 $user->image_hash = $name_hash;
-            }
+            }else{
+                $user->image = $user->image;
+                $user->image_hash = $user->image_hash;
+            } 
             $user->birth_date = $request->birth_date;
             $user->gender = $request->gender;
             $user->origin = $request->origin;
@@ -568,7 +571,7 @@ class UserController extends Controller
         $user = DB::table('users')
             ->select('users.id as id', 'dni',
                 'firstlastname', 'secondlastname', 'name',
-                'position', 'superintendence', 'businessName')
+                'position', 'superintendence', 'businessName','image','image_hash')
             ->join('companies', 'companies.id', '=', 'users.id_company')
             ->where('users.id', $request->id)
             ->first();
@@ -587,8 +590,10 @@ class UserController extends Controller
             ->join('inscriptions','inscriptions.id', '=', 'user_inscriptions.id_inscription')
             ->where('user_inscriptions.id_user',$user->id)
             ->whereIn('user_inscriptions.state', [0,1])
-            ->get();
 
+            ->get();
+       
+                
         return view('participants.detail_participant', compact('user', 'result'));
     }
 

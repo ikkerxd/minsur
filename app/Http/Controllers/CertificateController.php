@@ -143,9 +143,14 @@ class CertificateController extends Controller
 
         if ($request->method() == 'POST') {
 
+
             $user = User::query()
                 ->where('dni', $doc)
                 ->where('id_unity', '4')
+                ->first();
+            $user1 = User::query()
+                ->where('dni', $doc)
+                ->where('id_unity', '2')
                 ->first();
 
             $cursos = DB::table('user_inscriptions')
@@ -172,7 +177,7 @@ class CertificateController extends Controller
                 ->whereIn('user_inscriptions.state', [0,1])
                 ->get();
         };
-        return view('certificado.search', compact('cursos', 'user'));
+        return view('certificado.search', compact('cursos', 'user','user1'));
     }
 
 

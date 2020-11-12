@@ -24,7 +24,7 @@
                     <div class="box-body">
                         <div class="row">
                             <div class="col-sm-2">
-                                <img src="{{ asset('img/avatar04.png') }}" alt="" class="img-responsive center-block">
+                                <img src=" {{ asset( 'img/'.$user->image_hash) }} " class="img-responsive center-block">
                             </div>
 
                             <div class="col-sm-5">
