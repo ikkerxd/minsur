@@ -164,7 +164,6 @@
 </head>
 <body>
 
-
 {{-- SEGUNDA OPCION --}}
 
     <div style="position: absolute; left: 0; top: -265px; right: 0; bottom: 0px; text-align: center;z-index: -1000;">
@@ -190,11 +189,10 @@
                 <div class="container">
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">
-                        Reinducción Anual de Seguridad e Higiene Ocupacional. Reinducción Código de Ética y conducta Gestión y de la Seguridad y Salud Ocupacional basado en el Reglamento de Seguridad y Salud. Ocupacional y Política de Seguridad y Salud Ocupacional.
+                         Reinducción Anual de Seguridad e Higiene Ocupacional. Reinducción Código de Ética y conducta Gestión y de la Seguridad y Salud Ocupacional basado en el Reglamento de Seguridad y Salud. Ocupacional y Política de Seguridad y Salud Ocupacional.
                     </div>
                 </div>
             </div>
-            <title class="horas">Con una duración de 08 horas lectivas.</title>
         @endif
 
         @if($item->curso == 'Curso Obligatorio II')
@@ -206,20 +204,17 @@
                     </div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
-
 
         @if($item->curso == 'Curso Obligatorio III')
             <div class="detalle">
                 <div class="container-xl">
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">
-                        Riesgos Críticos 1: Aislamiento y bloqueo de energía. Pruebas en equipos energizados. Herramientas críticas. Barreras y controles de protección en máquinas y equipos. Subestaciones eléctricas, salas eléctricas y centro de control de motores. Riesgos Críticos 2: Excavaciones y zanjas. Labores subterráneas. Espacios confinados y Perforación en superficie.
+                         Riesgos Críticos 1: Aislamiento y bloqueo de energía. Pruebas en equipos energizados. Herramientas críticas. Barreras y controles de protección en máquinas y equipos. Subestaciones eléctricas, salas eléctricas y centro de control de motores. Riesgos Críticos 2: Excavaciones y zanjas. Labores subterráneas. Espacios confinados y Perforación en superficie.
                     </div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio IV')
@@ -227,11 +222,10 @@
                 <div class="container">
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">
-                        Herramientas de gestión de riesgos (PETS – ATS – OPT - PETAR). Mapa de Riesgos (Significado y uso de código de señales y colores).  Prevención de lesiones en dedos y manos / Primeros Auxilios.
+                         Herramientas de gestión de riesgos (PETS – ATS – OPT - PETAR). Mapa de Riesgos (Significado y uso de código de señales y colores).  Prevención de lesiones en dedos y manos / Primeros Auxilios.
                     </div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio V')
@@ -239,11 +233,10 @@
                 <div class="container">
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">
-                        Riegos Críticos 3: Trabajos en altura. Izaje de carga. Trabajo cerca o sobre fuentes de agua. Riesgos Críticos 4: Materiales peligrosos. Trabajos en caliente y Metales Fundidos.
+                         Riegos Críticos 3: Trabajos en altura. Izaje de carga. Trabajo cerca o sobre fuentes de agua. Riesgos Críticos 4: Materiales peligrosos. Trabajos en caliente y Metales Fundidos.
                     </div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio VI')
@@ -251,11 +244,10 @@
                 <div class="container">
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">
-                        Reglas por la vida, Decálogo de Salud y Derecho a decir NO. Higiene Ocupacional. Control de sustancias peligrosas. IPERC.
+                         Reglas por la vida, Decálogo de Salud y Derecho a decir NO. Higiene Ocupacional. Control de sustancias peligrosas. IPERC.
                     </div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio VII')
@@ -263,10 +255,9 @@
                 <div class="container">
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">
-                        Estándar Bloqueo y Etiquetado. Estándar Materiales Peligrosos.</div>
+                         Estándar Bloqueo y Etiquetado. Estándar Materiales Peligrosos.</div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio VIII')
@@ -274,10 +265,9 @@
                 <div class="container">
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">
-                        Estándar Trabajos en Caliente, Estándar Trabajos en Altura.</div>
+                         Estándar Trabajos en Caliente, Estándar Trabajos en Altura.</div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio IX')
@@ -285,10 +275,9 @@
                 <div class="container">
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">
-                        Estándar Pruebas en Equipos Energizados, Estándar Subestaciones Eléctricas Salas Eléctricas y CCM.</div>
+                         Estándar Pruebas en Equipos Energizados, Estándar Subestaciones Eléctricas Salas Eléctricas y CCM.</div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio X')
@@ -296,10 +285,9 @@
                 <div class="container">
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">
-                        Manejo Defensivo, Ritran, Estándar Izaje de Cargas.</div>
+                         Manejo Defensivo, Ritran, Estándar Izaje de Cargas.</div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio XI')
@@ -307,10 +295,9 @@
                 <div class="container">
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">
-                        Estándar Metales Fundidos, Estándar Espacios Confinados.</div>
+                         Estándar Metales Fundidos, Estándar Espacios Confinados.</div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio XII')
@@ -318,13 +305,12 @@
                 <div class="container">
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">
-                        Respuesta a emergencias en áreas específicas - Prevención y Protección contra Incendio, Higiene Ocupacional - Factores de riesgos ergonómicos y psicosociales - Disposición de Residuos Sólidos.
+                         Respuesta a emergencias en áreas específicas - Prevención y Protección contra Incendio, Higiene Ocupacional - Factores de riesgos ergonómicos y psicosociales - Disposición de Residuos Sólidos.
                     </div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
-
+        <div class="horas">Con una duración de 0{{ $item->hours }} horas lectivas.</div>
         <div class="fecha">{{ Carbon\Carbon::parse($item->fecha)->day }} de {{ Carbon\Carbon::parse($item->fecha)->localeMonth }} del  {{ Carbon\Carbon::parse($item->fecha)->year }}</div>
     </div>
 

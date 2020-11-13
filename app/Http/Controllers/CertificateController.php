@@ -273,8 +273,7 @@ class CertificateController extends Controller
                 'users.dni',
                 DB::Raw('CONCAT(users.firstlastname, " ", users.secondlastname, " ", users.name) AS participante'),
                 'user_inscriptions.id as id',
-                'nameCurso as curso', 'startDate as fecha'
-
+                'nameCurso as curso', 'startDate as fecha, inscriptions.hours'
             )
             ->join('inscriptions','inscriptions.id', '=', 'user_inscriptions.id_inscription')
             ->join('users', 'users.id', '=', 'user_inscriptions.id_user')
@@ -282,6 +281,8 @@ class CertificateController extends Controller
             ->whereRaw('user_inscriptions.point>=inscriptions.point_min')
             ->whereIn('user_inscriptions.state', [0,1])
             ->get();
+
+        dd($query);
 
         $html = '';
 
@@ -302,7 +303,7 @@ class CertificateController extends Controller
 
     public function course(Request $request) {
         $query = DB::table('courses')
-            ->whereIn('id', [98, 97,99,100,101,102,103,127,128,129,136,139,145, 156, 160, 161, 182, 187])
+            ->whereIn('id', [98, 97,99,100,101,102,103,108, 127,128,129,136,139,145, 156, 160, 161, 182, 187])
             ->get();
 
         return view('certificado.course', compact('query'));
@@ -310,8 +311,7 @@ class CertificateController extends Controller
     }
 
     public function course_certificado_pisco(Request $request) {
-
-        ini_set('max_execution_time', 720000);
+        ini_set('max_execution_time', 920000);
         ini_set('memory_limit', -1);
         setlocale(LC_TIME, 'Spanish');
         $course = Course::findOrFail($request->id);
@@ -320,7 +320,7 @@ class CertificateController extends Controller
                 'users.dni',
                 DB::Raw('CONCAT(users.firstlastname, " ", users.secondlastname, " ", users.name) AS participante'),
                 'user_inscriptions.id as id',
-                'nameCurso as curso', 'startDate as fecha'
+                'nameCurso as curso', 'startDate as fecha', 'inscriptions.hours'
 
             )
             ->join('inscriptions','inscriptions.id', '=', 'user_inscriptions.id_inscription')
