@@ -191,7 +191,7 @@
                     </div>
                 </div>
             </div>
-            <title class="horas">Con una duración de 08 horas lectivas.</title>
+
         @endif
 
         @if($item->curso == 'Curso Obligatorio II')
@@ -203,9 +203,7 @@
                     </div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
-
 
         @if($item->curso == 'Curso Obligatorio III')
             <div class="detalle">
@@ -216,7 +214,6 @@
                     </div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio IV')
@@ -228,7 +225,6 @@
                     </div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio V')
@@ -240,7 +236,6 @@
                     </div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio VI')
@@ -252,7 +247,6 @@
                     </div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio VII')
@@ -263,7 +257,6 @@
                         Estándar Bloqueo y Etiquetado. Estándar Materiales Peligrosos.</div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio VIII')
@@ -274,7 +267,6 @@
                         Estándar Trabajos en Caliente, Estándar Trabajos en Altura.</div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio IX')
@@ -285,7 +277,6 @@
                         Estándar Pruebas en Equipos Energizados, Estándar Subestaciones Eléctricas Salas Eléctricas y CCM.</div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio X')
@@ -296,7 +287,6 @@
                         Manejo Defensivo, Ritran, Estándar Izaje de Cargas.</div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio XI')
@@ -307,7 +297,6 @@
                         Estándar Metales Fundidos, Estándar Espacios Confinados.</div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
 
         @if($item->curso == 'Curso Obligatorio XII')
@@ -319,10 +308,9 @@
                     </div>
                 </div>
             </div>
-            <div class="horas">Con una duración de 08 horas lectivas.</div>
         @endif
-
-        <div class="fecha">{{ Carbon\Carbon::parse($item->fecha)->day }} de {{ Carbon\Carbon::parse($item->fecha)->localeMonth }} del  {{ Carbon\Carbon::parse($item->fecha)->year }}</div>
+        <div class="horas">Con una duración de 0{{ $item->hours }} horas lectivas.</div>
+        <div class="fecha">hola {{ Carbon\Carbon::parse($item->fecha)->day }} de {{ Carbon\Carbon::parse($item->fecha)->localeMonth }} del  {{ Carbon\Carbon::parse($item->fecha)->year }}</div>
     </div>
     @if(!$loop->last)
         <div class="page-break"></div>
