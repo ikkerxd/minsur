@@ -53,7 +53,7 @@ class CertificateController extends Controller
         $fecha = $dia.' de '.ucfirst($mes).' del '.$anio;
         $xl = false;
 
-        if (strlen($curso)>= 75) {
+        if (strlen($curso)>= 150) {
             $xl = true;
         }
 

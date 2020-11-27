@@ -218,7 +218,7 @@
         @endif
 
         @if($item->curso == 'Curso Obligatorio IV')
-            <div class="detalle" style="padding-top: 25px">
+            <div class="detalle" style="padding-top: 10px">
                 <div class="container">
                     <div class="item-1">Tópicos: </div>
                     <div class="item-2">

@@ -557,7 +557,7 @@ class UserController extends Controller
         $users = DB::table('users')
             ->select('users.id as id', 'users.id_unity', 'users.id_company', 'users.state',
                 'users.dni', 'users.firstlastname', 'users.secondlastname', 'users.name',
-                'companies.businessName as empresa')
+                'companies.businessName as empresa','users.phone','users.superintendence')
             ->join('role_user','role_user.user_id', '=', 'users.id')
             ->join('companies', 'companies.id', '=', 'users.id_company')
             ->where('id_unity', $user->id_unity)
@@ -571,7 +571,7 @@ class UserController extends Controller
         $user = DB::table('users')
             ->select('users.id as id', 'dni',
                 'firstlastname', 'secondlastname', 'name',
-                'position', 'superintendence', 'businessName','image','image_hash')
+                'position', 'superintendence', 'businessName','image','image_hash','users.phone','users.superintendence')
             ->join('companies', 'companies.id', '=', 'users.id_company')
             ->where('users.id', $request->id)
             ->first();
