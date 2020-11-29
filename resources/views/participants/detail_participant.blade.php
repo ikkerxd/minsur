@@ -134,6 +134,11 @@
             </div>
             <div class="modal-body">
                 <h4>Debe contar de menera obligarotia con los siguientes datos</h4>
+                 <ol>
+                     <li>Area de trabajo</li>
+                     <li>Puesto de trabajo</li>
+                     <li>Foto personal</li>
+                 </ol>
                 
             </div>
             <div class="modal-footer">

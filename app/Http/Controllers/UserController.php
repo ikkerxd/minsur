@@ -33,6 +33,11 @@ class UserController extends Controller
         return view('users.index',compact('users'));
     }
 
+    public function fotocheck()
+    {
+        return view('fotocheck.index');
+    }
+
     public function create()
     {
         $companies = Company::pluck('businessName','id');

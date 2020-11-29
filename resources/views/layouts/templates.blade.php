@@ -93,7 +93,8 @@
                     <a href="{{ route('edit_user_company', Auth::id()) }}" class="btn btn-success"><i class="fa fa-cog" aria-hidden="true"></i> Perfil</a>
                   </div>
                   <div class="pull-right">
-                    <a href="{{ route('logout') }}" class="btn btn-danger btn-block" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <a href="{{ route('logout') }}" class="btn btn-danger btn-block" onclick="event.preventDefault();
+document.getElementById('logout-form').submit();">
                       <i class="fa fa-power-off" aria-hidden="true"></i> Salir
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -129,8 +130,12 @@
           <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
           @can('inscriptions.index')
           <li><a href="{{route('inscriptions.index')}}"><i class="fa fa-pencil-square-o"></i> <span>Programación Cursos</span></a></li>
-          <li><a href="{{route('inscriptions.index')}}"><i class="fa fa-check-square-o"></i> <span>Revision de Fotocheck</span></a></li>
           @endcan
+         
+          @can('fotocheck.index')
+          <li><a href="#"><i class="fa fa-check-square-o"></i> <span>Revision de Fotocheck</span></a></li>
+          @endcan
+
           @can('participants.index')
           <li><a href="{{route('search-participant')}}"><i class="fa fa-check-circle-o"></i> <span>Buscar Participante</span></a></li>
           @endcan
@@ -197,7 +202,7 @@
           <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
 
           <li><a href="{{route('inscriptions.index')}}"><i class="fa fa-pencil-square-o"></i> <span>Programación Cursos</span></a></li>
-          
+
         </ul>
         @endrole
         @role('admin-cont')
