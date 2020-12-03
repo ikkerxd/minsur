@@ -208,6 +208,10 @@ Route::middleware(['auth'])->group(function(){
     /********* Reporte de de partcipante del client *********/
 
     Route::get('export/participante/{id}/{startDate}/{endDate}', 'CompanyController@export_consolidado')
-        ->name('export_consolidado');
+		->name('export_consolidado');
+	
+	//fotocheck
+	Route::post('participant/fotocheck', 'FotocheckController@solicited')
+        ->name('fotocheck.solicited')/*->middleware('permission:fotocheck.solicited')*/;
 
 });

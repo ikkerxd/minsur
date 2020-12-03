@@ -33,8 +33,25 @@ class User extends Authenticatable
         'id_unity',
         'email_valorization',
     ];
-    
+
+    protected $appends = ['full_name'];
+
     protected $hidden = [
         'remember_token','created_at','updated_at'
     ];
+
+    public function getShortName()
+    {
+        return "{$this->name} {$this->last_name}";
+    }
+
+    public function getFullName()
+    {
+        return ucwords("{$this->secondlastname} {$this->firstlastname} {$this->name}");
+    }
+
+    public function getFullNameAttribute()
+    {
+        return ucwords("{$this->secondlastname} {$this->firstlastname} {$this->name}");
+    }
 }

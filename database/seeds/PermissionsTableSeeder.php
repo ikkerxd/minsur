@@ -248,6 +248,13 @@ class PermissionsTableSeeder extends Seeder
         	'name'			=>	'Eliminar participante',
         	'slug'			=>	'participants.destroy',
         	'description'	=>	'Elimina cualquier participante del sistema',
+		]);
+		//Fotocheck
+		Permission::create([
+        	'name'			=>	'Solicitar Fotocheck',
+        	'slug'			=>	'fotocheck.solicited',
+        	'description'	=>	'Solicita el fotocheck',
         ]);
+        
     }
 }
