@@ -184,7 +184,9 @@
                     <hr>
 
                 <input  name="user_id" class="hidden" value="{{$user->id}}" >
-
+                <h5><strong>Debe contar con Foto de Perfil</strong></h5>
+                <hr>
+                
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Solicitar Fotocheck</button>
