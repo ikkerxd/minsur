@@ -1,19 +1,33 @@
 <?php
-
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
 use App\Fotocheck;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Auth;
+
+
 class FotocheckController extends Controller
 {
     
-    public function index()
+    public function solicited(Request $request)
     {
-        return view('fotocheck.index');
+        
+        $user= User::find($request->user_id);
+        
+        if(!$user->image)
+        {
+            $message='El participante '. $user->fullname .' nececita tener una foto'; 
+            return back()->with('success',$message);
+        }
+
+        $fields['user_id']= $user->id;
+        $fields['state'] = \App\Fotocheck::SOLICITED;
+
+        $fotocheck= Fotocheck::create($fields);
+
+        $message='El Fotocheck del participante '. $user->fullname .' ha sido solicitado correctamente';  
+        return back()->with('success',$message);
     }
 
-    public function detail_participant()
-    {
-        return view('fotocheck/detail_participant');
-    }
 }

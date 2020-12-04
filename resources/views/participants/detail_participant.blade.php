@@ -19,7 +19,24 @@
         <div class="col-md-12">
             <div class="box">
 
-
+                @if ( Session::has('success') )
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <i class="fa fa-check" aria-hidden="true"></i> {{ Session::get('success') }}
+                </div>
+                @endif
+                @if ( Session::has('danger') )
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <i class="fa fa-ban" aria-hidden="true"></i> {{ Session::get('danger') }}
+                </div>
+                @endif
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-2">
@@ -127,23 +144,55 @@
     <<div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Requisitos para Solicitar Fotocheck</h4>
+                <h3 class="modal-title text-center">Requisitos para Solicitar Fotocheck</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <div class="card-body">
+                <form action="{{ route('fotocheck.solicited') }}"
+                    method="POST" id="formCourse">
+                    {{ csrf_field() }}
             <div class="modal-body">
-                <h4>Debe contar de menera obligarotia con los siguientes datos</h4>
-                 <ol>
-                     <li>Area de trabajo</li>
-                     <li>Puesto de trabajo</li>
-                     <li>Foto personal</li>
-                 </ol>
+                <p><strong>Capacitación y entrenamiento para ser líder de aislamiento (dictado por el supervisor).                       Presentar registro de capacitación y exámen (nota mínima 16).
+                    Mínimo 1 hora de capacitación.</strong></p>
+                    <hr>
+                <p><strong>Vigía de excavaciones y zanjas (capacitación por parte del supervisor): Primeros auxilios 1 hora (registro y exámen)    (nota mínima 16)
+                    Protocolo de actuación en caso de emergencia en los trabajos de excavaciones 1 hora (resgistro y exámen) (nota mínima 16). Mínimo 1 hora de capacitación.  </strong></p>
+                    <hr>
+                <p><strong>Presentar: Certificado de operador de grúa y Rigger. PIC que especifique el equipo que operará. Vigía de izaje con grúas 
+                    (capacitación por parte del supervisor 1 hora)-presentar regsitro de capacitación y exámen (nota mínima 16).Mínimo 1 hora de capacitación.</strong></p>
+                    <hr>
+                <h5><strong>CURSO INFORMATIVO</strong></h5>
+                    <hr>
+                <p><strong>Certificado de operación del equipo o capacitación.Para el caso de capacitación presentar registro de capacitación y exámen. (nota mínima 16). Mínimo 1 hora de capacitación.  </strong></p>
+                    <hr>
+                <p><strong>Capacitación de voladura realizada por el jefe de voladura (presentar exámen y registro- nota mínima 16). Carnet de la SUCAMEC vigente (COPIA)     </strong></p>
+                    <hr>
+                <p><strong>Capacitacion y entrenamiento (identificación de la incompatibilidad de los reactivos químicos en el área. Presentar registro y exámen (nota mínima 18).
+                    Los conductores que transportarán materiales peligrosos dentro y fuera de la UM, deben contar con la licencia de conducir del MTC de caregoría especial A4. Mínimo 1 hora de capacitación.</strong></p>
+                    <hr>
+                <p><strong>Certificado de suficiencia médica (copia).</strong></p>
+                    <hr>
+                <p><strong>Soldador homologado (validado en el perfil del puesto)   - presentar certificado o evidencia (correo) Vigía de fuego: 
+                    Presentar registro de capacitación y exámen (nota mínima 18) en uso y manipulación de extintores - dictada por el supervisor. Mínimo 1 hora de capacitación.</strong></p>
+                    <hr>
+                <p><strong>Solicitar autorización con lista de herramientas a usar. Presentar registro de capacitación y exámen (nota mínima 18)  de cada herramienta de poder - dictada por el supervisor operativo. 
+                    Mínimo 1 hora de capacitación.</strong></p>
+                    <hr>
+                <p><strong>Capacitación por el jefe de área. Presentar registro de capacitación y exámen. (nota mínima 20) Mínimo 4 hora de capacitación.</strong></p>
+                    <hr>
+
+                <input  name="user_id" class="hidden" value="{{$user->id}}" >
+                <h5><strong>Debe contar con Foto de Perfil</strong></h5>
+                <hr>
                 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Solicitat Fotocheck</button>
+                <button type="submit" class="btn btn-primary">Solicitar Fotocheck</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+            </form>
             </div>
         </div>
 </div>

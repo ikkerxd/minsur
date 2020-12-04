@@ -588,8 +588,8 @@ class UserController extends Controller
                 DB::raw('IF(user_inscriptions.point >= inscriptions.point_min , 1,0) as aprobado'),
                 DB::raw('
                             IF(user_inscriptions.point >= inscriptions.point_min ,
-                             DATE_ADD(inscriptions.startDate, INTERVAL inscriptions.validaty year), 0
-                             ) as vigencia'
+                            DATE_ADD(inscriptions.startDate, INTERVAL inscriptions.validaty year), 0
+                            ) as vigencia'
                 )
             )
             ->join('inscriptions','inscriptions.id', '=', 'user_inscriptions.id_inscription')
@@ -598,7 +598,6 @@ class UserController extends Controller
 
             ->get();
        
-                
         return view('participants.detail_participant', compact('user', 'result'));
     }
 

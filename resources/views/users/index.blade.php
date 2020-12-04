@@ -22,11 +22,11 @@
       <div class="box">
         <div class="box-header"> 
             <div class="input-group input-group-sm">
-              <a href="{{route('users.create')}}" class="btn btn-success btn-sm">REGISTRAR USUARIO</a>                 
-          </div>             
-      </div>
-      <!-- /.box-header -->
-      {{-- <div class="box-body table-responsive no-padding">
+            <a href="{{route('users.create')}}" class="btn btn-success btn-sm">REGISTRAR USUARIO</a>
+        </div>             
+    </div>
+    <!-- /.box-header -->
+    {{-- <div class="box-body table-responsive no-padding">
         <table class="table table-hover" id="example1">
             <thead>
                 <tr>
@@ -63,10 +63,10 @@
         </table>              
     </div>  --}}     
     <div class="box-body">
-              <table id="example1" class="table table-bordered table-striped">
+                <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th>Nombre</th>
+                    <th>Nombre</th>
                     <th>Correo</th>
                     <th>Estado</th>
                     <th colspan="3"></th>
@@ -83,8 +83,8 @@
                     @endcan
                     @can('users.edit')
                     
-                      <td width="10px"><a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
-                   
+                    <td width="10px"><a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
+                
                     @endcan
                     @can('users.destroy')
                     <td width="10px">
@@ -98,7 +98,7 @@
                 </tr>
                 @endforeach
                 </tbody>               
-              </table>
+                </table>
             </div>     
 </div>       
 </div>
