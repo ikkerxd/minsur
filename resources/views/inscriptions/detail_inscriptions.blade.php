@@ -62,7 +62,7 @@
                       <td>{{ $detail_inscription->businessName }}</td>
                       
                       <th><a href="#">{{ $detail_inscription->voucher }}</a></th>
-                      <td><a href="{{ route('download_file', $detail_inscription->voucher_hash) }}"><i class="fa fa-download" aria-hidden="true"></i></a></td>              
+                      <td><a href="{{ route('download_file', $detail_inscription->voucher_hash) }}" ><i class="fa fa-download" aria-hidden="true"></i></a></td>              
                     </tr>
                   @endforeach
                 </tbody>

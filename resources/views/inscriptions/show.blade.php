@@ -119,7 +119,7 @@
                                         <td>
                                             <form action="{{ route('anulate_user_inscription', ['id' =>  $participant->id ])}}" method="post">
                                                 {{ csrf_field() }}
-                                                <a class="btn btn-xs btn-danger btn-anulate" style="text-transform: capitalize">Anular</a>
+                                                <a class="btn btn-xs btn-danger btn-anulate" style="text-transform: capitalize" title="Anular registro" data-toggle="tooltip" data-placement="top">Anular</a>
                                             </form>
                                         </td>
                                     @endif

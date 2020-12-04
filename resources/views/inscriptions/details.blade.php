@@ -56,7 +56,7 @@
                   </td>
                 <td>
                  @if ($inscription->state != 2)
-                    <a href="{{ url('detail-inscriptionc/'.$inscription->id_inscription)}}" class="btn btn-sm btn-default"><i class="fa fa-list-ul" aria-hidden="true"></i> Detalle</a>
+                    <a href="{{ url('detail-inscriptionc/'.$inscription->id_inscription)}}" class="btn btn-sm btn-default" ><i class="fa fa-list-ul" aria-hidden="true"></i> Detalle</a>
                   @else
                     <span class="label label-default">Anulado</span>
                  @endif

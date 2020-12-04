@@ -41,9 +41,10 @@ class InscriptionController extends Controller
         $user = Auth::user();
         $inscriptions =  DB::table('inscriptions')
             ->select('inscriptions.id as id','inscriptions.nameCurso','locations.name as nameLocation',
-                'startDate','address','time', 'inscriptions.id_course', 'modality')
+                'inscriptions.startDate','inscriptions.address','inscriptions.time', 'inscriptions.id_course', 'inscriptions.modality','users.name','users.firstlastname')
             ->join('locations','inscriptions.id_location','=','locations.id')
             ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
+            ->join('users', 'users.id', '=', 'inscriptions.id_user')
             ->where('startDate','>',date('2019-10-15'))
             ->where('courses.id_unity', $user->id_unity)
             ->orderBy('inscriptions.startDate','desc')
