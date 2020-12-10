@@ -48,26 +48,23 @@
             <div class="col d-flex align-items-center justify-content-between">
                 <h4 style="color: rgb(174,17,34);">LISTA DE CERTIFICADOS</h4>
 
-                @foreach ($unity_m as $unity)
-                @if($unity ->id=='4' )
+                    @isset($user)
                     <a href="https://1drv.ms/u/s!AokUWcP9xVhIgvJeikELMN3YWhZSPg?e=NpGT7B" target="_blank" class="btn btn-sm btn-primary">
                         Descarga material de apoyo PISCO
                     </a>
-                @endif
+                    @endisset
 
-                 @if($unity ->id=='2')
+                    @isset($user1)
                     <a href="https://1drv.ms/u/s!AokUWcP9xVhIg6Rx2ZvJm4tbnh8H0Q?e=dHB9h7" target="_blank" class="btn btn-sm btn-primary">
                         Descarga material de apoyo SAN RAFAEL
                     </a>
-                @endif
+                    @endisset
 
-                @if($unity ->id=='3')
-                    <a href="https://1drv.ms/u/s!AokUWcP9xVhIg6Rx2ZvJm4tbnh8H0Q?e=dHB9h7" target="_blank" class="btn btn-sm btn-primary">
+                    @isset($user2)
+                    <a href="https://1drv.ms/u/s!AokUWcP9xVhIg8VPSWWNgg32jXW9zw?e=5wkuTL" target="_blank" class="btn btn-sm btn-primary">
                         Descarga material de apoyo PUCAMARCA
                     </a>
-                @endif
-
-                @endforeach
+                    @endisset
 
                 
                
