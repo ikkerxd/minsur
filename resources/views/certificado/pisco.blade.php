@@ -39,7 +39,7 @@
             left: 10%;
             width: 80%;
             font-weight: bold;
-            font-size: 26px;
+            font-size: 22px;
             color: #373435;
         }
 
@@ -48,7 +48,7 @@
             left: 10%;
             width: 80%;
             font-weight: bold;
-            font-size: 38px;
+            font-size: 35px;
             color: rgb(0,72,145);
             text-transform: uppercase;
 
@@ -66,7 +66,7 @@
         .fecha {
             font-family: sans-serif;
             top: 752px;
-            left: 95px;
+            margin-left: -221px;
             color: #363435;
             font-size: 14px;
         }
@@ -176,7 +176,7 @@
 @endif
 
 @if($curso == 'Curso Obligatorio III')
-    <div class="detalle">
+    <div class="detalle" style="padding-top: -22px">
         <div class="container-xl">
             <div class="item-1">Tópicos: </div>
             <div class="item-2">
@@ -212,7 +212,7 @@
 @endif
 
 @if($curso == 'Curso Obligatorio VI')
-    <div class="detalle" style="padding-top: 25px; font-size: 28px !important;">
+    <div class="detalle" style="padding-top:25px; font-size: 24px !important;">
         <div class="container">
             <div class="item-1">Tópicos: </div>
             <div class="item-2">
@@ -224,7 +224,7 @@
 @endif
 
 @if($curso == 'Curso Obligatorio VII')
-    <div class="detalle">
+    <div class="detalle" style="padding-top:25px; font-size: 24px !important;">
         <div class="container">
             <div class="item-1">Tópicos: </div>
             <div class="item-2">
@@ -235,7 +235,7 @@
 @endif
 
 @if($curso == 'Curso Obligatorio VIII')
-    <div class="detalle">
+    <div class="detalle" style="padding-top:25px; font-size: 24px !important;">
         <div class="container">
             <div class="item-1">Tópicos: </div>
             <div class="item-2">
@@ -246,7 +246,7 @@
 @endif
 
 @if($curso == 'Curso Obligatorio IX')
-    <div class="detalle">
+    <div class="detalle" style="padding-top:25px; font-size: 24px !important;">
         <div class="container">
             <div class="item-1">Tópicos: </div>
             <div class="item-2">
@@ -257,18 +257,18 @@
 @endif
 
 @if($curso == 'Curso Obligatorio X')
-    <div class="detalle">
+    <div class="detalle" style="padding-top:25px; font-size: 24px !important;">
         <div class="container">
             <div class="item-1">Tópicos: </div>
             <div class="item-2">
                 Manejo Defensivo, Ritran, Estándar Izaje de Cargas.</div>
         </div>
     </div>
-    <div class="horas">Con una duración de 08 horas lectivas.</div>
+    <div class="horas" style="text-align: center">Con una duración de 08 horas lectivas.</div>
 @endif
 
 @if($curso == 'Curso Obligatorio XI')
-    <div class="detalle">
+    <div class="detalle" style="padding-top:25px; font-size: 24px !important;">
         <div class="container">
             <div class="item-1">Tópicos: </div>
             <div class="item-2">
@@ -279,7 +279,7 @@
 @endif
 
 @if($curso == 'Curso Obligatorio XII')
-    <div class="detalle">
+    <div class="detalle" style="padding-top:25px; font-size: 24px !important;">
         <div class="container">
             <div class="item-1">Tópicos: </div>
             <div class="item-2">

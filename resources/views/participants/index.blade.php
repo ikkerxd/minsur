@@ -53,11 +53,11 @@
                                     <td>{{ $participant->name }} {{ $participant->firstlastname }} {{ $participant->secondlastname }}</td>
                                     <td>{{ $participant->position }}</td>
                                     <td>{{ $participant->superintendence }}</td>
-                                    <td  class="text-center"><a href="{{ route('detail-participant', $participant->id) }}" class="btn btn-sm btn-success"><i class="fa fa-list-alt" aria-hidden="true"></i> Consolidado</a></td>
+                                    <td  class="text-center"><a href="{{ route('detail-participant', $participant->id) }}" class="btn btn-sm btn-success" title="Ver Consolidado" data-toggle="tooltip" data-placement="top"><i class="fa fa-list-alt" aria-hidden="true"></i> Consolidado</a></td>
                                     @if(Auth::id() <> 2683 && Auth::id() <> 4141 && Auth::id() <> 14078 && Auth::id() <> 1097 && Auth::id() <> 14179 && Auth::id() <> 14180 && Auth::id() <> 7053)
                                         <td>
-                                            <a href="{{ route('edit_participant',Crypt::encryptString($participant->id)) }}" class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                                            <a class="btn btn-danger btn-sm btn-desactivate"><i class="fa fa-trash"></i></a>
+                                            <a href="{{ route('edit_participant',Crypt::encryptString($participant->id)) }}" class="btn btn-sm btn-warning" title="Editar datos" data-toggle="tooltip" data-placement="top"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                            <a class="btn btn-danger btn-sm btn-desactivate" title="Desactivar usuario" data-toggle="tooltip" data-placement="top"><i class="fa fa-trash"></i></a>
                                         </td>
                                     @endif
                                 </tr>

@@ -55,6 +55,13 @@ Route::middleware(['auth'])->group(function(){
 
 	// Route::get('/enviar', 'testPHPMailerController@index');
 	
+	Route::resource('fotocheck','FotocheckController'); //index de ver fotocheck
+	//Route::resource('fotocheck/detail_participant', 'FotocheckController'); // ver detalle de solicitud
+
+	Route::get('detail_participant', function () {
+		return view('fotocheck/detail_participant');
+	});
+
 	Route::resource('roles','RoleController');
 
 	Route::resource('users','UserController');
@@ -190,6 +197,8 @@ Route::middleware(['auth'])->group(function(){
     Route::get('export/curso/obligatorio/company', 'CourseController@exportStatusCompany')->name('export_status_company');
     Route::get('export/curso/obligatorio/list/company', 'CourseController@exportStatusCompanyList')->name('export_status_list_company');
 
+
+	
     Route::get('all-um','ChartController@index')->name('chart_all');
     Route::get('raura','ChartController@raura')->name('chart_raura');
     Route::get('san-rafael','ChartController@sanrafael')->name('chart_sanrafael');
@@ -208,6 +217,10 @@ Route::middleware(['auth'])->group(function(){
     /********* Reporte de de partcipante del client *********/
 
     Route::get('export/participante/{id}/{startDate}/{endDate}', 'CompanyController@export_consolidado')
-        ->name('export_consolidado');
+		->name('export_consolidado');
+	
+	//fotocheck
+	Route::post('participant/fotocheck', 'FotocheckController@solicited')
+        ->name('fotocheck.solicited')/*->middleware('permission:fotocheck.solicited')*/;
 
 });

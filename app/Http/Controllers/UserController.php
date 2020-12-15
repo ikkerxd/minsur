@@ -33,6 +33,11 @@ class UserController extends Controller
         return view('users.index',compact('users'));
     }
 
+    public function fotocheck()
+    {
+        return view('fotocheck.index');
+    }
+
     public function create()
     {
         $companies = Company::pluck('businessName','id');
@@ -309,8 +314,8 @@ class UserController extends Controller
             $user->position = $request->position;
             $user->phone = $request->phone;
             $user->email = $request->email;
-            $user->code_bloqueo = $request->code_bloqueo;
-            $user->medical_exam = $request->medical_exam;
+            //$user->code_bloqueo = $request->code_bloqueo;
+            $user->medical_exam = $request->medical_exam;   
             $user->id_management = $request->id_management;
             $user->superintendence = $request->superintendence;
             if ($request->image != "") {
@@ -320,7 +325,10 @@ class UserController extends Controller
                 $name->move('img/', $name_hash);
                 $user->image = $name_original;
                 $user->image_hash = $name_hash;
-            }
+            }else{
+                $user->image = $user->image;
+                $user->image_hash = $user->image_hash;
+            } 
             $user->birth_date = $request->birth_date;
             $user->gender = $request->gender;
             $user->origin = $request->origin;
@@ -554,7 +562,7 @@ class UserController extends Controller
         $users = DB::table('users')
             ->select('users.id as id', 'users.id_unity', 'users.id_company', 'users.state',
                 'users.dni', 'users.firstlastname', 'users.secondlastname', 'users.name',
-                'companies.businessName as empresa')
+                'companies.businessName as empresa','users.phone','users.superintendence')
             ->join('role_user','role_user.user_id', '=', 'users.id')
             ->join('companies', 'companies.id', '=', 'users.id_company')
             ->where('id_unity', $user->id_unity)
@@ -568,7 +576,7 @@ class UserController extends Controller
         $user = DB::table('users')
             ->select('users.id as id', 'dni',
                 'firstlastname', 'secondlastname', 'name',
-                'position', 'superintendence', 'businessName')
+                'position', 'superintendence', 'businessName','image','image_hash','users.phone','users.superintendence')
             ->join('companies', 'companies.id', '=', 'users.id_company')
             ->where('users.id', $request->id)
             ->first();
@@ -594,8 +602,7 @@ class UserController extends Controller
             ->where('user_inscriptions.id_user',$user->id)
             ->whereIn('user_inscriptions.state', [0,1])
             ->get();
-
-
+       
         return view('participants.detail_participant', compact('user', 'result'));
     }
 

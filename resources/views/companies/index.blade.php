@@ -61,12 +61,12 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('companies.show', $company->id_company) }}" class="btn btn-xs btn-primary">
+                                        <a href="{{ route('companies.show', $company->id_company) }}" class="btn btn-xs btn-primary" title="Ver detalle" data-toggle="tooltip" data-placement="top">
                                             <i class="fa fa-eye"></i>
                                         </a>
                                         @if(Auth::id() <> 2683 && Auth::id() <> 4141 && Auth::id() <> 14078 && Auth::id() <> 1097 && Auth::id() <> 14179 && Auth::id() <> 14180 && Auth::id() <> 7053)
 
-                                            <a href="{{ route('edit_user_company', $company->id_user) }}" class="btn btn-xs btn-warning">
+                                            <a href="{{ route('edit_user_company', $company->id_user) }}" class="btn btn-xs btn-warning" title="Editar datos" data-toggle="tooltip" data-placement="top">
                                                 <i class="fa fa-pencil-square-o"></i>
                                             </a>
                                         @endif

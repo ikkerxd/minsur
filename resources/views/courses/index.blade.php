@@ -77,16 +77,16 @@
                                     @if(Auth::id() <> 2683 && Auth::id() <> 4141 && Auth::id() <> 14078 && Auth::id() <> 1097 && Auth::id() <> 14179 && Auth::id() <> 14180 && Auth::id() <> 7053)
 
                                         @can('courses.show')
-                                            <td width="10px"><a href="{{ route('courses.show', $course->id) }}" class="btn btn-sm btn-default">Ver</a></td>
+                                            <td width="10px"><a href="{{ route('courses.show', $course->id) }}" class="btn btn-sm btn-default" title="Ver datalle" data-toggle="tooltip" data-placement="top">Ver</a></td>
                                         @endcan
                                         @can('courses.edit')
-                                            <td width="10px"><a href="{{ route('courses.edit', $course->id) }}" class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
+                                            <td width="10px"><a href="{{ route('courses.edit', $course->id) }}" class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true" title="Editar Curso" data-toggle="tooltip" data-placement="top"></i></a></td>
                                         @endcan
                                         @can('courses.destroy')
                                             <td width="10px">
 
                                                 {!! Form::open(['route' => ['courses.destroy', $course->id], 'method' => 'DELETE']) !!}
-                                                <button class="btn btn-sm btn-danger btn-delete">
+                                                <button class="btn btn-sm btn-danger btn-delete" title="Eliminar Curso" data-toggle="tooltip" data-placement="top">
                                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                                                 </button>
                                                 {!! Form::close()!!}

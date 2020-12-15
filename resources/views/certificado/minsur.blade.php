@@ -32,24 +32,7 @@
             font-weight: 600;
         }
 
-        .curso {
-            top: 415px;
-            left: 10%;
-            width: 80%;
-            font-weight: bold;
-            font-size: 35px;
-            color: rgb(0,72,145);
-        }
-
-        .curso-xl {
-            top: 395px;
-            left: 10%;
-            width: 80%;
-            font-weight: bold;
-            font-size: 30px;
-            color: rgb(0,72,145);
-        }
-
+        
         .dni {
             font-family: Calibri,sans-serif;
             top: 293px;

@@ -42,16 +42,16 @@
             <td>{{ $type_course->name }}</td>           
             <td>{{ $type_course->state }}</td>
             @can('companies.show')
-            <td width="10px"><a href="{{ route('type_courses.show', $type_course->id) }}" class="btn btn-sm btn-default">Ver</a></td>
+            <td width="10px"><a href="{{ route('type_courses.show', $type_course->id) }}" class="btn btn-sm btn-default" title="Ver curso" data-toggle="tooltip" data-placement="top">Ver</a></td>
             @endcan
             @can('type_courses.edit')
-            <td width="10px"><a href="{{ route('type_courses.edit', $type_course->id) }}" class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
+            <td width="10px"><a href="{{ route('type_courses.edit', $type_course->id) }}" class="btn btn-sm btn-warning" title="Editar Tipo Curso" data-toggle="tooltip" data-placement="top"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
             @endcan
             @can('type_courses.destroy')
             <td width="10px">                          
 
               {!! Form::open(['route' => ['type_courses.destroy', $type_course->id], 'method' => 'DELETE']) !!}
-              <button class="btn btn-sm btn-danger btn-delete">
+              <button class="btn btn-sm btn-danger btn-delete" title="Eliminar" data-toggle="tooltip" data-placement="top">
                 <i class="fa fa-trash-o" aria-hidden="true"></i>
               </button>
               {!! Form::close()!!}                              

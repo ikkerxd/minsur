@@ -60,6 +60,7 @@
   
         <div class="form-group">
     {!! Form::label('image', 'Foto',['class' => 'col-md-4 control-label']) !!}
+    
     <div class="col-md-7">      
       {!! Form::file('image',['class' => 'form-control', 'style'=> 'border: 0px solid']) !!}
     </div>
