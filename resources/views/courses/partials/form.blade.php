@@ -19,9 +19,9 @@
     </div>
     <div class="col-sm-2">
       <select class="form-control"  name="type_validaty" id="tipo_validaty">
-          <option value="1" {{ old('type_validaty', $course->type_validaty) == '1' ? 'selected' : '' }}>Dia {{$course->type_validaty}}</option>
-          <option value="2" {{ old('type_validaty', $course->type_validaty) == '2' ? 'selected' : '' }}>Mes {{ $course->type_validaty }}</option>
-          <option value="3" {{ old('type_validaty', $course->type_validaty) == '3' ? 'selected' : '' }}>Año {{ $course->type_validaty }}</option>
+          <option value="1" {{ old('type_validaty', $course->type_validaty) == '1' ? 'selected' : '' }}>Dia</option>
+          <option value="2" {{ old('type_validaty', $course->type_validaty) == '2' ? 'selected' : '' }}>Mes</option>
+          <option value="3" {{ old('type_validaty', $course->type_validaty) == '3' ? 'selected' : '' }}>Año</option>
       </select>
     </div>
     {!! Form::label('hh', 'Horas',['class' => 'col-sm-1 control-label']) !!}

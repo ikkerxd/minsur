@@ -107,24 +107,30 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($result as $element)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $element->course }}</td>
-                                        <td>{{ $element->date }}</td>
-                                        <td>{{ $element->point }}</td>
-                                        @if($element->aprobado)
-                                        <td class="text-green">aprobado</td>
-                                        @else
-                                        <td class="text-red">deaprobado</td>
-                                        @endif
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $element->course }}</td>
+                                            <td>{{ $element->date }}</td>
+                                            <td>{{ $element->point }}</td>
+                                            @if($element->aprobado)
+                                                <td class="text-green">aprobado</td>
+                                            @else
+                                                <td class="text-red">deaprobado</td>
+                                            @endif
 
-                                        <td>{{ $element->vigencia }}</td>
-                                        @if($element->aprobado)
-                                        <td><a href="{{ route('certificado', $element->id) }}" class="btn btn-primary btn-xs">Certficado</a></td>
-                                        @else
-                                        <td>No tiene</td>
-                                        @endif
-                                    </tr>
+                                            <td>{{ $element->vigencia }}</td>
+                                            @if($element->aprobado == '1' and \Carbon\Carbon::now() <= \Carbon\Carbon::parse($element->vigencia))
+                                                <td>
+                                                    <a href="{{ route('certificado', $element->id) }}" class="btn btn-primary btn-xs">
+                                                        Certficado
+                                                    </a>
+                                                </td>
+                                            @elseif($element->aprobado == '1' and \Carbon\Carbon::now() > \Carbon\Carbon::parse($element->vigencia))
+                                                <td>Vencido</td>
+                                            @else
+                                                <td>No tiene</td>
+                                            @endif
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>

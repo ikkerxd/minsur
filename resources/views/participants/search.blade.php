@@ -53,12 +53,12 @@
                                                 <smal class="label label-danger">Inactivo</smal>
                                             @endif
                                         </td>
-                                        <td><a href="{{ route('detail-participant', $user->id) }}" class="btn btn-xs btn-primary">Consolidado</a></td>
+                                        <td><a href="{{ route('detail-participant', $user->id) }}" class="btn btn-xs btn-primary" title="Ver consolidado" data-toggle="tooltip" data-placement="top">Consolidado</a></td>
                                         @if(Auth::id() <> 2683 && Auth::id() <> 4141 && Auth::id() <> 14078 && Auth::id() <> 1097 && Auth::id() <> 14179 && Auth::id() <> 14180 && Auth::id() <> 7053)
 
                                             <td>
                                                 @if ($user->state == 0)
-                                                    <a class="btn btn-xs btn-danger btn-desactivate">Desactivar</a>
+                                                    <a class="btn btn-xs btn-danger btn-desactivate" title="Desactivar usuario" data-toggle="tooltip" data-placement="top">Desactivar</a>
                                                 @else
                                                     <a class="btn btn-xs btn-danger btn-desactivate disabled">Desactivar</a>
                                                 @endif
