@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Fotocheck extends Model
 {
-<<<<<<< HEAD
     const SOLICITED = '0';
     const PENDING = '1';
     const APROBED = '2';
@@ -21,7 +20,4 @@ class Fotocheck extends Model
         return $this->belongTo(User::class);
     }
 
-=======
-    //
->>>>>>> 871ce2d99e60c3506efe1fe91b89ca6fbf220a58
 }
