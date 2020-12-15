@@ -577,17 +577,24 @@ class UserController extends Controller
             ->select(
                 'user_inscriptions.id as id', 'user_inscriptions.point', 'user_inscriptions.state',
                 'nameCurso as course', 'startDate as date',
-                DB::raw('IF(user_inscriptions.point >= inscriptions.point_min , 1,0) as aprobado'),
+                DB::raw('IF(user_inscriptions.point >= inscriptions.point_min, 1,0) as aprobado'),
                 DB::raw('
-                            IF(user_inscriptions.point >= inscriptions.point_min ,
-                             DATE_ADD(inscriptions.startDate, INTERVAL inscriptions.validaty year), 0
-                             ) as vigencia'
+        IF(user_inscriptions.point >= inscriptions.point_min,
+            IF(inscriptions.type_validaty = 1, 
+                DATE_ADD(inscriptions.startDate, INTERVAL inscriptions.validaty DAY),
+                IF(inscriptions.type_validaty = 2, 
+                    DATE_ADD(inscriptions.startDate, INTERVAL inscriptions.validaty MONTH),
+                    IF(inscriptions.type_validaty = 3,DATE_ADD(inscriptions.startDate, INTERVAL inscriptions.validaty YEAR),0)
+                    ) 
+                ),
+            0) as vigencia'
                 )
             )
             ->join('inscriptions','inscriptions.id', '=', 'user_inscriptions.id_inscription')
             ->where('user_inscriptions.id_user',$user->id)
             ->whereIn('user_inscriptions.state', [0,1])
             ->get();
+
 
         return view('participants.detail_participant', compact('user', 'result'));
     }

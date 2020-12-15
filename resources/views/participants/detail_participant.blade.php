@@ -92,8 +92,14 @@
                                             @endif
 
                                             <td>{{ $element->vigencia }}</td>
-                                            @if($element->aprobado)
-                                                <td><a href="{{ route('certificado', $element->id) }}" class="btn btn-primary btn-xs">Certficado</a></td>
+                                            @if($element->aprobado == '1' and \Carbon\Carbon::now() <= \Carbon\Carbon::parse($element->vigencia))
+                                                <td>
+                                                    <a href="{{ route('certificado', $element->id) }}" class="btn btn-primary btn-xs">
+                                                        Certficado
+                                                    </a>
+                                                </td>
+                                            @elseif($element->aprobado == '1' and \Carbon\Carbon::now() > \Carbon\Carbon::parse($element->vigencia))
+                                                <td>Vencido</td>
                                             @else
                                                 <td>No tiene</td>
                                             @endif

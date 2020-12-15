@@ -106,6 +106,7 @@ class InscriptionController extends Controller
         $inscription->price = $course->price;
         $inscription->hours = $course->hh;
         $inscription->validaty = $course->validaty;
+        $inscription->type_validaty = $course->type_validaty;
         $inscription->point_min = $course->point_min;
         $inscription->note = 'sin notas';
         $inscription->type = 0;
@@ -238,6 +239,7 @@ class InscriptionController extends Controller
         $inscription->price = $course->price;
         $inscription->hours = $course->hh;
         $inscription->validaty = $course->validaty;
+        $inscription->type_validaty = $course->type_validaty;
         $inscription->point_min = $course->point_min;
 
         $inscription->modality = $request->modality;
@@ -1035,91 +1037,104 @@ class InscriptionController extends Controller
                 $exist_participante = $participant->exists();
                 /*  buscmos el Usuario Responsable de la contrata para obtenr su "id" de compania */
                 // si el cliente es MINSUR el responsable es el usurio facilitdor y lo validaso por su ruc
-                if ($row->ruc == '20100136741') {
-                    $user_contrata = $user;
-                } else {
-                    $user_contrata = DB::table('users')
-                        ->select('users.id as id', 'users.id_company', 'users.id_unity',
-                            'companies.ruc', 'companies.businessName')
-                        ->join('role_user','role_user.user_id','=','users.id')
-                        ->join('companies', 'companies.id', '=', 'users.id_company')
-                        ->where('id_unity', $id_unity)
-                        ->where('ruc', $row->ruc)
-                        ->where('role_id', 4);
-                }
-                //-- VALIDIAMOS SI EXISTE CONTRATA
-                $exist_contrata = $user_contrata->exists();
-                //-- VERFICAMOS SI EXISTE LA CONTRATA y no el partcipante
-                if (!$exist_participante and $exist_contrata)
-                {
-                    //-- Usuario responsable de la compania
-                    $uc = $user_contrata->get()[0];
-                    // si el ruc es dos se le designa a minsur
+
+                if (trim($row->dni) != '' or trim($row->dni) != null) {
                     if ($row->ruc == '20100136741') {
-                        $id_company = 2;
-                    } else {
-                        $id_company = $uc->id_company;
+                        $user_contrata = $user;
                     }
-                    $id_user_contrata = $uc->id;
-                    // CREACION DEL NUEVO PARTCIPANTE
-                    $participant = new User();
-                    $participant->id_company = $id_company;
-                    $participant->type_document = 0;
-                    $participant->dni = trim($row->dni);
-                    $participant->firstlastname = $row->ap_paterno;
-                    $participant->secondlastname = $row->ap_materno;
-                    $participant->name = $row->nombres;
-                    $participant->position = $row->cargo;
-                    $participant->phone = '987654321';
-                    $participant->email = 'mail@mail.com';
-                    $participant->password = bcrypt(md5($row->dni));
-                    $participant->remember_token = null;
-                    $participant->code_bloqueo = null;
-                    $participant->medical_exam = null;
-                    $participant->id_management = null;
-                    $participant->superintendence = $row->area;
-                    $participant->image = null;
-                    $participant->image_hash = null;
-                    $participant->birth_date = null;
-                    $participant->gender = null;
-                    $participant->origin = null;
-                    $participant->address = null;
-                    $participant->state = 0;
-                    $participant->id_user = $id_user;
-                    $participant->id_unity = $id_unity;
-                    $participant->save();
-                    $participant->roles()->sync(5);
-                    /* CREACION DEL REGISTRO DEL EN LA INSCRIPCION DEL CURSO ASIGNADO */
-                    $c = $user_contrata->first();
-                    $id_particpante = $participant->id;
-                    if ($row->ruc == '20100136741') {
-                        $id_company = 2;
-                        $c = $user;
+                    else {
+                        $user_contrata = DB::table('users')
+                            ->select('users.id as id', 'users.id_company', 'users.id_unity',
+                                'companies.ruc', 'companies.businessName')
+                            ->join('role_user','role_user.user_id','=','users.id')
+                            ->join('companies', 'companies.id', '=', 'users.id_company')
+                            ->where('id_unity', $id_unity)
+                            ->where('ruc', $row->ruc)
+                            ->where('role_id', 4);
                     }
 
-                    //dd($c, $c->id, $c->id_company, $id_company);
-                    if ($id_course == 8) {
-                        //dd($row->nota, $row->sustitutorio);
-                        if ($row->sustitutorio) {
-                            $user_inscription = new UserInscription();
-                            $user_inscription->id_inscription = $id_inscription;
-                            $user_inscription->id_user = $id_particpante;
-                            $user_inscription->payment_form = $pago;
-                            $user_inscription->point = $row->sustitutorio;
-                            $user_inscription->id_user_inscription = $c->id;
-                            $user_inscription->id_company_inscription = $id_company;
-                            $user_inscription->save();
-
-                            $recuperation = new Recuperation();
-                            $recuperation->id_user_inscription = $user_inscription->id;
-                            $recuperation->id_inscription = $id_inscription;
-                            $recuperation->point = $row->nota;
-                            $recuperation->state = 0; //-- activo
-                            $recuperation->created_user = $user->id;
-                            $recuperation->	updated_user = $user->id;
-                            $recuperation->save();
-
+                    //-- VALIDIAMOS SI EXISTE CONTRATA
+                    $exist_contrata = $user_contrata->exists();
+                    //-- VERFICAMOS SI EXISTE LA CONTRATA y no el partcipante
+                    if (!$exist_participante and $exist_contrata) {
+                        //-- Usuario responsable de la compania
+                        $uc = $user_contrata->get()[0];
+                        // si el ruc es dos se le designa a minsur
+                        if ($row->ruc == '20100136741') {
+                            $id_company = 2;
                         } else {
+                            $id_company = $uc->id_company;
+                        }
+                        $id_user_contrata = $uc->id;
+                        // CREACION DEL NUEVO PARTCIPANTE
+                        $participant = new User();
+                        $participant->id_company = $id_company;
+                        $participant->type_document = 0;
+                        $participant->dni = trim($row->dni);
+                        $participant->firstlastname = $row->ap_paterno;
+                        $participant->secondlastname = $row->ap_materno;
+                        $participant->name = $row->nombres;
+                        $participant->position = $row->cargo;
+                        $participant->phone = '987654321';
+                        $participant->email = 'mail@mail.com';
+                        $participant->password = bcrypt(md5($row->dni));
+                        $participant->remember_token = null;
+                        $participant->code_bloqueo = null;
+                        $participant->medical_exam = null;
+                        $participant->id_management = null;
+                        $participant->superintendence = $row->area;
+                        $participant->image = null;
+                        $participant->image_hash = null;
+                        $participant->birth_date = null;
+                        $participant->gender = null;
+                        $participant->origin = null;
+                        $participant->address = null;
+                        $participant->state = 0;
+                        $participant->id_user = $id_user;
+                        $participant->id_unity = $id_unity;
+                        $participant->save();
+                        $participant->roles()->sync(5);
+                        /* CREACION DEL REGISTRO DEL EN LA INSCRIPCION DEL CURSO ASIGNADO */
+                        $c = $user_contrata->first();
+                        $id_particpante = $participant->id;
+                        if ($row->ruc == '20100136741') {
+                            $id_company = 2;
+                            $c = $user;
+                        }
+
+                        //dd($c, $c->id, $c->id_company, $id_company);
+                        if ($id_course == 8) {
+                            //dd($row->nota, $row->sustitutorio);
+                            if ($row->sustitutorio) {
+                                $user_inscription = new UserInscription();
+                                $user_inscription->id_inscription = $id_inscription;
+                                $user_inscription->id_user = $id_particpante;
+                                $user_inscription->payment_form = $pago;
+                                $user_inscription->point = $row->sustitutorio;
+                                $user_inscription->id_user_inscription = $c->id;
+                                $user_inscription->id_company_inscription = $id_company;
+                                $user_inscription->save();
+
+                                $recuperation = new Recuperation();
+                                $recuperation->id_user_inscription = $user_inscription->id;
+                                $recuperation->id_inscription = $id_inscription;
+                                $recuperation->point = $row->nota;
+                                $recuperation->state = 0; //-- activo
+                                $recuperation->created_user = $user->id;
+                                $recuperation->	updated_user = $user->id;
+                                $recuperation->save();
+
+                            } else {
+                                $user_inscription = new UserInscription();
+                                $user_inscription->id_inscription = $id_inscription;
+                                $user_inscription->id_user = $id_particpante;
+                                $user_inscription->payment_form = $pago;
+                                $user_inscription->point = $row->nota;
+                                $user_inscription->id_user_inscription = $c->id;
+                                $user_inscription->id_company_inscription = $id_company;
+                                $user_inscription->save();
+                            }
+                        }else {
                             $user_inscription = new UserInscription();
                             $user_inscription->id_inscription = $id_inscription;
                             $user_inscription->id_user = $id_particpante;
@@ -1129,93 +1144,85 @@ class InscriptionController extends Controller
                             $user_inscription->id_company_inscription = $id_company;
                             $user_inscription->save();
                         }
-                    }else {
-                        $user_inscription = new UserInscription();
-                        $user_inscription->id_inscription = $id_inscription;
-                        $user_inscription->id_user = $id_particpante;
-                        $user_inscription->payment_form = $pago;
-                        $user_inscription->point = $row->nota;
-                        $user_inscription->id_user_inscription = $c->id;
-                        $user_inscription->id_company_inscription = $id_company;
-                        $user_inscription->save();
-                    }
-                } else {
-                    if ($exist_contrata) {
-                        // COMPLETAMOS LA CONSULTA del partipante
-                        $p = $participant->first();
-                        $c = $user_contrata->first();
-                        $id_company =  $c->id_company;
-                        //dd($c, $c->id, $c->id_company);
-
-                        if ($row->ruc == '20100136741') {
-                            $id_company = 2;
-                            $c = $user;
-                        }
-
-                        if ($id_company == null)
-                        {
-                            dd($c);
-                        }
-
-                        if ($row->sustitutorio) {
-                            $ui = UserInscription::updateOrCreate(
-                                [
-                                    'id_inscription' => $id_inscription,
-                                    'id_user' => $p->id,
-                                ],
-                                [
-                                    'payment_form' => $pago,
-                                    'point' => $row->sustitutorio,
-                                    'id_user_inscription' => $c->id,
-                                    'id_company_inscription' => $id_company
-                                ]
-                            );
-                            $recuperation = Recuperation::where([
-                                ['id_user_inscription', $ui->id],
-                                ['state', 0]
-                            ]);
-
-                            if ($recuperation->exists()) {
-                                $re = $recuperation->first();
-                                if ($re->point != $row->nota) {
-                                    $recuperation->update([
-                                        'point' => $row->nota,
-                                        'user_update' => $user->id,
-                                    ]);
-                                }
-                            } else {
-                                $re = new Recuperation();
-                                $re->id_user_inscription = $ui->id;
-                                $re->id_inscription = $id_inscription;
-                                $re->point = $row->nota;
-                                $re->state = 0; //-- activo
-                                $re->created_user = $user->id;
-                                $re->updated_user = $user->id;
-                                $re->save();
-                            };
-                        } else {
-                            $ui = UserInscription::updateOrCreate(
-                                [
-                                    'id_inscription' => $id_inscription,
-                                    'id_user' => $p->id,
-                                ],
-                                [
-                                    'payment_form' => $pago,
-                                    'point' => $row->nota,
-                                    'id_user_inscription' => $c->id,
-                                    'id_company_inscription' => $id_company
-                                ]
-                            );
-
-                            if ($ui->state == 2) {
-                                $ui->state = 0;
-                                $ui->save();
-                            }
-                        }
-
                     }
                     else {
-                        dd('no existe ruc de la empresa '.$row->ruc);
+                        if ($exist_contrata) {
+                            // COMPLETAMOS LA CONSULTA del partipante
+                            $p = $participant->first();
+                            $c = $user_contrata->first();
+                            $id_company =  $c->id_company;
+                            //dd($c, $c->id, $c->id_company);
+
+                            if ($row->ruc == '20100136741') {
+                                $id_company = 2;
+                                $c = $user;
+                            }
+
+                            if ($id_company == null)
+                            {
+                                dd($c);
+                            }
+
+                            if ($row->sustitutorio) {
+                                $ui = UserInscription::updateOrCreate(
+                                    [
+                                        'id_inscription' => $id_inscription,
+                                        'id_user' => $p->id,
+                                    ],
+                                    [
+                                        'payment_form' => $pago,
+                                        'point' => $row->sustitutorio,
+                                        'id_user_inscription' => $c->id,
+                                        'id_company_inscription' => $id_company
+                                    ]
+                                );
+                                $recuperation = Recuperation::where([
+                                    ['id_user_inscription', $ui->id],
+                                    ['state', 0]
+                                ]);
+
+                                if ($recuperation->exists()) {
+                                    $re = $recuperation->first();
+                                    if ($re->point != $row->nota) {
+                                        $recuperation->update([
+                                            'point' => $row->nota,
+                                            'user_update' => $user->id,
+                                        ]);
+                                    }
+                                } else {
+                                    $re = new Recuperation();
+                                    $re->id_user_inscription = $ui->id;
+                                    $re->id_inscription = $id_inscription;
+                                    $re->point = $row->nota;
+                                    $re->state = 0; //-- activo
+                                    $re->created_user = $user->id;
+                                    $re->updated_user = $user->id;
+                                    $re->save();
+                                };
+                            } else {
+                                $ui = UserInscription::updateOrCreate(
+                                    [
+                                        'id_inscription' => $id_inscription,
+                                        'id_user' => $p->id,
+                                    ],
+                                    [
+                                        'payment_form' => $pago,
+                                        'point' => $row->nota,
+                                        'id_user_inscription' => $c->id,
+                                        'id_company_inscription' => $id_company
+                                    ]
+                                );
+
+                                if ($ui->state == 2) {
+                                    $ui->state = 0;
+                                    $ui->save();
+                                }
+                            }
+
+                        }
+                        else {
+                            dd('no existe ruc de la empresa '.$row->ruc);
+                        }
                     }
                 }
             });

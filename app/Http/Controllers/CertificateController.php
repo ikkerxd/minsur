@@ -131,7 +131,7 @@ class CertificateController extends Controller
 
         $text = "ANEXO 4\nDNI: $dni\nParticipante: $nombres\nContratista: $company\nCargo:$cargo\nArea: $area\nFecha Induccion: $fecha";
         $codeQR = QrCode::format('png')->size(100)->generate($text);
-    
+
         $pdf = PDF::loadView($view, compact('dni', 'nombres', 'curso', 'area', 'cargo', 'fecha', 'codigo', 'company', 'codeQR'))
             ->setPaper('a4', 'portrait');
         return $pdf->download('CONSTANCIA DE  '.$dni.'-'.$nombres.'- CURSO '.strtoupper($curso.'.pdf'));
