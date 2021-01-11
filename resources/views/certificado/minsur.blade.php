@@ -42,6 +42,21 @@
             font-weight: 600;
         }
 
+        .curso {
+            top: 425px;
+            left: 12%;
+            width: 76%;
+            font-weight: bold;
+            font-size: 44px;
+        }
+        .curso-xl {
+            top: 405px;
+            left: 12%;
+            width: 76%;
+            font-weight: bold;
+            font-size: 37px;
+        }
+
         .fecha {
             font-family: sans-serif;
             top: 752px;
