@@ -54,4 +54,14 @@ class User extends Authenticatable
     {
         return ucwords("{$this->secondlastname} {$this->firstlastname} {$this->name}");
     }
+    public function user_inscriptions(){
+        return $this->hasMany(UserInscription::class);
+    }
+    public function inscriptions(){
+        return $this->hasMany(Inscription::class,'user_inscriptions');
+    }
+    public function company()
+    {
+        return $this->belongsTo(Company::class,'id_company');
+    }
 }

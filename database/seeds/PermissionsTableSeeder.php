@@ -251,9 +251,24 @@ class PermissionsTableSeeder extends Seeder
 		]);
 		//Fotocheck
 		Permission::create([
+        	'name'			=>	'Listar Fotocheck',
+        	'slug'			=>	'fotocheck.list',
+        	'description'	=>	'Lista el fotocheck',
+        ]);
+		Permission::create([
         	'name'			=>	'Solicitar Fotocheck',
         	'slug'			=>	'fotocheck.solicited',
         	'description'	=>	'Solicita el fotocheck',
+		]);
+		Permission::create([
+        	'name'			=>	'Aprobar Fotocheck',
+        	'slug'			=>	'fotocheck.aprobed',
+        	'description'	=>	'Aprueba el fotocheck',
+		]);
+		Permission::create([
+        	'name'			=>	'Cancela Fotocheck',
+        	'slug'			=>	'fotocheck.canceled',
+        	'description'	=>	'Cancela el fotocheck',
         ]);
         
     }

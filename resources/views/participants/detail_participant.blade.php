@@ -122,7 +122,7 @@
                                             @if($element->aprobado == '1' and \Carbon\Carbon::now() <= \Carbon\Carbon::parse($element->vigencia))
                                                 <td>
                                                     <a href="{{ route('certificado', $element->id) }}" class="btn btn-primary btn-xs">
-                                                        Certficado
+                                                        Certificado
                                                     </a>
                                                 </td>
                                             @elseif($element->aprobado == '1' and \Carbon\Carbon::now() > \Carbon\Carbon::parse($element->vigencia))
@@ -156,9 +156,7 @@
                 </button>
             </div>
             <div class="card-body">
-                <form action="{{ route('fotocheck.solicited') }}"
-                    method="POST" id="formCourse">
-                    {{ csrf_field() }}
+
             <div class="modal-body">
                 <p><strong>Capacitación y entrenamiento para ser líder de aislamiento (dictado por el supervisor).                       Presentar registro de capacitación y exámen (nota mínima 16).
                     Mínimo 1 hora de capacitación.</strong></p>
@@ -189,13 +187,12 @@
                 <p><strong>Capacitación por el jefe de área. Presentar registro de capacitación y exámen. (nota mínima 20) Mínimo 4 hora de capacitación.</strong></p>
                     <hr>
 
-                <input  name="user_id" class="hidden" value="{{$user->id}}" >
                 <h5><strong>Debe contar con Foto de Perfil</strong></h5>
                 <hr>
                 
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Solicitar Fotocheck</button>
+                <a href="{{ route('fotocheck.solicited',$user->id) }}" class="btn btn-primary">Solicitar Fotocheck</a>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
             </form>

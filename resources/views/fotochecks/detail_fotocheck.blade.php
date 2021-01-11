@@ -35,27 +35,25 @@
                                         <tr>
                                             <td colspan="6">
                                                 <h3>
-                                                    LUIS MEDINA RONDON
-                                                    <a class="btn btn-primary pull-right" data-target="#solicitar1" data-toggle="modal" data-placement="top" title="SOLICITAR FOTOCHECK" style="margin-right: 10px">
-                                                        <i class="fa fa-user-time" aria-hidden="true"></i> RECHAZAR SOLICITUD
-                                                    </a>
+                                                    {{$fotocheck->user->full_name}}
+                                                    
                                                 </h3>
                                         </tr>
                                         <tr>
 
                                             <th>Doc. de Identidad:</th>
-                                            <td>88888888</td>
+                                            <td>{{$fotocheck->user->dni}}</td>
 
                                             <th>Empresa:</th>
-                                            <td>IGH PERU</td>
+                                            <td>{{$fotocheck->user->company->businessName}}</td>
 
                                         </tr>
 
                                         <tr>
                                             <th>Cargo:</th>
-                                            <td>Asistente Programado</td>
+                                            <td>{{$fotocheck->user->position}}</td>
                                             <th>Area:</th>
-                                            <td>Sistemas</td>
+                                            <td>{{$fotocheck->user->superintendence}}</td>
                                         </tr>
 
                                     </table>
@@ -76,11 +74,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach($details as $detail)
                                     <tr>
-                                        <th scope="row">1</th>
-                                        <td>IPERC</td>
-                                        <td>2020-11-28</td>
-                                        <td>16</td>
+                                        <th scope="row">{{$loop->iteration}}</th>
+                                        <td>{{$detail->inscription->course->name}}</td>
+                                        <td>{{$detail->vigency($detail)}}</td>
+                                        <td>{{$detail->point}}</td>
                                         <td> <span class="label label-success"> Vigente</span></td>
                                         <td>
                                             <div class="form-check">
@@ -90,38 +89,11 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>NIRIIPAT</td>
-                                        <td>2020-11-28</td>
-                                        <td>16</td>
-                                        <td> <span class="label label-success"> Vigente</span></td>
-                                        <td>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                                <label class="form-check-label" for="defaultCheck1">
-                                                </label>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>ANEXO 4</td>
-                                        <td>2020-11-28</td>
-                                        <td>16</td>
-                                        <td> <span class="label label-success"> Vigente</span></td>
-                                        <td>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                                <label class="form-check-label" for="defaultCheck1">
-                                                </label>
-                                            </div>
-                                        </td>
-                                    </tr>
-
+                                    @endforeach
                                 </tbody>
                             </table>
-                            <button type="button" class="btn btn-success"> <i class="far fa-save"></i> Guardar </button>
+                            <button type="button" class="btn btn-success"> <i class="far fa-save"></i> Aprobar Solicitud </button>
+                            <button type="button" class="btn btn-primary"> <i class="far fa-save"></i> Rechazar Solicitud </button>
                         </div>
                     </div>
                 </div>

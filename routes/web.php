@@ -220,7 +220,11 @@ Route::middleware(['auth'])->group(function(){
 		->name('export_consolidado');
 	
 	//fotocheck
-	Route::post('participant/fotocheck', 'FotocheckController@solicited')
-        ->name('fotocheck.solicited')/*->middleware('permission:fotocheck.solicited')*/;
+	Route::get('participant/{user}/fotocheck', 'FotocheckController@solicited')
+		->name('fotocheck.solicited')/*->middleware('permission:fotocheck.solicited')*/;
+	Route::get('participant/fotocheck/list', 'FotocheckController@list')
+		->name('fotochecks.list');
+	Route::get('participant/fotocheck/{fotocheck}/detail', 'FotocheckController@detail')
+        ->name('fotocheck.detail');
 
 });
