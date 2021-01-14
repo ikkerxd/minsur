@@ -53,14 +53,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('report/export/participant/{id}/{startDate}/{endDate}', 'CompanyController@export_participant')
         ->name('export_company_participant');
 
-	// Route::get('/enviar', 'testPHPMailerController@index');
 	
-	Route::resource('fotocheck','FotocheckController'); //index de ver fotocheck
-	//Route::resource('fotocheck/detail_participant', 'FotocheckController'); // ver detalle de solicitud
-
-	Route::get('detail_participant', function () {
-		return view('fotocheck/detail_participant');
-	});
 
 	Route::resource('roles','RoleController');
 
@@ -225,6 +218,8 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('participant/fotocheck/list', 'FotocheckController@list')
 		->name('fotochecks.list');
 	Route::get('participant/fotocheck/{fotocheck}/detail', 'FotocheckController@detail')
-        ->name('fotocheck.detail');
+		->name('fotocheck.detail');
+	Route::post('participant/fotocheck/{fotocheck}/update','FotocheckController@update')->name('fotocheck.update');
+	Route::get('participant/fotocheck/{fotocheck}/cancel','FotocheckController@cancel')->name('fotocheck.cancel');
 
 });

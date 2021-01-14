@@ -16,6 +16,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
+            @include('layouts.message')
             <div class="box">
                 <div class="box-body">
                     <div class="panel panel-default">
@@ -27,7 +28,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
 
-                                        <img src=" {{ asset( 'img/avatar5.png') }} " class="img-responsive center-block">
+                                        <img src=" {{asset( 'img/'.$fotocheck->user->image_hash)}} " class="img-responsive center-block">
                                     </div>
                                 </div>
                                 <div class="col-md-10">
@@ -62,11 +63,15 @@
                             </div>
                         </div>
                         <div class="panel-body">
+                            <form action="{{ route('fotocheck.update', $fotocheck->id) }}"
+                            method="POST" id="formFotocheck">
+                            {{ csrf_field() }}
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Curso</th>
+                                        <th scope="col">Fecha</th>
                                         <th scope="col">Fecha Vencimiento </th>
                                         <th scope="col">Nota</th>
                                         <th scope="col">Estado</th>
@@ -78,22 +83,27 @@
                                     <tr>
                                         <th scope="row">{{$loop->iteration}}</th>
                                         <td>{{$detail->inscription->course->name}}</td>
-                                        <td>{{$detail->vigency($detail)}}</td>
+                                        <td>{{$detail->inscription->startDate}}</td>
+                                        <td>{{$detail->vigency()}}</td>
                                         <td>{{$detail->point}}</td>
-                                        <td> <span class="label label-success"> Vigente</span></td>
+                                        @if(\Carbon\Carbon::now() > \Carbon\Carbon::parse($detail->vigency()))
+                                        <td> <span class="label label-danger">Vencido</span></td>
+                                        @else 
+                                        <td> <span class="label label-success">Vigente</span></td>
+                                        @endif
                                         <td>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                                <label class="form-check-label" for="defaultCheck1">
-                                                </label>
+                                                <input class="form-check-input" type="checkbox" name="course[]" value="{{$detail->inscription->course->id}}" >
                                             </div>
                                         </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                            <button type="button" class="btn btn-success"> <i class="far fa-save"></i> Aprobar Solicitud </button>
-                            <button type="button" class="btn btn-primary"> <i class="far fa-save"></i> Rechazar Solicitud </button>
+                            <button  type="submit" class="btn btn-success"> <i class="far fa-save"></i> Aprobar Solicitud </button>
+                            <a href="{{ route('fotocheck.cancel', $fotocheck->id) }}" class="btn btn-primary"><i class="far fa-save"></i>Rechazar Solicitud</a>
+                            
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -102,30 +112,5 @@
     </div>
 </section>
 </div>
-<!--MODAL-->
-<div class="modal fade" id="solicitar1" role="dialog">
-    <<div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Rechazar Solicitud</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
 
-                <div class="form-group">
-                    <label for="exampleFormControlTextarea1">Descrpción de rechazo</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Enviar</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-</div>
-</div>
-</div>
-<!--MODAL-->
 @endsection

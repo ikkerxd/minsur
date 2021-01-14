@@ -21,26 +21,36 @@ class UserInscription extends Model
     protected $hidden = [
         'created_at','updated_at'
     ];
-    public function scopeValidity($q)
+    public function scopeActive($q)
     {
-        return $q->where('user_inscriptions.point', '>=' ,'i.point_min')
-        ->join('inscriptions as i','i.id','user_inscriptions.id_inscription');
-        
+        $q->whereIn('user_inscriptions.state',[0,1]);
     }
-    public function vigency($detail)
+    public function scopehasFotocheck($q,$fotocheck)
     {
-            if($detail->inscription->course->type_validity ==1){
+        return $q->where('user_inscriptions.id_user',$fotocheck->user->id);
+    }
+    public function scopeHasInscription($query)
+    {
+        return $query->whereHas('inscription', function ($query) {
+            $query->whereRaw('user_inscriptions.point >= inscriptions.point_min');
+        });
+    }
+    public function vigency()
+    {
+            if($this->inscription->course->type_validity ==1){
                 $date="day";
-            }elseif($detail->inscription->course->type_validity ==2){
+            }elseif($this->inscription->course->type_validity ==2){
                 $date="month";
             }else{
+                
                 $date="year";
             }
         
-        $start_datetime=Carbon::parse($detail->inscription->start_date)->format('d-m-Y');
+        $start_datetime=Carbon::parse($this->inscription->startDate)->format('Y-m-d');
+        //'. $inscription->nameCurso.
+        $validation = date("Y-m-d", strtotime($start_datetime." + {$this->inscription->validaty} {$date}"));
 
-        $validation = strtotime(" {$start_datetime}. + {$detail->inscription->course->validity} {$date}");
-        return $validation=Carbon::parse($validation)->format('d-m-Y');
+        return $validation;
     }
     
     public function inscription () {

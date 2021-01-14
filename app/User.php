@@ -64,4 +64,20 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Company::class,'id_company');
     }
+    public function fotocheck()
+    {
+        
+        return $this->hasMany(Fotocheck::class);
+    }
+    public function hasImage()
+    {
+        if($this->image)
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+        
+    }
 }
