@@ -54,7 +54,7 @@
                                            <!-- <a data-toggle="tooltip" data-placement="top" title="EDITAR" href="#" class="btn btn-primary pull-right" id="#" style="margin-right: 10px"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>-->
 
                                             <a data-toggle="tooltip" data-placement="top" title="DESCARGAR FOTOCHECK" href="#" class="btn btn-danger pull-right" style="margin-right: 10px"><i class="fa fa-address-card-o" aria-hidden="true"></i> DESCARGAR FOTOCHECK</a>
-                                            <a class="btn btn-primary pull-right" data-target="#solicitar" data-toggle="modal" data-placement="top" title="SOLICITAR FOTOCHECK" style="margin-right: 10px">
+                                            <a class="btn btn-primary pull-right" href="{{route('fotochecks.index',$user->id)}}" data-placement="top" title="SOLICITAR FOTOCHECK" style="margin-right: 10px">
                                                 <i class="fa fa-address-card-o" aria-hidden="true"></i> SOLICITAR FOTOCHECK
                                             </a>
                                         </h2>
@@ -109,7 +109,7 @@
                                     @foreach ($result as $element)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{$element->course }}</td>
+                                            <td>{{$element->id_course.'-'.$element->course }}</td>
                                             <td>{{ $element->date }}</td>
                                             <td>{{ $element->point }}</td>
                                             @if($element->aprobado)
@@ -145,61 +145,5 @@
     </div>
 </section>
 </div>
-<!--MODAL-->
-<div class="modal fade" id="solicitar" role="dialog">
-    <<div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title text-center">Requisitos para Solicitar Fotocheck</h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="card-body">
-
-            <div class="modal-body">
-                <p><strong>Capacitación y entrenamiento para ser líder de aislamiento (dictado por el supervisor).                       Presentar registro de capacitación y exámen (nota mínima 16).
-                    Mínimo 1 hora de capacitación.</strong></p>
-                    <hr>
-                <p><strong>Vigía de excavaciones y zanjas (capacitación por parte del supervisor): Primeros auxilios 1 hora (registro y exámen)    (nota mínima 16)
-                    Protocolo de actuación en caso de emergencia en los trabajos de excavaciones 1 hora (resgistro y exámen) (nota mínima 16). Mínimo 1 hora de capacitación.  </strong></p>
-                    <hr>
-                <p><strong>Presentar: Certificado de operador de grúa y Rigger. PIC que especifique el equipo que operará. Vigía de izaje con grúas 
-                    (capacitación por parte del supervisor 1 hora)-presentar regsitro de capacitación y exámen (nota mínima 16).Mínimo 1 hora de capacitación.</strong></p>
-                    <hr>
-                <h5><strong>CURSO INFORMATIVO</strong></h5>
-                    <hr>
-                <p><strong>Certificado de operación del equipo o capacitación.Para el caso de capacitación presentar registro de capacitación y exámen. (nota mínima 16). Mínimo 1 hora de capacitación.  </strong></p>
-                    <hr>
-                <p><strong>Capacitación de voladura realizada por el jefe de voladura (presentar exámen y registro- nota mínima 16). Carnet de la SUCAMEC vigente (COPIA)     </strong></p>
-                    <hr>
-                <p><strong>Capacitacion y entrenamiento (identificación de la incompatibilidad de los reactivos químicos en el área. Presentar registro y exámen (nota mínima 18).
-                    Los conductores que transportarán materiales peligrosos dentro y fuera de la UM, deben contar con la licencia de conducir del MTC de caregoría especial A4. Mínimo 1 hora de capacitación.</strong></p>
-                    <hr>
-                <p><strong>Certificado de suficiencia médica (copia).</strong></p>
-                    <hr>
-                <p><strong>Soldador homologado (validado en el perfil del puesto)   - presentar certificado o evidencia (correo) Vigía de fuego: 
-                    Presentar registro de capacitación y exámen (nota mínima 18) en uso y manipulación de extintores - dictada por el supervisor. Mínimo 1 hora de capacitación.</strong></p>
-                    <hr>
-                <p><strong>Solicitar autorización con lista de herramientas a usar. Presentar registro de capacitación y exámen (nota mínima 18)  de cada herramienta de poder - dictada por el supervisor operativo. 
-                    Mínimo 1 hora de capacitación.</strong></p>
-                    <hr>
-                <p><strong>Capacitación por el jefe de área. Presentar registro de capacitación y exámen. (nota mínima 20) Mínimo 4 hora de capacitación.</strong></p>
-                    <hr>
-
-                <h5><strong>Debe contar con Foto de Perfil</strong></h5>
-                <hr>
-                
-            </div>
-            <div class="modal-footer">
-                <a href="{{ route('fotocheck.solicited',$user->id) }}" class="btn btn-primary">Solicitar Fotocheck</a>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-            </div>
-            </form>
-            </div>
-        </div>
 </div>
-</div>
-</div>
-<!--MODAL-->
 @endsection

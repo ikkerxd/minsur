@@ -585,7 +585,7 @@ class UserController extends Controller
         $result = DB::table('user_inscriptions')
             ->select(
                 'user_inscriptions.id as id', 'user_inscriptions.point', 'user_inscriptions.state',
-                'nameCurso as course', 'startDate as date',
+                'nameCurso as course','inscriptions.id_course as id_course', 'startDate as date',
                 DB::raw('IF(user_inscriptions.point >= inscriptions.point_min, 1,0) as aprobado'),
                 DB::raw('
         IF(user_inscriptions.point >= inscriptions.point_min,

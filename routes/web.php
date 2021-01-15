@@ -219,7 +219,11 @@ Route::middleware(['auth'])->group(function(){
 		->name('fotochecks.list');
 	Route::get('participant/fotocheck/{fotocheck}/detail', 'FotocheckController@detail')
 		->name('fotocheck.detail');
-	Route::post('participant/fotocheck/{fotocheck}/update','FotocheckController@update')->name('fotocheck.update');
+	Route::get('participant/fotocheck/{user}/index', 'FotocheckController@index')
+	->name('fotochecks.index');
+	route::post('participant/fotocheck/{user}/store','FotocheckController@store')->name('fotocheck.store');
 	Route::get('participant/fotocheck/{fotocheck}/cancel','FotocheckController@cancel')->name('fotocheck.cancel');
+	Route::get('participant/fotocheck/{fotocheck}/accept','FotocheckController@accept')->name('fotocheck.accept');
+	Route::get('participant/fotocheck/exportRequirements','FotocheckController@exportRequeriments')->name('fotochecks.export');
 
 });

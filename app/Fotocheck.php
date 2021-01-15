@@ -11,6 +11,10 @@ class Fotocheck extends Model
     const APROBED = '1';
     const CANCELED = '2';
 
+    protected $casts = [
+        'courses' => 'array',
+    ];
+
     protected $fillable = ['user_id', 'courses', 'date_emited','state'];
     
     protected $hidden = [
@@ -34,11 +38,22 @@ class Fotocheck extends Model
     {
         return $q->where('state', self::CANCELED);
     }
+    //FUNCTIONS
     
     public function fotocheckSuccessfull($user,$fotocheck)
     {
+        //$fotocheck->update(['date_emited'=> Carbon::now()]);
         $fotocheck->create(['user_id' => $user->id,'state' => Fotocheck::SOLICITED]);
     }
+    public function fotocheckAprobed()
+    {
+        $this->update(['date_emited'=> Carbon::now(),'state' => Fotocheck::APROBED]);
+    }
+    public function fotocheckCancel()
+    {
+        $this->update(['state' => Fotocheck::CANCELED]);
+    }
+    
     
     
     

@@ -63,9 +63,7 @@
                             </div>
                         </div>
                         <div class="panel-body">
-                            <form action="{{ route('fotocheck.update', $fotocheck->id) }}"
-                            method="POST" id="formFotocheck">
-                            {{ csrf_field() }}
+                            
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
@@ -75,35 +73,26 @@
                                         <th scope="col">Fecha Vencimiento </th>
                                         <th scope="col">Nota</th>
                                         <th scope="col">Estado</th>
-                                        <th scope="col">Seleccionar</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($details as $detail)
                                     <tr>
                                         <th scope="row">{{$loop->iteration}}</th>
-                                        <td>{{$detail->inscription->course->name}}</td>
+                                        <td>{{$detail->inscription->course->id .'---'.$detail->inscription->course->name}}</td>
                                         <td>{{$detail->inscription->startDate}}</td>
                                         <td>{{$detail->vigency()}}</td>
                                         <td>{{$detail->point}}</td>
-                                        @if(\Carbon\Carbon::now() > \Carbon\Carbon::parse($detail->vigency()))
-                                        <td> <span class="label label-danger">Vencido</span></td>
-                                        @else 
-                                        <td> <span class="label label-success">Vigente</span></td>
+                                        @if($detail->vigencyState())
+                                        <td> <span class="label label-primary">Solicitado</span></td>
                                         @endif
-                                        <td>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="course[]" value="{{$detail->inscription->course->id}}" >
-                                            </div>
-                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                            <button  type="submit" class="btn btn-success"> <i class="far fa-save"></i> Aprobar Solicitud </button>
+                            <a href="{{ route('fotocheck.accept', $fotocheck->id) }}" class="btn btn-primary"><i class="far fa-save"></i>Aceptar Solicitud</a>
                             <a href="{{ route('fotocheck.cancel', $fotocheck->id) }}" class="btn btn-primary"><i class="far fa-save"></i>Rechazar Solicitud</a>
                             
-                            </form>
                         </div>
                     </div>
                 </div>

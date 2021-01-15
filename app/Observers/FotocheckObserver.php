@@ -13,16 +13,6 @@ class FotocheckObserver
     
     public function created(Fotocheck $fotocheck)
     {
-
-    }
-
-    public function updated(Fotocheck $fotocheck)
-    {
-        if(!$fotocheck->state == 0)
-        {
-            return redirect()->back();
-            
-        }
         $courses = [];
         $details=[];
         $details['courses'] = request()->course;
@@ -32,8 +22,7 @@ class FotocheckObserver
         {
             array_push($courses, $key);
         }
-        $fotocheck->update(['courses' => json_encode($courses) , 'state' => Fotocheck::APROBED]);
-
+        $fotocheck->update(['courses' => $courses]);
     }
 
 }

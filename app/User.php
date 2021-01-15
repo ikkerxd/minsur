@@ -34,7 +34,7 @@ class User extends Authenticatable
         'email_valorization',
     ];
 
-    protected $appends = ['full_name'];
+    protected $appends = ['full_name','courses_admited_fotocheck'];
 
     protected $hidden = [
         'remember_token','created_at','updated_at'
@@ -43,6 +43,12 @@ class User extends Authenticatable
     public function getShortName()
     {
         return "{$this->name} {$this->last_name}";
+    }
+    //GETTERS
+    public function getCoursesAdmitedFotocheckAttribute()
+    {
+        $courses_admited=[1,58,60,2,63,66,68,168,61,65,67,64,59,62,186];
+        return $courses_admited;
     }
 
     public function getFullName()
@@ -64,9 +70,8 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Company::class,'id_company');
     }
-    public function fotocheck()
+    public function fotochecks()
     {
-        
         return $this->hasMany(Fotocheck::class);
     }
     public function hasImage()

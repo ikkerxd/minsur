@@ -21,33 +21,91 @@
                 <div class="box-body">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3>Solicitudes de Fotocheck</h3>
+                            <h3>Participante y Lista de cursos</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+
+                                        <img src=" {{asset( 'img/'.$user->image_hash)}} " class="img-responsive center-block">
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <table class="table table-striped table-bor dered">
+                                        <tr>
+                                            <td colspan="6">
+                                                <h3>
+                                                    {{$user->full_name}}
+                                                    
+                                                </h3>
+                                        </tr>
+                                        <tr>
+
+                                            <th>Doc. de Identidad:</th>
+                                            <td>{{$user->dni}}</td>
+
+                                            <th>Empresa:</th>
+                                            <td>{{$user->company->businessName}}</td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <th>Cargo:</th>
+                                            <td>{{$user->position}}</td>
+                                            <th>Area:</th>
+                                            <td>{{$user->superintendence}}</td>
+                                        </tr>
+
+                                    </table>
+
+                                </div>
+                            </div>
                         </div>
                         <div class="panel-body">
-                            <table class="table table-striped" >
-                                <thead >
+                            <form action="{{ route('fotocheck.store',$user->id) }}"
+                            method="POST" id="formFotocheck">
+                            {{ csrf_field() }}
+                            <table class="table table-striped">
+                                <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Participante</th>
-                                        <th scope="col">Fecha de solicitud</th>
+                                        <th scope="col">Curso</th>
+                                        <th scope="col">Fecha</th>
+                                        <th scope="col">Fecha Vencimiento </th>
+                                        <th scope="col">Nota</th>
                                         <th scope="col">Estado</th>
-                                        <th scope="col">Solicitudes</th>
+                                        <th scope="col">Seleccionar</th>
                                     </tr>
                                 </thead>
-                                <tbody >
-                                    @foreach($fotochecks as $fotocheck)
+                                <tbody>
+                                    @foreach($details as $detail)
                                     <tr>
                                         <th scope="row">{{$loop->iteration}}</th>
-                                        <td>{{$fotocheck->user->full_name}}</td>
-                                        <td>{{$fotocheck->updated_at}}</td>
-                                        <td><span class="badge label-success">Pendiente</span></td>
+                                        <td>{{$detail->inscription->course->id .'---'.$detail->inscription->course->name}}</td>
+                                        <td>{{$detail->inscription->startDate}}</td>
+                                        <td>{{$detail->vigency()}}</td>
+                                        <td>{{$detail->point}}</td>
+                                        @if($detail->vigencyState())
+                                        <td> <span class="label label-success">Vigente</span></td>
+                                        @else 
+                                        <td> <span class="label label-danger">Vencido</span></td>
+                                        @endif
+                                        @if($detail->vigencyState())
                                         <td>
-                                        <a class="btn btn-primary btn-sm" href="{{route('fotocheck.detail',$fotocheck)}}" ><i class="fa fa-check-square-o"></i> Ver</a>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="course[]" value="{{$detail->inscription->course->id}}" >
+                                            </div>
                                         </td>
+                                        @endif
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
+                            <button  type="submit" class="btn btn-primary"> <i class="far fa-save"></i> Guardar Solicitud</button>
+                            <a href="{{ route('fotochecks.export') }}" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Descargar Requisitos</a>
+                            
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -55,5 +113,5 @@
         </div>
     </div>
 </section>
-</div>
+
 @endsection
