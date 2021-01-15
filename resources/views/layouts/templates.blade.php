@@ -192,7 +192,7 @@ document.getElementById('logout-form').submit();">
                                       <!--@can('users.index')
                           <li><a href="{{ route('users.index') }}"><i class="fa fa-user-o"></i> <span>Usuarios</span></a></li>
                                       @endcan-->
-                                      @if(Auth::user()->id_unity==2)
+                                      @if(Auth::user()->id_unity==3)
                       <li><a href="{{route('fotochecks.list')}}"><i class="fa fa-address-card"></i> <span>Fotocheck</span></a></li>
                                       @endif
             
