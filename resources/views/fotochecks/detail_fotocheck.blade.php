@@ -79,7 +79,7 @@
                                     @foreach($details as $detail)
                                     <tr>
                                         <th scope="row">{{$loop->iteration}}</th>
-                                        <td>{{$detail->inscription->course->id .'---'.$detail->inscription->course->name}}</td>
+                                        <td>{{$detail->inscription->course->name}}</td>
                                         <td>{{$detail->inscription->startDate}}</td>
                                         <td>{{$detail->vigency()}}</td>
                                         <td>{{$detail->point}}</td>

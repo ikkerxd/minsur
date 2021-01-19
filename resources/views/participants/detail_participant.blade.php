@@ -109,7 +109,7 @@
                                     @foreach ($result as $element)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{$element->id_course.'-'.$element->course }}</td>
+                                            <td>{{$element->course }}</td>
                                             <td>{{ $element->date }}</td>
                                             <td>{{ $element->point }}</td>
                                             @if($element->aprobado)
