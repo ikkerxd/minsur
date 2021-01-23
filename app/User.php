@@ -32,6 +32,8 @@ class User extends Authenticatable
         'id_user',
         'id_unity',
         'email_valorization',
+        'image',
+        'image_hash'
     ];
 
     protected $appends = ['full_name','courses_admited_fotocheck'];

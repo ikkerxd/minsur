@@ -225,5 +225,6 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('participant/fotocheck/{fotocheck}/cancel','FotocheckController@cancel')->name('fotocheck.cancel');
 	Route::get('participant/fotocheck/{fotocheck}/accept','FotocheckController@accept')->name('fotocheck.accept');
 	Route::get('participant/fotocheck/exportRequirements','FotocheckController@exportRequeriments')->name('fotochecks.export');
+	Route::get('participant/fotocheck/{fotocheck}/download','FotocheckController@download')->name('fotocheck.download');
 
 });

@@ -574,7 +574,7 @@ class UserController extends Controller
 
     public  function detail_participant (Request $request) {
         
-        $user = DB::table('users')
+        $user = User::query()
             ->select('users.id as id', 'dni',
                 'firstlastname', 'secondlastname', 'name',
                 'position', 'superintendence', 'businessName','image','image_hash','users.phone','users.superintendence')

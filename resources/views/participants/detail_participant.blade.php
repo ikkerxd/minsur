@@ -37,6 +37,16 @@
                     <i class="fa fa-ban" aria-hidden="true"></i> {{ Session::get('danger') }}
                 </div>
                 @endif
+
+@if ( Session::has('warning') )
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <i class="fa fa-ban" aria-hidden="true"></i> {{ Session::get('warning') }}
+    </div>
+@endif
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-2">
@@ -50,10 +60,12 @@
                                 <tr>
                                     <td colspan="6">
                                         <h2>{{ $user->name }} {{ $user->firstlastname }} {{ $user->secondlastname }}
-
                                            <!-- <a data-toggle="tooltip" data-placement="top" title="EDITAR" href="#" class="btn btn-primary pull-right" id="#" style="margin-right: 10px"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>-->
-
-                                            <a data-toggle="tooltip" data-placement="top" title="DESCARGAR FOTOCHECK" href="#" class="btn btn-danger pull-right" style="margin-right: 10px"><i class="fa fa-address-card-o" aria-hidden="true"></i> DESCARGAR FOTOCHECK</a>
+                                            @if($user->fotochecks->last())
+                                            @if($user->fotochecks->last()->state == 1)
+                                            <a data-toggle="tooltip" data-placement="top" title="DESCARGAR FOTOCHECK" href="{{route('fotocheck.download',$user->fotochecks->last())}}" class="btn btn-danger pull-right" style="margin-right: 10px"><i class="fa fa-address-card-o" aria-hidden="true"></i> DESCARGAR FOTOCHECK</a>
+                                            @endif
+                                            @endif
                                             <a class="btn btn-primary pull-right" href="{{route('fotochecks.index',$user->id)}}" data-placement="top" title="SOLICITAR FOTOCHECK" style="margin-right: 10px">
                                                 <i class="fa fa-address-card-o" aria-hidden="true"></i> SOLICITAR FOTOCHECK
                                             </a>

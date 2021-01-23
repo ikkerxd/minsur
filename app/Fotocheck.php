@@ -4,6 +4,8 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Intervention\Image\ImageManagerStatic as Image;
+
 
 class Fotocheck extends Model
 {
@@ -14,6 +16,7 @@ class Fotocheck extends Model
     protected $casts = [
         'courses' => 'array',
     ];
+    protected $dates = ['date_emited'];
 
     protected $fillable = ['user_id', 'courses', 'date_emited','state'];
     
@@ -38,6 +41,10 @@ class Fotocheck extends Model
     {
         return $q->where('state', self::CANCELED);
     }
+    public function codGenerator()
+    {
+        return $this->attributes['id'] = str_pad($this->id,8,"0", STR_PAD_LEFT);
+    }
     //FUNCTIONS
     
     public function fotocheckSuccessfull($user,$fotocheck)
@@ -52,6 +59,27 @@ class Fotocheck extends Model
     public function fotocheckCancel()
     {
         $this->update(['state' => Fotocheck::CANCELED]);
+    }
+    
+    public function drawingImage($img,$field,$location_x,$location_y)
+    {
+        $img->text(''.$field.'', $location_x, $location_y, function($font) {
+            $font->file(realpath('fonts/foo.ttf'));
+            $font->size(30);
+            $font->color('#000000');
+            $font->align('center');
+            $font->valign('top');
+
+        
+        });
+        return $img;
+    }
+    
+    public function writeText()
+    {
+        return ['324'=>$this->user->name,'389'=>$this->user->firstlastname.' '.$this->user->secondlastname,
+        '454'=>$this->user->position,'519'=>$this->user->superintendence,'590' => $this->user->dni,
+        '659' => $this->user->company->businessName,'724' =>$this->date_emited->format('Y-m-d'),'795' =>$this->codGenerator()];
     }
     
     

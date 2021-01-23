@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use App\Observers\FotocheckObserver;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Intervention\Image\ImageManagerStatic as Image;
+
 
 
 class FotocheckController extends Controller
@@ -34,7 +36,7 @@ class FotocheckController extends Controller
         }
 
         $message='El Fotocheck del participante '. $user->fullname .' esta en proceso';  
-        return back()->with('danger',$message);
+        return back()->with('warning',$message);
         
     }
     public function store(Request $request,User $user,Fotocheck $fotocheck)
@@ -69,13 +71,30 @@ class FotocheckController extends Controller
         
         return view('fotochecks.detail_fotocheck',compact('fotocheck','details'));
     }
+    public function download(Fotocheck $fotocheck)
+    {
+        
+        
+        $img=Image::make('fotocheck.jpeg')->insert(Image::make('img/'.$fotocheck->user->image_hash.'')->resize(265,347), 'bottom-right', 60, 194);
+        $location_x= 570;
+        
+        $array_fields= ['field' => $fotocheck->writeText()];
+        
+        foreach($array_fields['field'] as $key => $fields)
+        {
+            $img=$fotocheck->drawingImage($img,$fields,$location_x,$key);
+        }
+        
+        return $img->response('jpg');
+
+    }
     
     public function cancel(Fotocheck $fotocheck)
     {
         $fotocheck->fotocheckCancel();
 
         $message= 'La solicitud del Fotocheck del participante "'.$fotocheck->user->full_name .'" fue Cancelado';
-        return redirect()->route('fotochecks.list')->with('error',$message);
+        return redirect()->route('fotochecks.list')->with('danger',$message);
     }
     public function accept(Fotocheck $fotocheck)
     {

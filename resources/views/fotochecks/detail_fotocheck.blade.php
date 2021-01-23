@@ -90,8 +90,10 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            <a href="{{ route('fotocheck.accept', $fotocheck->id) }}" class="btn btn-primary"><i class="far fa-save"></i>Aceptar Solicitud</a>
-                            <a href="{{ route('fotocheck.cancel', $fotocheck->id) }}" class="btn btn-primary"><i class="far fa-save"></i>Rechazar Solicitud</a>
+                            <a href="{{ route('fotocheck.accept', $fotocheck->id) }}" class="btn btn-primary"><i class="fa fa-save"></i>
+                                Aceptar Solicitud</a>
+                            <a href="{{ route('fotocheck.cancel', $fotocheck->id) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>
+                                Rechazar Solicitud</a>
                             
                         </div>
                     </div>
