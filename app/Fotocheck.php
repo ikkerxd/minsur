@@ -4,6 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Intervention\Image\ImageManagerStatic as Image;
 
 
@@ -81,7 +82,14 @@ class Fotocheck extends Model
         '454'=>$this->user->position,'519'=>$this->user->superintendence,'590' => $this->user->dni,
         '659' => $this->user->company->businessName,'724' =>$this->date_emited->format('Y-m-d'),'795' =>$this->codGenerator()];
     }
-    
+    public function generateQrCode()
+    {
+        //convertimos a texto los curso que apareceran en el qr
+        $courses=Course::whereIn('id',$this->courses)->pluck('name')->toArray();
+        $course=implode("\n",$courses);
+        //aplicamos formatos al codgio qr
+        $qrcode=QrCode::format('png')->size(165)->generate('CURSOS APROBADOS :'.PHP_EOL.'PARTICIPANTE:'.$this->user->name.''.PHP_EOL.PHP_EOL.$course,'../public/qrcodes/qrcode.png');
+    }
     
     
     

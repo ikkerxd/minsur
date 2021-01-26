@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\User;
+use App\Course;
 use App\Fotocheck;
 use Carbon\Carbon;
 use App\UserInscription;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Observers\FotocheckObserver;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Intervention\Image\ImageManagerStatic as Image;
 
 
@@ -74,8 +76,13 @@ class FotocheckController extends Controller
     public function download(Fotocheck $fotocheck)
     {
         
-        
-        $img=Image::make('fotocheck.jpeg')->insert(Image::make('img/'.$fotocheck->user->image_hash.'')->resize(265,347), 'bottom-right', 60, 194);
+        //insertamos las imagenes (foto y codigo qr)
+        $fotocheck->generateQrCode();
+        //preparamos la imagen para insertar la foto y qrcode
+        $img=Image::make('fotocheck.jpeg')->insert(Image::make('img/'.$fotocheck->user->image_hash.'')->resize(265,347), 'bottom-right', 60, 194)
+                                            ->insert(Image::make('../public/qrcodes/qrcode.png'), 'bottom-right', 110, 694);
+        //location x define la posicion horizontal
+        //location y la vertical
         $location_x= 570;
         
         $array_fields= ['field' => $fotocheck->writeText()];
