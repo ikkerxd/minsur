@@ -5,12 +5,16 @@ use App\Course;
 use App\Fotocheck;
 use Carbon\Carbon;
 use App\UserInscription;
+use App\Fotocheck_course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Observers\FotocheckObserver;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\CreateUserRequest;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Http\Requests\CreateFotocheckRequest;
 use Intervention\Image\ImageManagerStatic as Image;
 
 
@@ -36,21 +40,20 @@ class FotocheckController extends Controller
         return view('fotochecks.index',compact('fotocheck','details','user'));
             
         }
-
         $message='El Fotocheck del participante '. $user->fullname .' esta en proceso';  
         return back()->with('warning',$message);
         
     }
-    public function store(Request $request,User $user,Fotocheck $fotocheck)
+    public function store(CreateFotocheckRequest $request,User $user,Fotocheck $fotocheck)
     {
-        if(!$request->course){
-            $message= 'Seleccione algun curso porfavor';
-            return back()->with('warning',$message);
+        if($fotocheck->fotocheckSuccessfull($request,$user))
+        {
+            $message='El Fotocheck del participante '. $user->fullname .' se solicito exitosamente';  
+            return redirect()->route('detail-participant',$user->id)->with('success',$message);
         }
-        $fotocheck->fotocheckSuccessfull($user,$fotocheck);
-
-        $message='El Fotocheck del participante '. $user->fullname .' se solicito exitosamente';  
-        return redirect()->route('detail-participant',$user->id)->with('success',$message);
+        
+        $message_error='Para solicitar este curso es necesario adjuntar la evaluación';
+        return back()->with('danger',$message_error);
     }
 
     public function list()
@@ -64,23 +67,22 @@ class FotocheckController extends Controller
     public function detail(Fotocheck $fotocheck)
     {
         $fotocheck->load('user');
-
+        $field="course_id";
         $details=UserInscription::with(['user','inscription'])
         ->inscriptionHasUser($fotocheck->user->id)
         ->hasFotocheck($fotocheck)
         ->active()
         ->get();
-        
-        return view('fotochecks.detail_fotocheck',compact('fotocheck','details'));
+
+        return view('fotochecks.detail_fotocheck',compact('fotocheck','details','field'));
     }
     public function download(Fotocheck $fotocheck)
     {
-        
         //insertamos las imagenes (foto y codigo qr)
         $fotocheck->generateQrCode();
         //preparamos la imagen para insertar la foto y qrcode
         $img=Image::make('fotocheck.jpeg')->insert(Image::make('img/'.$fotocheck->user->image_hash.'')->resize(265,347), 'bottom-right', 60, 194)
-                                            ->insert(Image::make('../public/qrcodes/qrcode.png'), 'bottom-right', 110, 694);
+                                            ->insert(Image::make('../public/qrcodes/qrcode.png')->crop(230, 230), 'bottom-right', 87, 660);
         //location x define la posicion horizontal
         //location y la vertical
         $location_x= 570;
@@ -126,6 +128,12 @@ class FotocheckController extends Controller
         {
             return true;
         }
+    }
+    public function downloadDocs(Fotocheck $fotocheck,$id_course)
+    {
+        $fotocheck_course=Fotocheck_course::where(['fotocheck_id'=>$fotocheck->id,'course_id'=>$id_course])->first();
+        
+        return response()->download('files/'.$fotocheck_course->attachment_hash.'', $fotocheck_course->attachment);
     }
 
 

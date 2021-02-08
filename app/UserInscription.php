@@ -30,10 +30,20 @@ class UserInscription extends Model
     {
         return $q->where('user_inscriptions.id_user',$id);
     }
+    public function scopeNotHasFotocheck($q,$fotocheck)
+    {
+        //field es el campo que quieres que te muestre
+        $field='course_id';
+        return $q->whereHas('inscription', function ($q) use($field,$fotocheck) {
+            $q->whereNotIn('id_course',$fotocheck->coursesArrayShow($field));
+        });
+    }
     public function scopehasFotocheck($q,$fotocheck)
     {
-        return $q->whereHas('inscription', function ($q) use($fotocheck) {
-            $q->whereIn('id_course',$fotocheck->courses);
+        //field es el campo que quieres que te muestre
+        $field='course_id';
+        return $q->whereHas('inscription', function ($q) use($fotocheck,$field) {
+            $q->whereIn('id_course',$this->coursesArrayShow($fotocheck,$field));
         });
     }
     public function scopeFilterCoursesAdmited($q,$user)
@@ -45,6 +55,15 @@ class UserInscription extends Model
     }
     
     //FUNCIONES
+    public function coursesArrayShow($fotocheck,$field)
+    {
+        $fotocheck_course_array = [];
+        foreach($fotocheck->fotocheck_courses as $fotocheck_course)
+        {
+            array_push($fotocheck_course_array,$fotocheck_course->$field);
+        }
+        return $fotocheck_course_array;
+    }
     public function vigency()
     {
             if($this->inscription->course->type_validity ==1){

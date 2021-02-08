@@ -69,6 +69,9 @@
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Curso</th>
+                                        @if($fotocheck->hasAttachment())
+                                        <th scope="col">Adjunto</th>
+                                        @endif
                                         <th scope="col">Fecha</th>
                                         <th scope="col">Fecha Vencimiento </th>
                                         <th scope="col">Nota</th>
@@ -80,6 +83,14 @@
                                     <tr>
                                         <th scope="row">{{$loop->iteration}}</th>
                                         <td>{{$detail->inscription->course->name}}</td>
+                                        @if($fotocheck->hasAttachment())
+                                        <td>
+                                        @if(in_array($detail->inscription->id_course,\App\Fotocheck::getCoursesAttachmentFotocheckAttribute()))
+                                            <a href="{{route('fotocheck_course.download',[$fotocheck,$detail->inscription->id_course])}}" class="badge btn-success"><i class="fa fa-download" ></i> Descargar
+                                            </a>
+                                            @endif
+                                        </td>
+                                        @endif                                      
                                         <td>{{$detail->inscription->startDate}}</td>
                                         <td>{{$detail->vigency()}}</td>
                                         <td>{{$detail->point}}</td>

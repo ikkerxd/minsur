@@ -3,6 +3,7 @@
 namespace App\Observers;
 use Illuminate\Support\Arr;
 use App\Fotocheck;
+use App\Fotocheck_course;
 use Carbon\Carbon;
 
 /**
@@ -13,16 +14,22 @@ class FotocheckObserver
     
     public function created(Fotocheck $fotocheck)
     {
-        $courses = [];
         $details=[];
         $details['courses'] = request()->course;
         //valida stados
-        
         foreach($details['courses'] as $key)
         {
-            array_push($courses, $key);
+            $fotocheck_course=Fotocheck_course::create(['course_id'=>$key,'fotocheck_id'=>$fotocheck->id]);
         }
-        $fotocheck->update(['courses' => $courses]);
+        if (request()->attachment != null) {
+
+            $name = request()->attachment;
+            $attachment= request()->file('attachment')->getClientOriginalName();
+            $name_hash = $name->hashName();
+            $name->move('files/', $name_hash);
+            $fotocheck_course->update(['attachment'=> $attachment,'attachment_hash'=> $name_hash,'required'=> Fotocheck_course::REQUIRED]);
+        }
+        
     }
 
 }

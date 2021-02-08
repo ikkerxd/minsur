@@ -64,7 +64,7 @@
                         </div>
                         <div class="panel-body">
                             <form action="{{ route('fotocheck.store',$user->id) }}"
-                            method="POST" id="formFotocheck">
+                            method="POST" enctype = 'multipart/form-data' id="formFotocheck">
                             {{ csrf_field() }}
                             <table class="table table-striped">
                                 <thead>
@@ -76,6 +76,7 @@
                                         <th scope="col">Nota</th>
                                         <th scope="col">Estado</th>
                                         <th scope="col">Seleccionar</th>
+                                        <th scope="col">Adjuntar</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -97,13 +98,19 @@
                                                 <input class="form-check-input" type="checkbox" name="course[]" value="{{$detail->inscription->course->id}}" >
                                             </div>
                                         </td>
+                                        <td>
+                                            @if(in_array($detail->inscription->id_course,\App\Fotocheck::getCoursesAttachmentFotocheckAttribute()))
+                                            <div class="form-group">
+                                                <input type="file" class="form-control-file" name="attachment">
+                                            </div>
+                                            @endif
+                                        </td>
                                         @endif
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                             <button  type="submit" class="btn btn-primary"> <i class="far fa-save"></i> Guardar Solicitud</button>
-                            <a href="{{ route('fotochecks.export') }}" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Descargar Requisitos</a>
                             
                             </form>
                         </div>

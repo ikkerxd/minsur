@@ -46,13 +46,12 @@ class User extends Authenticatable
     {
         return "{$this->name} {$this->last_name}";
     }
-    //GETTERS
+    
     public function getCoursesAdmitedFotocheckAttribute()
     {
-        $courses_admited=[1,58,60,2,63,66,68,168,61,65,67,64,59,62,186];
+        $courses_admited=[1,58,60,2,63,66,68,168,61,65,67,64,18,62,186];
         return $courses_admited;
     }
-
     public function getFullName()
     {
         return ucwords("{$this->secondlastname} {$this->firstlastname} {$this->name}");

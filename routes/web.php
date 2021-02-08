@@ -226,5 +226,8 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('participant/fotocheck/{fotocheck}/accept','FotocheckController@accept')->name('fotocheck.accept');
 	Route::get('participant/fotocheck/exportRequirements','FotocheckController@exportRequeriments')->name('fotochecks.export');
 	Route::get('participant/fotocheck/{fotocheck}/download','FotocheckController@download')->name('fotocheck.download');
+	Route::get('participant/fotocheck/{fotocheck}/download','FotocheckController@download')->name('fotocheck.download');
+	//
+	Route::get('participant/fotocheck/{fotocheck}/fotocheck_course/{id_course}/download','FotocheckController@downloadDocs')->name('fotocheck_course.download');
 
 });
