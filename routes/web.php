@@ -32,7 +32,12 @@ Route::get('/user/all_certificado/{id}/', 'CertificateController@all_certificati
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-
+//route medina
+Route::get('company/company_contacts', 'CompanyController@listconctact')->name('company_contacts');
+Route::get('company/company_detail', 'CompanyController@detailsCompany')->name('company_detail');
+Route::get('company/reportedp', 'CompanyController@reportEDP')->name('reportedp');
+Route::get('company/pending_payment_report', 'CompanyController@reportpendingp')->name('pending_payment_report');
+//end route medina
 Route::get('/buscar_dni/{dni}', 'InscriptionController@buscar_dniuserInscription');
 
 Route::post('search_ruc','CompanyController@search_ruc')->name('search_ruc');
@@ -145,7 +150,7 @@ Route::middleware(['auth'])->group(function(){
     Route::post('report/company','CompanyController@report_company')->name('report_company');
 
 
-    Route::get('report/company/{id}/{startDate}/{endDate}','CompanyController@report_company_participant')->name('report_company_participant');
+    Route::get('report/company/{id_user_inscription}/{startDate}/{endDate}','CompanyController@report_company_participant')->name('report_company_participant');
     Route::get('report/company/{id}','CompanyController@report_company_participant')->name('report_company_participant');
 
 	Route::get('check','BuildingController@check')->name('check');

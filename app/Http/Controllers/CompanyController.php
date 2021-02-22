@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Company;
 use App\Invoice;
 use App\Unity;
+use App\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -39,6 +40,36 @@ class CompanyController extends Controller
             ->where('role_id', 4)
             ->get();
         return view('companies.index',compact('companies'));
+    }
+
+    public function listconctact()
+    {
+        $user = Auth::user();
+        $companies1 = DB::table('users')
+            ->select('users.id as id_user', 'users.id_unity', 'users.id_company as id_company',
+                    'users.phone','users.email', 'users.email_valorization',
+                    'companies.businessName', 'companies.ruc', 'companies.address', 'companies.state','users.state as estadous','unities.name')
+            ->join('companies', 'companies.id', '=', 'users.id_company')
+            ->join('role_user','role_user.user_id', '=', 'users.id')
+            ->join ('unities','unities.id','=','users.id_unity')
+            //->where('id_unity', $user->id_unity)
+            ->where('role_id', 4)
+            ->get();
+       
+        return view('companies.company_contacts',compact('companies1'));
+    }
+
+    public function detailsCompany()
+    {
+        return view('companies.company_detail');
+    }
+    public function reportEDP()
+    {
+        return view('companies.reportedp');
+    }
+    public function reportpendingp()
+    {
+        return view('companies.pending_payment_report');
     }
 
     public function create()
@@ -200,6 +231,7 @@ class CompanyController extends Controller
     public function report_list_company(Request $request) {
         ini_set('max_execution_time', 720000);
         ini_set('memory_limit', -1);
+        //$locations = Location::pluck('name','id');
         // recuperamos el id de la unidad minera
         $id_um = $request->id;
         // buscamos la UM por su id
@@ -207,6 +239,7 @@ class CompanyController extends Controller
         // Inicializamos los rangos de fechas
         $start = null;
         $end = null;
+        $location = null;
 
         // Inicializamos las variables para el proceso
         $count_company = 0;
@@ -214,6 +247,7 @@ class CompanyController extends Controller
         $total_horas = 0;
         $monto_total = 0;
         $query = [];
+        
         //dd('entee a fet');
         if ($request->method() == 'POST') {
 
@@ -231,6 +265,7 @@ class CompanyController extends Controller
                         ->where('id_unity', $id_um)
                         ->where('id_company', $request->company)
                         ->where('state', 1)
+                        ->where('id_locations',$ $request->id_location)
                         ->count();
 
                     // si no existe una valorizacion
@@ -311,7 +346,9 @@ class CompanyController extends Controller
 
             $start = $request->startDate;
             $end = $request->endDate;
+            $location = $request->id_location;
 
+            //dd($location);
             $sub_query = DB::table('user_inscriptions')
                 ->select(
                     'companies.id as codigo_company',
@@ -325,10 +362,12 @@ class CompanyController extends Controller
                 ->join('companies', 'companies.id', '=', 'users.id_company')
                 ->join('inscriptions', 'inscriptions.id', '=', 'user_inscriptions.id_inscription')
                 ->join('courses', 'courses.id', '=', 'inscriptions.id_course')
+                ->join ('locations','locations.id','=','inscriptions.id_location')
                 ->whereIn('user_inscriptions.state', [0,1])
                 ->where('users.id_unity', $id_um)
                 //->where('users.id_company', 107)
                 ->where('courses.required','=', 0)
+                ->where('locations.id','=', $location)
                 ->where('user_inscriptions.payment_form', 'a cuenta')
                 ->whereBetween('inscriptions.startDate', [$start, $end])
                 ->groupBy('user_inscriptions.id_user_inscription', 'user_inscriptions.id_user');

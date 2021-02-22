@@ -23,7 +23,8 @@
   <link rel="stylesheet" href="{{ asset('css/bootstrap3-wysihtml5.min.css') }}">
   <link rel="stylesheet" href="{{ asset('https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ asset('css/loading.css') }}">
-
+  <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+  <script src="js/bootstrap-datetimepicker.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
   <style>
     body {
@@ -168,6 +169,7 @@ document.getElementById('logout-form').submit();">
                         <li><a href="{{url('/inscription')}}"><i class="fa fa-pencil-square-o"></i> <span>Inscripcíon</span></a></li>
                         <li><a href="{{url('/details')}}"><i class="fa fa-list-ul"></i> <span>Detalle Inscripción</span></a></li>
                         @endif
+                        
                         <li class="header">CONFIGURACION</li>
                         @can('companies.index')
                         <li><a href="{{route('companies.index')}}"><i class="fa fa-building-o"></i> <span>Empresas</span></a></li>
@@ -247,8 +249,12 @@ document.getElementById('logout-form').submit();">
           <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
           <li><a href="{{ route('companies_um', 1) }}"><i class="fa fa-dashboard"></i> <span>Raura</span></a></li>
           <li><a href="{{ route('companies_um', ['id' => 2]) }}"><i class="fa fa-dashboard"></i> <span>San Rafael</span></a></li>
-          <li><a href="{{ route('companies_um', ['id' => 3]) }}"><i class="fa fa-dashboard"></i> <span>Pucamarca</span></a></li>
-          <li><a href="{{ route('companies_um', ['id' => 4]) }}"><i class="fa fa-dashboard"></i> <span>Pisco</span></a></li>
+          <li><a href="{{ route('companies_um', ['id' => 3]) }}"><i class="fa fa-dashboard"></i> <span>Pucamarca</span></a>
+          
+          <li><a href="{{route('company_contacts')}}"><i class="fa fa-building-o"></i> <span>Empresas</span></a></li>
+          <li><a href="{{route('company_detail')}}"><i class="fa fa-building-o"></i> <span>Detalle empresas</span></a></li>
+          <li><a href="{{route('reportedp')}}"><i class="fa fa-building-o"></i> <span>Reporte EDP</span></a></li>
+          <li><a href="{{route('pending_payment_report')}}"><i class="fa fa-building-o"></i> <span>Reporte Pendientes de pago</span></a></li>
         </ul>
         @endrole
 

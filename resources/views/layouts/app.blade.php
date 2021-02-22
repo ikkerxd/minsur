@@ -56,10 +56,37 @@
         </div>
     </div>
 
+<!-- banner -->
+  
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body" style="padding: 0; margin: 0">
+
+                    <img src="{{ asset('img/ttt.jpeg') }}" class="center-block img-responsive" />
+
+                </div>
+                <div class="modal-footer" style="margin-top: 0">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+<!--end  banner -->
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/login.js') }}"></script>
+    <script>
+        $('#modal-default').modal('show');
+    </script>
     @yield('script')
 
 </body>
+
 </html>

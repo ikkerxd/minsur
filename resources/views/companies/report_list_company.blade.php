@@ -49,12 +49,27 @@
                             </div>
                         </div>
 
+                        <div class='col-md-2'>
+                            <div class="form-group">
+                                {!! Form::label('id_location', 'Tipo') !!}
+                                <select name="id_location" id="id_location" class="form-control" >
+                                          <option value="1">REGULAR</option>
+                                          <option value="2">EXTRAORDINARIO</option>
+                                          <option value="3">PARADA DE PLANTA</option>
+                                          <option value="4">AESA </option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <button type="submit" name="action" value="read" class="btn bg-primary" style=" position: relative;top: 21.5px;">Buscar</button>
                             </div>
                         </div>
-
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <a type="submit" name="action" value="read" class="btn bg-green " style=" position: relative;top: 21.5px;"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Exportar Datos</a>
+                            </div>
+                        </div>
                     </div>
                     <!-- /.box-body -->
                     {!! Form::close() !!}
@@ -95,11 +110,11 @@
                                     <td>{{ $company->ruc }}</td>
                                     <td>
                                         <a href="{{route(
-                                        'report_company_participant',
-                                        [$company->id_user_inscription.'/'.Request::get('startDate').'/'.Request::get('endDate')] ) }}"
-                                        >
-                                            {{ $company->businessName }}
-                                        </a>
+                                            'report_company_participant',
+                                            [$company->id_user_inscription.'/'.Request::get('startDate').'/'.Request::get('endDate')] ) }}"
+                                            >
+                                                {{ $company->businessName }}
+                                            </a>
                                     </td>
                                     <td>{{ $company->email_valorization }}</td>
                                     <td>{{ $company->phone }}</td>
@@ -189,6 +204,18 @@
                                                 <i class="fa fa-check"></i>
                                             </button>
                                         @endif
+                                            <button type="button" class="btn btn-default btn-sm btn-val" data-toggle="modal" data-target="#myModal"
+                                                    rel="tooltip" data-placement="top" title="Monto a valorizar"> Monto
+                                                    <i class="fa fa-money" aria-hidden="true"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-default btn-sm btn-val" data-toggle="modal" data-target="#ModalFac"
+                                                    rel="tooltip" data-placement="top" title="Monto a facturar"> Facturar
+                                                    <i class="fa fa-money" aria-hidden="true"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-default btn-sm btn-val" data-toggle="modal" data-target="#myModalPagar"
+                                                    rel="tooltip" data-placement="top" title="Monto a Pagar"> Pagar
+                                                    <i class="fa fa-money" aria-hidden="true"></i>
+                                            </button>
                                                <!-- <a href="#" class="btn btn-danger btn-sm disabled" data-toggle="tooltip" title="Eliminar"><i class="fa fa-trash"></i></a>-->
                                     </td>
                                 </tr>
@@ -251,6 +278,105 @@
         </div>
     </section>
 
+  
+
+  <!-- Modal monto a pagar -->
+  <div class="modal fade" id="myModal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="text-align: center">
+      <div class="modal-content" role="document">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+           <h4 class="modal-title" id="myModalLabel">Valorizacion de : <span class="nameConpamy"></span></h4>
+        </div>
+        <div class="modal-body">
+            <h4>Monton a valorizar:</h4>
+         <td>S/. </td><input type="text" name="valum" id="valum  ">
+        </div>
+        <div class="modal-footer" style="text-align: center">
+          <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fa fa-window-close" aria-hidden="true"></i>
+            Cancelar</button>
+          <button type="button" class="btn btn-success" data-dismiss="modal"> <i class="fa fa-money" aria-hidden="true"></i> Valorizar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- -->
+  
+ <!-- Start Modal monto a Facturar -->
+ <div class="modal fade" id="ModalFac"  tabindex="-1" role="dialog" aria-labelledby="ModalFac">
+    <div class="modal-dialog" >
+      <div class="modal-content" role="document">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+           <h4 class="modal-title" id="myModalLabel">Facturar a: <span class="nameConpamy"></span></h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-8">
+                     <h4>N° de Factura:</h4>
+          <input type="number" name="valum" id="valum  "><br>
+             {!! Form::label('#', 'Fecha de emisión') !!}
+          <div class="input-group date">
+              <div class="input-group-addon">
+                  <i class="fa fa-calendar"></i>
+              </div>
+              {!! Form::text('#', null, ['class' => 'form-control pull-right datepicker','required' => 'required','autocomplete' => 'off']) !!}
+          </div>
+          {!! Form::label('#', 'Fecha de recepción') !!}
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    {!! Form::text('#', null, ['class' => 'form-control pull-right datepicker','required' => 'required','autocomplete' => 'off']) !!}
+                                </div>
+                </div>
+            </div>
+         
+        </div>
+        <div class="modal-footer" style="text-align: center">
+          <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fa fa-window-close" aria-hidden="true"></i>
+            Cancelar</button>
+          <button type="button" class="btn btn-success" data-dismiss="modal"> <i class="fa fa-money" aria-hidden="true"></i> Facturar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end fact -->
+
+  <!-- Start Modal monto a PAGAR -->
+ <div class="modal fade" id="myModalPagar"  tabindex="-1" role="dialog" aria-labelledby="ModalFac">
+    <div class="modal-dialog" >
+      <div class="modal-content" role="document">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+           <h4 class="modal-title" id="myModalLabel">Registrar fecha de pago de factura: <span class="nameConpamy"></span></h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h4>¿ La factura a sido cancelada?</h4><hr>
+          
+             {!! Form::label('#', 'Fecha de pago:') !!}
+          <div class="input-group date">
+              <div class="input-group-addon">
+                  <i class="fa fa-calendar"></i>
+              </div>
+              {!! Form::text('#', null, ['class' => 'form-control pull-right datepicker','required' => 'required','autocomplete' => 'off']) !!}
+          </div>
+                </div>
+            </div>   
+          
+        </div>
+        <div class="modal-footer" style="text-align: center">
+          <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fa fa-window-close" aria-hidden="true"></i>
+            Cancelar</button>
+          <button type="button" class="btn btn-success" data-dismiss="modal"> <i class="fa fa-money" aria-hidden="true"></i> Pagar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end PAGAR -->
+  
     <div class="modal fade" id="myModalVal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -533,5 +659,8 @@
                 $('.btn_submit_proccess').html('<i class="fa fa-spinner fa-spin fa-fw"></i><span class="sr-only"></span> ...');
             });
         });
+        $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').trigger('focus')
+        })
     </script>
 @endsection
