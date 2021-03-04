@@ -51,7 +51,10 @@
               <td>{{ $invoice->businessName }}</td>
               <td>{{ $invoice->fecIni }}</td>
               <td>{{ $invoice->courseName }}</td>
-              <td>{{ $invoice->price }}</td>
+              <td>
+                {{ $invoice->price }}
+              
+              </td>
               <td>{{ $invoice->sede }}</td>
               <td><?php 
               if($invoice->payment_condition == 0){

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Company;
 use App\Invoice;
 use App\Unity;
+use App\user;
 use App\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +47,7 @@ class CompanyController extends Controller
     {
         $user = Auth::user();
         $companies1 = DB::table('users')
-            ->select('users.id as id_user', 'users.id_unity', 'users.id_company as id_company',
+            ->select('users.id as id_user', 'users.id_unity as idunidad', 'users.id_company as id_company',
                     'users.phone','users.email', 'users.email_valorization',
                     'companies.businessName', 'companies.ruc', 'companies.address', 'companies.state','users.state as estadous','unities.name')
             ->join('companies', 'companies.id', '=', 'users.id_company')
@@ -109,6 +110,16 @@ class CompanyController extends Controller
     public function edit(Company $company)
     {        
         return view('companies.edit',compact('company'));
+    }
+
+    
+    public function statusUpdate(Request $request)
+    {
+       $user = User::find($request->id_user);
+       $user ->state = $request->status;
+       $user -> save();
+
+       return response()->json(['success'=>'Estado actualizado']);
     }
 
     public function update(Request $request, $id)

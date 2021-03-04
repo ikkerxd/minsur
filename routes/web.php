@@ -36,7 +36,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('company/company_contacts', 'CompanyController@listconctact')->name('company_contacts');
 Route::get('company/company_detail', 'CompanyController@detailsCompany')->name('company_detail');
 Route::get('company/reportedp', 'CompanyController@reportEDP')->name('reportedp');
-Route::get('company/pending_payment_report', 'CompanyController@reportpendingp')->name('pending_payment_report');
+Route::get('company/company', 'CompanyController@reportpendingp')->name('pending_payment_report');
+Route::get('company/statusUpdate', 'CompanyController@statusUpdate')->name('statusUpdate');
 //end route medina
 Route::get('/buscar_dni/{dni}', 'InscriptionController@buscar_dniuserInscription');
 

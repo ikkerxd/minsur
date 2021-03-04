@@ -23,8 +23,7 @@
   <link rel="stylesheet" href="{{ asset('css/bootstrap3-wysihtml5.min.css') }}">
   <link rel="stylesheet" href="{{ asset('https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ asset('css/loading.css') }}">
-  <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-  <script src="js/bootstrap-datetimepicker.min.js"></script>
+ 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
   <style>
     body {
@@ -304,8 +303,13 @@ document.getElementById('logout-form').submit();">
   <script src="{{ asset('js/demo.js') }}"></script>
   <script src="{{ asset('js/main.js') }}"></script>
   <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
   @yield('script')
 
+  @stack('scripts')
 </body>
 
 </html>

@@ -42,7 +42,7 @@
                                 <th>CORREO</th>
                                 <th>CORREO VALORIZACION</th>
                                 <th>UNIDAD MINERA</th>
-                                <th>ESTADO</th>
+                                
                                 <th>ACCIONES</th>
                             </tr>
                         </thead>
@@ -55,21 +55,23 @@
                                 <td>{{ $company->phone }}</td>
                                 <td>{{ $company->email}}</td>
                                 <td>{{ $company->email_valorization }}</td>
-                                <td>{{ $company->name }}</td>
                                 <td>
-                                    @if ($company->estadous == 0)
-                                        <span class="label label-success"> Activo </span>
-                                    @else
-                                        <span class="label label-danger"> Bloqueado </span>
-                                    @endif
+                                     @if($company->idunidad==1)
+                                     
+                                        <span class="label label-primary">UM Raura</span>
+                                     @elseif($company->idunidad==2)
+                                     <span class="label label-warning">UM SanRafael</span>
+
+                                     @elseif($company->idunidad==3)
+                                     <span class="label label-success">UM Pucamarca</span>
+                                     @else
+                                     <span class="label label-info">UM Fundición Pisco</span>
+                                     @endif
                                 </td>
+                                
                                 <td>
-                                    @if(Auth::id() <> 2683 && Auth::id() <> 4141 && Auth::id() <> 14078 && Auth::id() <> 1097 && Auth::id() <> 14179 && Auth::id() <> 14180 && Auth::id() <> 7053)
-                                    <button type="button" class="btn btn-primary btn-sm btn-val" data-toggle="modal" data-target="#myModalPagar" rel="tooltip" data-placement="top" title="Monto a Pagar">
-                                    Editar
-                                    <i class="fa fa-pencil-square-o"></i>
-                                    </button>
-                                    @endif
+                                    <input type="checkbox"  class="togle-class" data-id="{{ $company->id_user}}" data-toggle="toggle" data-style="slow" data-on="Activo" 
+                                    data-off="Bloqueado" {{$company->estadous == 0 ?'checked':''}}>
                                 </td>
                             </tr>
                         @endforeach
@@ -80,48 +82,7 @@
         </div>
     </div>
 </section>
-<!-- Start Modal editar contacto-->
-<div class="modal fade" id="myModalPagar"  tabindex="-1" role="dialog" aria-labelledby="ModalFac">
-    <div class="modal-dialog" >
-      <div class="modal-content" role="document">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-           <h4 class="modal-title" id="myModalLabel">Actualizar datos del contacto de la empresa: <span class="nameConpamy"></span></h4>
-        </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group row">
-                        <label for="email" class="col-sm-3 col-form-label">Usuario:</label>
-                        <div class="col-sm-10">
-                          <input type="email" disabled class="form-control" id="email"  value=""placeholder="">
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label for="#" class="col-sm-3 col-form-label">Empresa:</label>
-                        <div class="col-sm-10">
-                          <input type="text" disabled class="form-control" id="#"  value=""placeholder="">
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label for="#" class="col-sm-3 col-form-label">Estado usuario:</label>
-                        <select class="custom-select custom-select-lg mb-3" >
-                            <option value="0">Activo</option>
-                            <option value="1">Bloqueado</option>
-                        </select>
-                </div>
-            </div>   
-          
-        </div>
-        <div class="modal-footer" style="text-align: center">
-          <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fa fa-window-close" aria-hidden="true"></i>
-            Cancelar</button>
-          <button type="button" class="btn btn-success" data-dismiss="modal"> <i class="fa fa-money" aria-hidden="true"></i> Actualizar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- end Modal editar contacto -->
+
 @endsection
 
 @section('script')
@@ -132,5 +93,44 @@
             "processing": true,
         });
     });
-</script>
+
+</script> 
+@push('scripts')
+
+<script>
+    $(function() {
+      $('#toggle-two').bootstrapToggle({
+        on: 'Enabled',
+        off: 'Disabled'
+      });
+    })
+  </script> 
+
+  <script> 
+      $('.togle-class').on('change',function() {
+        var status = $(this).prop('checked')==true ? 0:1 ;
+        //alert(status);
+        var id_user = $(this).data('id');
+        //alert(id_user); 
+        $.ajax ({
+            type: 'GET',
+            datatype:'JSON',
+            url:'{{ route('statusUpdate') }}',
+            data: {
+                'status':status,
+                'id_user':id_user
+            },
+            success:function(data){
+                $('#notifDiv').fadeIn();
+                $('#notifDiv').css('background','green');
+                $('#notifDiv').text('Actualizado');
+                setTimeout(() => {
+                    $('#notifDiv').fadeOut();
+                });
+            }
+              
+        });
+      });
+  </script>
+@endpush
 @endsection('content')

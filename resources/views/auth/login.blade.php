@@ -14,12 +14,18 @@
                 {{ csrf_field() }}
                 <img src="{{ asset('img/cover/raura.png') }}" alt="logo-raura" class="login__img">
                 <img src="{{ asset('img/cover/minsur.png') }}" alt="logo-minsur" class="login__img">
-                <h2 class="login__subtitle">ACESSO AL SISTEMA</h2>
-                <input type="email" name="email" value="{{ old('email') }}" required autofocus  class="login__input" placeholder="Ingrese su usuario">
-                @if ($errors->has('email'))
+                <h2 class="login__subtitle">ACESSO AL SISTEMA</h2> @if ($errors->has('email'))
                     <span class="login__error">{{ $errors->first('email') }}</span>
                 @endif
-                <input type="password" name="password" required class="login__input" placeholder="Ingrese su contraseña">
+                <input id="email" type="text"
+                            class="form-control text-center @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}"
+                            required autocomplete="email" autofocus
+                            placeholder="Ingrese su correo">
+               <br>
+                <input id="password" type="password" class="form-control text-center @error('password') is-invalid @enderror"
+                            name="password" required autocomplete="current-password"
+                            placeholder="Ingrese su contraseña">
+                <br>
                 <button type="submit" class="btn login__submit">INGRESAR</button>
                 <span class="login__description">¿Aun no cuentas con un usuario <a href="{{ url('/register') }}" class="login__register">Registrate AQUI</a></span>
             </form>
