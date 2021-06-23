@@ -20,6 +20,7 @@ Route::post('/certificado/search/', 'CertificateController@search')->name('certi
 Route::get('/certificado/{id}/', 'CertificateController@certification')->name('certificado');
 Route::get('/anexo4/{id}/', 'CertificateController@anexo4')->name('an   exo4');
 Route::get('/constacia-covid/{id}/', 'CertificateController@covid')->name('covid');
+Route::get('/constacia-covid/{id}/', 'CertificateController@covid')->name('covid');
 
 Route::get('/certificado/list/cursos/', 'CertificateController@course')->name('list_course');
 // Route::get('/sustitutorio2', 'CertificateController@ingresar')->name('carga_import');
@@ -75,7 +76,7 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::resource('inscriptions','InscriptionController');
 
-	Route::get('profile','UserController@profile')->name('profile');
+	Route::get('pic','CompanyController@report_menejoDefensivo')->name('pic');
 
 	Route::post('json_inscription','InscriptionController@json_inscription')->name('json_inscription');
 

@@ -232,7 +232,41 @@ class CompanyController extends Controller
             return view('companies.report_company_course',
                 compact('query', 'count_company', 'total_horas', 'total_cobros', 'monto_total'));
     }
+    ///ENLOQUENT MANEJO DEFENSIVO
+    public function report_menejoDefensivo(Request $request) {
+        ini_set('max_execution_time', 720000);
+        ini_set('memory_limit', -1);
+        
+        $sub_query1 = DB::table('users')
+        ->select(
+        'users.dni AS DNI',
+        DB::raw('CONCAT(users.firstlastname," ",users.secondlastname," ",users.name) AS NCOMPLETO'),
+        'inscriptions.startDate AS FCAPACITACION',
+        DB::raw('DATE_ADD(inscriptions.startDate, INTERVAL  inscriptions.validaty YEAR) AS FVENCIMIENTO'),
+        'companies.businessName AS EMPRESA','courses.name AS CURSO','user_inscriptions.point AS NOTA',
+        DB::raw('IF(user_inscriptions.point >= inscriptions.point_min,"APROBADO","JALADO") AS ESTADO'),
+        'inscriptions.point_min AS PM','user_inscriptions.point AS PO'
+        )
+        ->join ('user_inscriptions' ,'user_inscriptions.id_user', '=' ,'users.id')
+        ->join ('inscriptions' ,'inscriptions.id', '=' ,'user_inscriptions.id_inscription') 
+        ->join ('courses' ,'courses.id' , '=' ,'inscriptions.id_course') 
+        ->join ('companies' ,'companies.id', '=','users.id_company') 
+        ->join ('role_user' ,'users.id', '=', 'role_user.user_id'  )
+        ->join ('unities' ,'unities.id', '=' ,'users.id_unity') 
+        ->where('unities.id' , '=',2)
+        ->where('role_user.role_id' ,'=',5) 
+        ->where('courses.id','=',7);
+       
+        $query1 = DB::table( DB::raw("({$sub_query1->toSql()}) as ST") )
+        ->mergeBindings($sub_query1)
+        ->select( 'DNI','NCOMPLETO','FCAPACITACION','EMPRESA','CURSO','NOTA','ESTADO',
+        DB::raw('if(NOW()<=FVENCIMIENTO AND PO>=PM,"VIGENTE","CADUCADO") AS VIGENCIA') )
+        
+        ->get();
+        
+        dd($query1); 
 
+    }
     ///
     ///
     /// FUNCION PARA EL NUEVO PROCESO DE VALORIZACION, FACTURACION Y PAGO DE LA MISMA
